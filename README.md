@@ -8,11 +8,11 @@ text until you ask for it — so you train your ear, not your reading.
 
 ## Demo
 
-<!-- Served via jsDelivr: GitHub serves repo videos as raw bytes, jsDelivr as video/mp4 so browsers play them. -->
-<a href="https://cdn.jsdelivr.net/gh/mattias/anki-listening-practice@main/docs/demo.mp4"><img src="docs/demo-poster.png" alt="Watch the 1-minute demo" width="270"></a>
+https://github.com/user-attachments/assets/60efe71b-f156-44d7-ba4a-4adf54268731
 
 One minute with sound: practicing Anki cards, the settings, downloading a YouTube video with
-Japanese subtitles, and practicing it line by line.
+Japanese subtitles, and practicing it line by line. If the player doesn't show (outside
+github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-listening-practice@main/docs/demo.mp4).
 
 ## Features
 

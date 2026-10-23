@@ -57,7 +57,8 @@ class SettingsRepository @Inject constructor(
         fun word(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_word")
         fun languageField(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_language")
 
-        val source = stringPreferencesKey("source")
+        // Videos are per language, so the chosen source is too. Japanese keeps the old key.
+        fun source(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "source" else "source_${l.code}")
     }
 
     val settings: Flow<Settings> = context.dataStore.data.map { prefs ->
@@ -69,12 +70,15 @@ class SettingsRepository @Inject constructor(
             mapping = mappingFor(prefs, preset, language),
             speed = prefs[Keys.speed] ?: 1.0f,
             delayMs = prefs[Keys.delayMs] ?: 1000L,
-            source = PracticeSource.fromKey(prefs[Keys.source]),
+            source = PracticeSource.fromKey(prefs[Keys.source(language)]),
             checkUpdates = prefs[Keys.checkUpdates] ?: true,
         )
     }
 
-    suspend fun setSource(source: PracticeSource) = context.dataStore.edit { it[Keys.source] = source.key() }
+    /** Sets the source for the current language. */
+    suspend fun setSource(source: PracticeSource) = context.dataStore.edit {
+        it[Keys.source(Language.fromCode(it[Keys.language]))] = source.key()
+    }
 
     suspend fun current(): Settings = settings.first()
 
@@ -105,11 +109,8 @@ class SettingsRepository @Inject constructor(
         )
     }
 
-    suspend fun setLanguage(l: Language) = context.dataStore.edit {
-        it[Keys.language] = l.code
-        // Videos are per language, so go back to the Anki cards.
-        it.remove(Keys.source)
-    }
+    /** Switches language; each language remembers its own source, so switching back resumes it. */
+    suspend fun setLanguage(l: Language) = context.dataStore.edit { it[Keys.language] = l.code }
 
     suspend fun setPreset(l: Language, p: Preset) = context.dataStore.edit { it[Keys.preset(l)] = p.name }
 

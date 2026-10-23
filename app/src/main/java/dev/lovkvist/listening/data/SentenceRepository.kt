@@ -64,11 +64,13 @@ class SentenceRepository @Inject constructor(
     suspend fun cardWordCount(): Int = mutex.withLock { loadCardWords(settings.current().language).size }
 
     /**
-     * Returns up to [count] sentences that are fully known, not blacklisted, not cooling down
-     * and not in [exclude], in the source's order. Tokenizes lazily, so it stops as soon as
-     * enough are found.
+     * The sentence to practice after [afterId] (or the first one if null): the next one in the
+     * source's order that is fully known and not blacklisted or cooling down. Anki cards are in
+     * random order, reshuffled each time the end is reached; a video plays in order and starts
+     * over at its end. Returns [afterId]'s sentence again only if nothing else is eligible, and
+     * null if nothing is. Tokenizes lazily, so it stops at the first match.
      */
-    suspend fun nextEligible(count: Int, exclude: Set<Long>): List<Sentence> = mutex.withLock {
+    suspend fun next(afterId: Long?): Sentence? = mutex.withLock {
         val current = settings.current()
         val language = current.language
         val source = current.source
@@ -82,18 +84,25 @@ class SentenceRepository @Inject constructor(
             poolSource = source
             poolLanguage = language
         }
-        val pool = pool.orEmpty()
         val tokenizer = tokenizers.forLanguage(language)
         val known = (knownWords.words(language) + loadCardWords(language)).mapTo(HashSet(), tokenizer::normalize)
-        if (known.isEmpty()) return@withLock emptyList()
+        if (known.isEmpty()) return@withLock null
         val blocked = dao.excludedIds(System.currentTimeMillis()).toHashSet()
 
         withContext(Dispatchers.Default) {
-            pool.asSequence()
-                .filter { it.id !in exclude && it.id !in blocked }
-                .filter { s -> knownCache.getOrPut(s.id) { tokenizer.isFullyKnown(s.text, known) } }
-                .take(count)
-                .toList()
+            var list = pool.orEmpty()
+            val start = list.indexOfFirst { it.id == afterId } + 1 // 0 when there's no current one
+            fun eligible(s: Sentence) =
+                s.id !in blocked && knownCache.getOrPut(s.id) { tokenizer.isFullyKnown(s.text, known) }
+
+            list.drop(start).firstOrNull { it.id != afterId && eligible(it) }?.let { return@withContext it }
+            // Reached the end: Anki cards get a new random order, a video starts over.
+            if (source == PracticeSource.Anki && start > 0) {
+                list = list.shuffled()
+                pool = list
+            }
+            list.firstOrNull { it.id != afterId && eligible(it) }
+                ?: list.firstOrNull { it.id == afterId && eligible(it) }
         }
     }
 
@@ -103,10 +112,22 @@ class SentenceRepository @Inject constructor(
         dao.upsert(current.copy(cooldownUntil = until))
     }
 
-    suspend fun blacklist(id: Long) {
-        val current = dao.get(id) ?: SentenceState(id)
-        dao.upsert(current.copy(blacklisted = true))
+    /** Hides [sentence] for good; its text is kept so it can be listed and restored. */
+    suspend fun blacklist(sentence: Sentence) {
+        val current = dao.get(sentence.id) ?: SentenceState(sentence.id)
+        val sourceName = when (val s = settings.current().source) {
+            PracticeSource.Anki -> "Anki cards"
+            is PracticeSource.Media -> media.items.value.firstOrNull { it.id == s.id }?.name.orEmpty()
+        }
+        dao.upsert(current.copy(blacklisted = true, text = sentence.text, source = sourceName))
     }
+
+    suspend fun unblacklist(id: Long) {
+        dao.get(id)?.let { dao.upsert(it.copy(blacklisted = false)) }
+        _generation.value += 1
+    }
+
+    suspend fun blacklisted(): List<SentenceState> = dao.blacklisted()
 
     private suspend fun loadPool(source: PracticeSource, language: Language): List<Sentence> = when (source) {
         PracticeSource.Anki -> decks.readSentences(settings.current().mapping, language).shuffled()

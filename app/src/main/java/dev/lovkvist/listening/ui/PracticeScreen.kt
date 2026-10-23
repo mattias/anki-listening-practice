@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,6 +46,7 @@ import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.text.Language
 
 private val delayOptions = listOf(0L, 500L, 1000L, 2000L, 3000L, 5000L)
+private val autoClearOptions = listOf(0, 3, 5, 10, 20)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +59,8 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
     val sources by vm.sources.collectAsStateWithLifecycle()
     val source by vm.source.collectAsStateWithLifecycle()
     val language by vm.language.collectAsStateWithLifecycle()
+    val autoClearAfter by vm.autoClearAfter.collectAsStateWithLifecycle()
+    var confirmBlacklist by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -87,7 +91,11 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
 
                 is PracticeState.Ready -> {
                     Text(
-                        "Queue: ${s.queueSize} · Repeats: $repeats",
+                        if (autoClearAfter > 0) {
+                            "Play ${minOf(repeats + 1, autoClearAfter)} of $autoClearAfter, then Crystal Clear"
+                        } else {
+                            "Repeats: $repeats"
+                        },
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -116,18 +124,35 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
                     PlaybackSettings(
                         speed = speed,
                         delayMs = delayMs,
+                        autoClearAfter = autoClearAfter,
                         onSpeed = { vm.setSpeed(it) },
                         onDelay = { vm.setDelay(it) },
+                        onAutoClear = { vm.setAutoClearAfter(it) },
                     )
                     Spacer(Modifier.height(12.dp))
                     ActionButtons(
                         onClear = vm::crystalClear,
                         onSkip = vm::skip,
-                        onBlacklist = vm::blacklist,
+                        onBlacklist = { confirmBlacklist = true },
                     )
                 }
             }
         }
+    }
+
+    if (confirmBlacklist) {
+        AlertDialog(
+            onDismissRequest = { confirmBlacklist = false },
+            title = { Text("Blacklist this sentence?") },
+            text = { Text("It won't be played again. You can restore it in Settings → Progress.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmBlacklist = false
+                    vm.blacklist()
+                }) { Text("Blacklist") }
+            },
+            dismissButton = { TextButton(onClick = { confirmBlacklist = false }) { Text("Cancel") } },
+        )
     }
 }
 
@@ -191,8 +216,10 @@ private fun SentenceText(sentence: Sentence, language: Language) {
 private fun PlaybackSettings(
     speed: Float,
     delayMs: Long,
+    autoClearAfter: Int,
     onSpeed: (Float) -> Unit,
     onDelay: (Long) -> Unit,
+    onAutoClear: (Int) -> Unit,
 ) {
     Text("Speed: ${"%.2f".format(speed)}x", style = MaterialTheme.typography.labelLarge)
     Slider(value = speed, onValueChange = onSpeed, valueRange = 0.5f..1.5f, steps = 19)
@@ -203,6 +230,17 @@ private fun PlaybackSettings(
                 selected = d == delayMs,
                 onClick = { onDelay(d) },
                 label = { Text(if (d % 1000 == 0L) "${d / 1000}s" else "${d / 1000.0}s") },
+            )
+        }
+    }
+    // Hands-free: after this many plays the sentence counts as Crystal Clear and the next one starts.
+    Text("Auto Crystal Clear after", style = MaterialTheme.typography.labelLarge)
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        for (n in autoClearOptions) {
+            FilterChip(
+                selected = n == autoClearAfter,
+                onClick = { onAutoClear(n) },
+                label = { Text(if (n == 0) "Off" else "$n×") },
             )
         }
     }

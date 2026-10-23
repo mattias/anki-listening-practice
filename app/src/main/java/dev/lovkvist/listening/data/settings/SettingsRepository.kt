@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -28,6 +29,8 @@ data class Settings(
     val mapping: FieldMapping,
     val speed: Float,
     val delayMs: Long,
+    /** After this many plays a sentence is marked Crystal Clear and the next one starts; 0 = off. */
+    val autoClearAfter: Int,
     val source: PracticeSource,
     /** Look for a new release on GitHub when the app starts. */
     val checkUpdates: Boolean,
@@ -41,6 +44,7 @@ class SettingsRepository @Inject constructor(
         val language = stringPreferencesKey("language")
         val speed = floatPreferencesKey("speed")
         val delayMs = longPreferencesKey("delay_ms")
+        val autoClearAfter = intPreferencesKey("auto_clear_after")
         val checkUpdates = booleanPreferencesKey("check_updates")
 
         // Japanese keeps the key from before other languages existed.
@@ -70,10 +74,13 @@ class SettingsRepository @Inject constructor(
             mapping = mappingFor(prefs, preset, language),
             speed = prefs[Keys.speed] ?: 1.0f,
             delayMs = prefs[Keys.delayMs] ?: 1000L,
+            autoClearAfter = prefs[Keys.autoClearAfter] ?: 0,
             source = PracticeSource.fromKey(prefs[Keys.source(language)]),
             checkUpdates = prefs[Keys.checkUpdates] ?: true,
         )
     }
+
+    suspend fun setAutoClearAfter(plays: Int) = context.dataStore.edit { it[Keys.autoClearAfter] = plays }
 
     /** Sets the source for the current language. */
     suspend fun setSource(source: PracticeSource) = context.dataStore.edit {

@@ -30,7 +30,6 @@ sealed interface PracticeState {
     data class Message(val text: String) : PracticeState
     data class Ready(
         val current: Sentence,
-        val queueSize: Int,
         val showText: Boolean,
     ) : PracticeState
 }
@@ -54,6 +53,10 @@ class PracticeViewModel @Inject constructor(
     private val _delayMs = MutableStateFlow(1000L)
     val delayMs: StateFlow<Long> = _delayMs.asStateFlow()
 
+    private val _autoClearAfter = MutableStateFlow(0)
+    /** Plays before a sentence is marked Crystal Clear automatically; 0 = off. */
+    val autoClearAfter: StateFlow<Int> = _autoClearAfter.asStateFlow()
+
     /** Everything that can be practiced: Anki cards plus each video/audio in the current language. */
     val sources: StateFlow<List<Pair<PracticeSource, String>>> = combine(media.items, settings.settings) { items, s ->
         listOf(PracticeSource.Anki to "Anki cards") +
@@ -73,15 +76,16 @@ class PracticeViewModel @Inject constructor(
         }
     }
 
-    /** Active queue; the head is the sentence being practiced. */
-    private val queue = ArrayDeque<Sentence>()
-    private val queueLock = Mutex()
+    /** Serializes moving between sentences, so quick taps can't skip two at once. */
+    private val lock = Mutex()
 
     init {
+        player.onPlayLimit = { crystalClear() }
         viewModelScope.launch {
             val s = settings.current()
             setSpeed(s.speed, persist = false)
             setDelay(s.delayMs, persist = false)
+            setAutoClearAfter(s.autoClearAfter, persist = false)
         }
         viewModelScope.launch {
             // Initial load, and again whenever the collection, mapping or known words change.
@@ -89,14 +93,14 @@ class PracticeViewModel @Inject constructor(
         }
     }
 
+    /** Starts over from the source's first sentence, keeping audio paused unless it was playing. */
     fun rebuild() {
         viewModelScope.launch {
-            queueLock.withLock {
+            lock.withLock {
+                val wasPlaying = player.isPlaying.value
                 player.stop()
-                queue.clear()
                 _state.value = PracticeState.Loading
-                refill()
-                publish(newSentence = true)
+                show(fetch(afterId = null), autoPlay = wasPlaying)
             }
         }
     }
@@ -106,19 +110,11 @@ class PracticeViewModel @Inject constructor(
         if (_state.value is PracticeState.Message) rebuild()
     }
 
-    fun crystalClear() = removeCurrent { repository.markCrystalClear(it.id) }
+    fun crystalClear() = advance { repository.markCrystalClear(it.id) }
 
-    fun blacklist() = removeCurrent { repository.blacklist(it.id) }
+    fun blacklist() = advance { repository.blacklist(it) }
 
-    fun skip() {
-        viewModelScope.launch {
-            queueLock.withLock {
-                if (queue.isEmpty()) return@withLock
-                queue.addLast(queue.removeFirst())
-                publish(newSentence = true)
-            }
-        }
-    }
+    fun skip() = advance { }
 
     fun toggleText() = _state.update { if (it is PracticeState.Ready) it.copy(showText = !it.showText) else it }
 
@@ -137,35 +133,29 @@ class PracticeViewModel @Inject constructor(
         if (persist) viewModelScope.launch { settings.setDelayMs(ms) }
     }
 
-    private fun removeCurrent(record: suspend (Sentence) -> Unit) {
+    fun setAutoClearAfter(plays: Int, persist: Boolean = true) {
+        _autoClearAfter.value = plays
+        player.playLimit = plays
+        if (persist) viewModelScope.launch { settings.setAutoClearAfter(plays) }
+    }
+
+    /** Records [action] for the current sentence and moves to the next one. */
+    private fun advance(action: suspend (Sentence) -> Unit) {
         viewModelScope.launch {
-            queueLock.withLock {
-                val current = queue.removeFirstOrNull() ?: return@withLock
-                record(current)
-                if (queue.size <= REFILL_AT) {
-                    if (queue.isEmpty()) _state.value = PracticeState.Loading
-                    refill()
-                }
-                publish(newSentence = true)
+            lock.withLock {
+                val current = (_state.value as? PracticeState.Ready)?.current ?: return@withLock
+                // A new sentence continues in the same state: playing on, or staying paused.
+                val wasPlaying = player.isPlaying.value
+                action(current)
+                show(fetch(afterId = current.id), autoPlay = wasPlaying)
             }
         }
     }
 
-    private suspend fun refill() {
-        val exclude = queue.mapTo(HashSet()) { it.id }
-        val more = try {
-            repository.nextEligible(QUEUE_SIZE - queue.size, exclude)
-        } catch (e: Exception) {
-            _state.value = PracticeState.Message(e.message ?: e.toString())
-            return
-        }
-        queue.addAll(more)
-    }
-
-    private fun publish(newSentence: Boolean) {
-        val head = queue.firstOrNull()
-        if (head == null) {
-            if (_state.value !is PracticeState.Message) {
+    /** The next sentence, or null after showing why there's none. */
+    private suspend fun fetch(afterId: Long?): Sentence? =
+        try {
+            repository.next(afterId) ?: run {
                 _state.value = PracticeState.Message(
                     if (source.value is PracticeSource.Media) {
                         "No more sentences you know in this video. Pick another source, or reset " +
@@ -175,26 +165,25 @@ class PracticeViewModel @Inject constructor(
                             "in Settings, or wait for cool-downs to expire."
                     },
                 )
+                null
             }
+        } catch (e: Exception) {
+            _state.value = PracticeState.Message(e.message ?: e.toString())
+            null
+        }
+
+    private fun show(sentence: Sentence?, autoPlay: Boolean) {
+        if (sentence == null) {
             player.stop()
             return
         }
         val prev = _state.value as? PracticeState.Ready
-        val changed = newSentence && prev?.current?.id != head.id
-        _state.value = PracticeState.Ready(
-            current = head,
-            queueSize = queue.size,
-            showText = if (changed) false else prev?.showText ?: false,
-        )
-        if (changed || prev == null) player.load(head.audio, head.clip)
+        val same = prev?.current?.id == sentence.id
+        _state.value = PracticeState.Ready(current = sentence, showText = same && prev?.showText == true)
+        player.load(sentence.audio, sentence.clip, autoPlay)
     }
 
     override fun onCleared() {
         player.release()
-    }
-
-    companion object {
-        const val QUEUE_SIZE = 10
-        const val REFILL_AT = 1
     }
 }

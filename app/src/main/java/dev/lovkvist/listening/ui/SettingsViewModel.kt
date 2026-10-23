@@ -11,6 +11,7 @@ import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.known.KnownWordsRepository
+import dev.lovkvist.listening.data.local.SentenceState
 import dev.lovkvist.listening.data.local.SentenceStateDao
 import dev.lovkvist.listening.data.media.MediaEntry
 import dev.lovkvist.listening.data.media.MediaLibrary
@@ -49,6 +50,15 @@ class SettingsViewModel @Inject constructor(
     private val _blacklistCount = MutableStateFlow(0)
     val blacklistCount: StateFlow<Int> = _blacklistCount.asStateFlow()
 
+    private val _blacklisted = MutableStateFlow<List<SentenceState>>(emptyList())
+    /** Blacklisted sentences with their text, to restore them one at a time. */
+    val blacklisted: StateFlow<List<SentenceState>> = _blacklisted.asStateFlow()
+
+    fun restore(id: Long) = viewModelScope.launch {
+        sentences.unblacklist(id)
+        refreshCounts()
+    }
+
     private val _cooldownCount = MutableStateFlow(0)
     /** Sentences hidden by "Crystal Clear" whose 10-day cool-down hasn't run out. */
     val cooldownCount: StateFlow<Int> = _cooldownCount.asStateFlow()
@@ -57,6 +67,7 @@ class SettingsViewModel @Inject constructor(
     fun refreshCounts() = viewModelScope.launch {
         knownWords.words(settingsRepo.current().language) // populates knownCounts
         _blacklistCount.value = dao.blacklistCount()
+        _blacklisted.value = sentences.blacklisted()
         _cooldownCount.value = dao.cooldownCount(System.currentTimeMillis())
         _cardWordCount.value = sentences.cardWordCount()
     }
@@ -169,6 +180,7 @@ class SettingsViewModel @Inject constructor(
     fun clearBlacklist() = viewModelScope.launch {
         dao.clearBlacklist()
         _blacklistCount.value = 0
+        _blacklisted.value = emptyList()
         sentences.invalidate(collection = false, known = false)
         _message.value = "Blacklist cleared"
     }

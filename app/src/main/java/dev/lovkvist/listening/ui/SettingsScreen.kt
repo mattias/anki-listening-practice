@@ -140,11 +140,12 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
             )
 
             Section("Progress")
-            Text("$cooldownCount sentences cooling down after Crystal Clear.")
+            Text("${sentences(cooldownCount)} cooling down after Crystal Clear.")
             OutlinedButton(onClick = { confirm = Reset.COOLDOWNS }, enabled = cooldownCount > 0) {
                 Text("Reset Crystal Clear cool-downs")
             }
-            Text("$blacklistCount sentences blacklisted.")
+            Text("${sentences(blacklistCount)} blacklisted.")
+            Blacklist(vm)
             OutlinedButton(onClick = { confirm = Reset.BLACKLIST }, enabled = blacklistCount > 0) {
                 Text("Clear blacklist")
             }
@@ -226,6 +227,37 @@ private fun LanguagePicker(current: Language, onSelect: (Language) -> Unit) {
                     if (l != current) onSelect(l)
                 },
             )
+        }
+    }
+}
+
+private fun sentences(n: Int) = if (n == 1) "1 sentence" else "$n sentences"
+
+/** Blacklisted sentences, each with a button to bring it back into practice. */
+@Composable
+private fun Blacklist(vm: SettingsViewModel) {
+    val items by vm.blacklisted.collectAsStateWithLifecycle()
+    for (item in items) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    // Sentences blacklisted before 0.4.0 weren't saved with their text.
+                    item.text.ifBlank { "Sentence blacklisted before version 0.4.0" },
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (item.source.isNotBlank()) {
+                    Text(
+                        item.source,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+            TextButton(onClick = { vm.restore(item.noteId) }) { Text("Restore") }
         }
     }
 }

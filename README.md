@@ -44,11 +44,16 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   Furigana is drawn above the kanji, from either Anki's `漢字[かんじ]` syntax or HTML `<ruby>`.
   Chinese pinyin and Cantonese jyutping are drawn the same way if your note type has a sentence
   field with them.
-- **Queue of 10** — refills automatically when one sentence is left.
+- **One sentence at a time** — Anki cards come in random order without repeats until you've
+  heard them all; a video plays its lines in order. Audio never starts by itself: a new sentence
+  keeps playing if you were listening and stays paused if you weren't.
 - **Three actions**
   - *Crystal Clear*: you understood it; the sentence rests for 10 days.
-  - *Skip*: move it to the back of the queue.
-  - *Blacklist*: never show it again.
+  - *Skip*: go to the next sentence; this one comes back later.
+  - *Blacklist*: never show it again (after a confirmation). Blacklisted sentences are listed in
+    Settings → Progress, where each one can be restored.
+- **Hands-free** — *Auto Crystal Clear after* 3, 5, 10 or 20 plays: each sentence repeats that
+  many times, counts as Crystal Clear and the next one starts, so you can listen on the go.
 - **Note type presets** for [Anki Miner Note](https://github.com/0xzerolight/anki_miner_note)
   (every language) and the Japanese note types [Kiku](https://github.com/youyoumu/kiku),
   [Lapis](https://github.com/donkuri/lapis) and [Senren](https://github.com/BrenoAqua/Senren),
@@ -168,7 +173,7 @@ app/src/main/java/dev/lovkvist/listening/
 ├── data/known/      Known-words list
 ├── data/local/      Room database for cool-downs and blacklist
 ├── data/settings/   DataStore settings
-├── data/            SentenceRepository: filtering and queue supply
+├── data/            SentenceRepository: filtering and picking the next sentence
 ├── text/            Languages, Japanese tokenizer (Kuromoji) and word tokenizer for the rest
 ├── playback/        Looping player with a pause between repeats
 └── ui/              Compose screens and view models

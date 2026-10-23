@@ -17,7 +17,9 @@ object AppModule {
     @Provides
     @Singleton
     fun database(@ApplicationContext context: Context): PracticeDatabase =
-        Room.databaseBuilder(context, PracticeDatabase::class.java, "practice.db").build()
+        Room.databaseBuilder(context, PracticeDatabase::class.java, "practice.db")
+            .addMigrations(PracticeDatabase.MIGRATION_1_2)
+            .build()
 
     @Provides
     fun sentenceStateDao(db: PracticeDatabase): SentenceStateDao = db.sentenceStateDao()

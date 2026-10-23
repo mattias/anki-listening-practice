@@ -31,6 +31,11 @@ class LoopPlayer(context: Context, private val scope: CoroutineScope) {
     val repeats: StateFlow<Int> = _repeats.asStateFlow()
 
     var delayMs: Long = 1000
+
+    /** Plays per sentence before [onPlayLimit] is called instead of repeating; 0 loops forever. */
+    var playLimit: Int = 0
+    var onPlayLimit: (() -> Unit)? = null
+
     var speed: Float = 1f
         set(value) {
             field = value
@@ -49,8 +54,11 @@ class LoopPlayer(context: Context, private val scope: CoroutineScope) {
         })
     }
 
-    /** Loads [uri], or just the [clip] range of it (milliseconds), and loops that. */
-    fun load(uri: Uri, clip: LongRange? = null, autoPlay: Boolean = true) {
+    /**
+     * Loads [uri], or just the [clip] range of it (milliseconds), and loops that. Plays only if
+     * [autoPlay]; callers pass whether audio was already playing, so it never starts by surprise.
+     */
+    fun load(uri: Uri, clip: LongRange?, autoPlay: Boolean) {
         gapJob?.cancel()
         _repeats.value = 0
         val item = MediaItem.Builder().setUri(uri)
@@ -98,7 +106,10 @@ class LoopPlayer(context: Context, private val scope: CoroutineScope) {
         gapJob = scope.launch {
             _repeats.value += 1
             delay(delayMs)
-            if (_isPlaying.value) {
+            if (!_isPlaying.value) return@launch
+            if (playLimit > 0 && _repeats.value >= playLimit) {
+                onPlayLimit?.invoke()
+            } else {
                 player.seekTo(0)
                 player.play()
             }

@@ -25,6 +25,13 @@ you ask for it — so you train your ear, not your reading.
 - **Small footprint** — after import only the sentence audio is kept; images, word audio and
   other media are deleted. Your AnkiDroid collection is never modified.
 
+## Install
+
+Download the latest `.apk` from
+[Releases](https://github.com/mattias/anki-listening-practice/releases/latest) on your phone and
+open it. Android will ask you to allow installing apps from your browser or file manager the first
+time. Requires Android 8.0 or newer.
+
 ## Getting started
 
 1. **Export from AnkiDroid**: export your mining deck as `.apkg` (or your whole collection as
@@ -67,6 +74,10 @@ or `ANDROID_HOME`.
 ```
 
 Minimum Android version is 8.0 (API 26).
+
+To build a signed release (`./gradlew assembleRelease`), create a git-ignored
+`keystore.properties` in the project root with `storeFile`, `storePassword`, `keyAlias` and
+`keyPassword`. Without it the release APK is left unsigned.
 
 ## Tech stack
 

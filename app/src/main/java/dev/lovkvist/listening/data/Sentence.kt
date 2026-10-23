@@ -10,7 +10,7 @@ import android.net.Uri
 data class Sentence(
     val id: Long,
     val text: String,
-    /** Anki bracket furigana (漢字[かんじ]); empty if there is none. */
+    /** Sentence with readings in Anki bracket syntax (漢字[かんじ], 汉字[hàn zì]); empty if there are none. */
     val furigana: String,
     val translation: String,
     val audio: Uri,

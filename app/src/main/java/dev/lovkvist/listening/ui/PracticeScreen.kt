@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.Sentence
+import dev.lovkvist.listening.text.Language
 
 private val delayOptions = listOf(0L, 500L, 1000L, 2000L, 3000L, 5000L)
 
@@ -54,6 +55,7 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
     val delayMs by vm.delayMs.collectAsStateWithLifecycle()
     val sources by vm.sources.collectAsStateWithLifecycle()
     val source by vm.source.collectAsStateWithLifecycle()
+    val language by vm.language.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -106,7 +108,7 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
                         }
                         if (s.showText) {
                             Spacer(Modifier.height(16.dp))
-                            SentenceText(s.current)
+                            SentenceText(s.current, language)
                         }
                     }
 
@@ -163,12 +165,17 @@ private fun Box(content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun SentenceText(sentence: Sentence) {
-    // Without a furigana field the sentence still goes through RubyText, so it lays out the same.
-    RubyText(
-        furigana = sentence.furigana.ifBlank { sentence.text },
-        style = MaterialTheme.typography.headlineSmall,
-    )
+private fun SentenceText(sentence: Sentence, language: Language) {
+    if (language == Language.JAPANESE || sentence.furigana.isNotBlank()) {
+        // Without a furigana field the sentence still goes through RubyText, so it lays out the same.
+        RubyText(
+            furigana = sentence.furigana.ifBlank { sentence.text },
+            style = MaterialTheme.typography.headlineSmall,
+        )
+    } else {
+        // Plain text keeps words whole when wrapping, and Arabic letters joined.
+        Text(sentence.text, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
+    }
     if (sentence.translation.isNotBlank()) {
         Spacer(Modifier.height(12.dp))
         Text(

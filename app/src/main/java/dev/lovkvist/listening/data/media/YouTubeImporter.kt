@@ -4,6 +4,7 @@ import android.content.Context
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -15,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Downloads a YouTube video's audio and Japanese subtitles with yt-dlp (via youtubedl-android)
+ * Downloads a YouTube video's audio and subtitles in the study language with yt-dlp (via youtubedl-android)
  * and adds them to the [MediaLibrary]. Manual subtitles are preferred over auto-generated ones.
  */
 @Singleton
@@ -26,20 +27,19 @@ class YouTubeImporter @Inject constructor(
     private val setupLock = Mutex()
     private var ready = false
 
-    /** Japanese subtitle track chosen for a video. */
-    private data class Track(val lang: String, val automatic: Boolean)
-
-    suspend fun import(url: String, onStatus: (String) -> Unit): MediaEntry = withContext(Dispatchers.IO) {
+    suspend fun import(url: String, language: Language, onStatus: (String) -> Unit): MediaEntry = withContext(Dispatchers.IO) {
         setUp(onStatus)
 
-        onStatus("Looking for Japanese subtitles…")
+        onStatus("Looking for ${language.englishName} subtitles…")
         val info = JSONObject(run(YoutubeDLRequest(url).apply {
             addOption("--dump-single-json")
             addOption("--skip-download")
             addOption("--no-playlist")
         }))
         val title = info.optString("title").ifBlank { "YouTube video" }
-        val track = pickTrack(info) ?: throw IOException("\"$title\" has no Japanese subtitles.")
+        fun keys(name: String) = info.optJSONObject(name)?.keys()?.asSequence()?.toList().orEmpty()
+        val track = pickTrack(keys("subtitles"), keys("automatic_captions"), language)
+            ?: throw IOException("\"$title\" has no ${language.englishName} subtitles.")
 
         val dir = library.newDir()
         try {
@@ -61,7 +61,7 @@ class YouTubeImporter @Inject constructor(
             val audio = files.firstOrNull { it.name.startsWith("audio.") && it != subs && !it.name.endsWith(".part") }
                 ?: throw IOException("yt-dlp didn't save the audio")
             onStatus("Reading subtitles…")
-            library.importDownloaded(dir, audio, subs, title + if (track.automatic) " (auto subs)" else "", url)
+            library.importDownloaded(dir, audio, subs, title + if (track.automatic) " (auto subs)" else "", url, language)
         } catch (e: Exception) {
             dir.deleteRecursively()
             throw e
@@ -87,17 +87,5 @@ class YouTubeImporter @Inject constructor(
             val reason = e.message.orEmpty().lines().lastOrNull { it.contains("ERROR") } ?: e.message
             throw IOException(reason ?: "yt-dlp failed", e)
         }
-
-    private fun pickTrack(info: JSONObject): Track? {
-        fun japanese(key: String) = info.optJSONObject(key)?.keys()?.asSequence()
-            ?.filter { it == "ja" || it.startsWith("ja-") }?.toList().orEmpty()
-
-        japanese("subtitles").let { manual ->
-            if (manual.isNotEmpty()) return Track(manual.firstOrNull { it == "ja" } ?: manual.first(), automatic = false)
-        }
-        // For auto captions, "ja-orig" is speech recognition on the original audio; others are translations.
-        val auto = japanese("automatic_captions")
-        val lang = auto.firstOrNull { it == "ja-orig" } ?: auto.firstOrNull { it == "ja" } ?: return null
-        return Track(lang, automatic = true)
-    }
 }
+

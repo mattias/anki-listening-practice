@@ -11,10 +11,12 @@ import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.playback.LoopPlayer
+import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -52,10 +54,14 @@ class PracticeViewModel @Inject constructor(
     private val _delayMs = MutableStateFlow(1000L)
     val delayMs: StateFlow<Long> = _delayMs.asStateFlow()
 
-    /** Everything that can be practiced: Anki cards plus each imported video/audio. */
-    val sources: StateFlow<List<Pair<PracticeSource, String>>> = media.items
-        .map { items -> listOf(PracticeSource.Anki to "Anki cards") + items.map { PracticeSource.Media(it.id) to it.name } }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, listOf(PracticeSource.Anki to "Anki cards"))
+    /** Everything that can be practiced: Anki cards plus each video/audio in the current language. */
+    val sources: StateFlow<List<Pair<PracticeSource, String>>> = combine(media.items, settings.settings) { items, s ->
+        listOf(PracticeSource.Anki to "Anki cards") +
+            items.filter { it.language == s.language }.map { PracticeSource.Media(it.id) to it.name }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, listOf(PracticeSource.Anki to "Anki cards"))
+
+    val language: StateFlow<Language> = settings.settings.map { it.language }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, Language.JAPANESE)
 
     val source: StateFlow<PracticeSource> = settings.settings.map { it.source }
         .stateIn(viewModelScope, SharingStarted.Eagerly, PracticeSource.Anki)

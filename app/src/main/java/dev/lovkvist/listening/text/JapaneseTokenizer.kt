@@ -9,7 +9,7 @@ import javax.inject.Singleton
 data class Word(val baseForm: String, val candidates: Set<String>)
 
 @Singleton
-class JapaneseTokenizer @Inject constructor() {
+class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
     // Loading the IPADIC dictionary takes a moment, so do it on first use (off the main thread).
     private val tokenizer by lazy { Tokenizer() }
 
@@ -22,12 +22,15 @@ class JapaneseTokenizer @Inject constructor() {
                 Word(base, setOfNotNull(base, t.surface, reading))
             }
 
+    /** Known lists are matched as written: kanji and kana spellings are told apart by [words]. */
+    override fun normalize(word: String): String = word.trim()
+
     /**
      * True only if every word in [sentence] is in [known].
      * A word counts as known if its base form, its surface form or its kana reading is listed,
      * since Jiten exports may spell words in kana where IPADIC uses kanji (or vice versa).
      */
-    fun isFullyKnown(sentence: String, known: Set<String>): Boolean {
+    override fun isFullyKnown(sentence: String, known: Set<String>): Boolean {
         val words = words(sentence)
         return words.isNotEmpty() && words.all { w -> w.candidates.any { it in known } }
     }

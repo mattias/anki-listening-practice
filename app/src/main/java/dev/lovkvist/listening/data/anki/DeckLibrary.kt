@@ -7,6 +7,7 @@ import android.provider.OpenableColumns
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.data.settings.SettingsRepository
+import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -80,22 +81,25 @@ class DeckLibrary @Inject constructor(
     }
 
     /**
-     * The target word of every imported card (the preset's word field, e.g. Expression),
-     * with HTML and furigana removed. Used as extra known words.
+     * The target word of every imported card of [language] (the preset's word field, e.g.
+     * Expression), with HTML and furigana removed. Used as extra known words.
      */
-    suspend fun readWords(mapping: FieldMapping): Set<String> = withContext(Dispatchers.IO) {
+    suspend fun readWords(mapping: FieldMapping, language: Language): Set<String> = withContext(Dispatchers.IO) {
         if (mapping.word.isBlank()) return@withContext emptySet()
         val words = HashSet<String>()
         for (deck in _decks.value) {
             openCollection(File(File(root, deck.id), ApkgUnpacker.COLLECTION_FILE)) { db ->
                 for (type in loadNoteTypes(db)) {
                     if (!type.name.contains(mapping.noteTypeMatch.trim(), ignoreCase = true)) continue
-                    val idx = type.fields.indexOfFirst { it.equals(mapping.word.trim(), ignoreCase = true) }
+                    val idx = type.indexOf(mapping.word)
                     if (idx < 0) continue
+                    val languageIdx = type.indexOf(mapping.language)
                     db.rawQuery("SELECT flds FROM notes WHERE mid = ?", arrayOf(type.id.toString())).use { c ->
                         while (c.moveToNext()) {
-                            val field = c.getString(0).split('\u001f').getOrNull(idx) ?: continue
-                            AnkiText.stripFurigana(AnkiText.plain(field)).trim().takeIf { it.isNotEmpty() }?.let(words::add)
+                            val values = c.getString(0).split('\u001f')
+                            if (!isLanguage(values.getOrNull(languageIdx), language)) continue
+                            val field = values.getOrNull(idx) ?: continue
+                            plainText(field, language).trim().takeIf { it.isNotEmpty() }?.let(words::add)
                         }
                     }
                 }
@@ -104,7 +108,7 @@ class DeckLibrary @Inject constructor(
         words
     }
 
-    suspend fun readSentences(mapping: FieldMapping): List<Sentence> = withContext(Dispatchers.IO) {
+    suspend fun readSentences(mapping: FieldMapping, language: Language): List<Sentence> = withContext(Dispatchers.IO) {
         if (_decks.value.isEmpty()) throw AnkiReadException("Import an Anki deck (.apkg) or collection (.colpkg) in Settings")
         // Imports made before pruning existed get cleaned up once.
         if (_decks.value.any { !it.pruned }) {
@@ -117,13 +121,13 @@ class DeckLibrary @Inject constructor(
             openCollection(File(dir, ApkgUnpacker.COLLECTION_FILE)) { db ->
                 loadNoteTypes(db)
                     .filter { it.name.contains(mapping.noteTypeMatch.trim(), ignoreCase = true) }
-                    .flatMap { readNotes(db, it, mapping, File(dir, "media")) }
+                    .flatMap { readNotes(db, it, mapping, language, File(dir, "media")) }
             }
         }
         if (sentences.isEmpty()) {
             throw AnkiReadException(
-                "No notes with sentence audio found for note type \"${mapping.noteTypeMatch}\". " +
-                    "Check the preset, and that the export included media.",
+                "No ${language.englishName} notes with sentence audio found for note type " +
+                    "\"${mapping.noteTypeMatch}\". Check the language and preset, and that the export included media.",
             )
         }
         // The same note can appear in several imports; keep one.
@@ -132,13 +136,13 @@ class DeckLibrary @Inject constructor(
 
     /**
      * Deletes every media file that isn't sentence audio, i.e. not referenced by a [sound:...]
-     * tag in a field that any preset maps as its audio field. Images, word audio, fonts and
-     * unused files go. If no note type has such a field, nothing is deleted, so an unusual
+     * tag in a field that any preset maps as its audio field, in any language. Images, word
+     * audio, fonts and unused files go. If no note type has such a field, nothing is deleted, so an unusual
      * note type never loses its audio. Saves the result in info.json.
      */
     private suspend fun prune(dir: File, deck: ImportedDeck): ImportedDeck {
-        val audioFields = Preset.entries
-            .map { settings.mappingFor(it).audio.trim().lowercase() }
+        val audioFields = settings.allMappings()
+            .map { it.audio.trim().lowercase() }
             .filter { it.isNotEmpty() }
             .toSet()
         val mediaDir = File(dir, "media")
@@ -231,7 +235,24 @@ class DeckLibrary @Inject constructor(
         }
     }
 
-    private data class NoteType(val id: Long, val name: String, val fields: List<String>)
+    private data class NoteType(val id: Long, val name: String, val fields: List<String>) {
+        /** Index of the field named [name] (case-insensitive), or -1 if blank or missing. */
+        fun indexOf(name: String) =
+            if (name.isBlank()) -1 else fields.indexOfFirst { it.equals(name.trim(), ignoreCase = true) }
+    }
+
+    /** Field text without HTML, and without bracket readings in languages that use them. */
+    private fun plainText(field: String, language: Language): String =
+        AnkiText.plain(field).let { if (language.reading != null) AnkiText.stripFurigana(it) else it }
+
+    /**
+     * Whether a note belongs to [language] by its language field (Anki Miner Note's Language).
+     * Notes without one, or with it empty, belong to every language.
+     */
+    private fun isLanguage(value: String?, language: Language): Boolean {
+        val tag = value?.let(AnkiText::plain).orEmpty()
+        return tag.isBlank() || language.matchesTag(tag)
+    }
 
     private fun loadNoteTypes(db: SQLiteDatabase): List<NoteType> =
         if (hasTable(db, "notetypes")) loadModernNoteTypes(db) else loadLegacyNoteTypes(db)
@@ -279,26 +300,26 @@ class DeckLibrary @Inject constructor(
         db: SQLiteDatabase,
         noteType: NoteType,
         mapping: FieldMapping,
+        language: Language,
         mediaDir: File,
     ): List<Sentence> {
-        fun indexOf(name: String) =
-            if (name.isBlank()) -1 else noteType.fields.indexOfFirst { it.equals(name.trim(), ignoreCase = true) }
-
-        val sentenceIdx = indexOf(mapping.sentence)
-        val audioIdx = indexOf(mapping.audio)
+        val sentenceIdx = noteType.indexOf(mapping.sentence)
+        val audioIdx = noteType.indexOf(mapping.audio)
         if (sentenceIdx < 0 || audioIdx < 0) return emptyList()
-        val furiganaIdx = indexOf(mapping.furigana)
-        val translationIdx = indexOf(mapping.translation)
+        val furiganaIdx = noteType.indexOf(mapping.furigana)
+        val translationIdx = noteType.indexOf(mapping.translation)
+        val languageIdx = noteType.indexOf(mapping.language)
 
         val out = mutableListOf<Sentence>()
         db.rawQuery("SELECT id, flds FROM notes WHERE mid = ?", arrayOf(noteType.id.toString())).use { c ->
             while (c.moveToNext()) {
                 val values = c.getString(1).split('\u001f')
                 fun field(i: Int) = values.getOrNull(i).orEmpty()
+                if (!isLanguage(values.getOrNull(languageIdx), language)) continue
 
                 val audioName = AnkiText.soundFile(field(audioIdx)) ?: continue
                 val audio = File(mediaDir, audioName)
-                val text = AnkiText.stripFurigana(AnkiText.plain(field(sentenceIdx)))
+                val text = plainText(field(sentenceIdx), language)
                 if (text.isBlank() || !audio.isFile) continue
 
                 out += Sentence(

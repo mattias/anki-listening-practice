@@ -17,6 +17,7 @@ import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.media.YouTubeImporter
 import dev.lovkvist.listening.data.settings.Settings
 import dev.lovkvist.listening.data.settings.SettingsRepository
+import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +40,8 @@ class SettingsViewModel @Inject constructor(
     val settings: StateFlow<Settings?> =
         settingsRepo.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val knownCount: StateFlow<Int?> = knownWords.count
+    /** Imported known words per language. */
+    val knownCounts: StateFlow<Map<Language, Int>> = knownWords.counts
 
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message.asStateFlow()
@@ -51,12 +53,9 @@ class SettingsViewModel @Inject constructor(
     /** Sentences hidden by "Crystal Clear" whose 10-day cool-down hasn't run out. */
     val cooldownCount: StateFlow<Int> = _cooldownCount.asStateFlow()
 
-    init {
-        viewModelScope.launch { knownWords.words() } // populates knownCount
-    }
-
     /** Called whenever Settings opens, since practice changes these counts in the meantime. */
     fun refreshCounts() = viewModelScope.launch {
+        knownWords.words(settingsRepo.current().language) // populates knownCounts
         _blacklistCount.value = dao.blacklistCount()
         _cooldownCount.value = dao.cooldownCount(System.currentTimeMillis())
         _cardWordCount.value = sentences.cardWordCount()
@@ -71,29 +70,36 @@ class SettingsViewModel @Inject constructor(
 
     fun importKnownWords(uri: Uri) = viewModelScope.launch {
         _message.value = try {
-            val n = knownWords.import(uri)
+            val language = settingsRepo.current().language
+            val n = knownWords.import(uri, language)
             sentences.invalidate(collection = false, known = true)
-            "Imported $n known words"
+            "Imported $n known ${language.englishName} words"
         } catch (e: Exception) {
             "Import failed: ${e.message}"
         }
     }
 
-    fun selectPreset(p: Preset) = viewModelScope.launch {
-        settingsRepo.setPreset(p)
+    fun selectLanguage(l: Language) = viewModelScope.launch {
+        settingsRepo.setLanguage(l)
         sentences.invalidate()
         refreshCounts()
     }
 
-    fun saveMapping(p: Preset, m: FieldMapping) = viewModelScope.launch {
-        settingsRepo.setMapping(p, m)
+    fun selectPreset(l: Language, p: Preset) = viewModelScope.launch {
+        settingsRepo.setPreset(l, p)
+        sentences.invalidate()
+        refreshCounts()
+    }
+
+    fun saveMapping(p: Preset, l: Language, m: FieldMapping) = viewModelScope.launch {
+        settingsRepo.setMapping(p, l, m)
         sentences.invalidate()
         refreshCounts()
         _message.value = "Saved ${p.label} field mapping"
     }
 
-    fun resetMapping(p: Preset) = viewModelScope.launch {
-        settingsRepo.resetMapping(p)
+    fun resetMapping(p: Preset, l: Language) = viewModelScope.launch {
+        settingsRepo.resetMapping(p, l)
         sentences.invalidate()
         refreshCounts()
     }
@@ -128,7 +134,7 @@ class SettingsViewModel @Inject constructor(
     fun importMedia(file: Uri, subtitles: Uri) = viewModelScope.launch {
         _mediaBusy.value = "Reading subtitles…"
         _message.value = try {
-            val item = media.importLocal(file, subtitles)
+            val item = media.importLocal(file, subtitles, settingsRepo.current().language)
             "Added ${item.name}: ${item.chunkCount} subtitle lines. Pick it from the menu at the top of the practice screen."
         } catch (e: Exception) {
             "Import failed: ${e.message ?: e}"
@@ -140,7 +146,7 @@ class SettingsViewModel @Inject constructor(
     fun importYouTube(url: String) = viewModelScope.launch {
         _mediaBusy.value = "Starting…"
         _message.value = try {
-            val item = youTube.import(url.trim()) { _mediaBusy.value = it }
+            val item = youTube.import(url.trim(), settingsRepo.current().language) { _mediaBusy.value = it }
             "Added ${item.name}: ${item.chunkCount} subtitle lines. Pick it from the menu at the top of the practice screen."
         } catch (e: Exception) {
             "YouTube download failed: ${e.message ?: e}"

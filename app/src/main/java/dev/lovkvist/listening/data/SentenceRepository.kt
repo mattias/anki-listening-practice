@@ -6,7 +6,8 @@ import dev.lovkvist.listening.data.local.SentenceState
 import dev.lovkvist.listening.data.local.SentenceStateDao
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
-import dev.lovkvist.listening.text.JapaneseTokenizer
+import dev.lovkvist.listening.text.Language
+import dev.lovkvist.listening.text.Tokenizers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,7 @@ class SentenceRepository @Inject constructor(
     private val decks: DeckLibrary,
     private val media: MediaLibrary,
     private val knownWords: KnownWordsRepository,
-    private val tokenizer: JapaneseTokenizer,
+    private val tokenizers: Tokenizers,
     private val dao: SentenceStateDao,
     private val settings: SettingsRepository,
 ) {
@@ -35,6 +36,7 @@ class SentenceRepository @Inject constructor(
      */
     private var pool: List<Sentence>? = null
     private var poolSource: PracticeSource? = null
+    private var poolLanguage: Language? = null
 
     /** Target words of all imported cards (e.g. Expression); they count as known everywhere. */
     private var cardWords: Set<String>? = null
@@ -59,7 +61,7 @@ class SentenceRepository @Inject constructor(
     }
 
     /** Number of distinct card words that count as known. */
-    suspend fun cardWordCount(): Int = mutex.withLock { loadCardWords().size }
+    suspend fun cardWordCount(): Int = mutex.withLock { loadCardWords(settings.current().language).size }
 
     /**
      * Returns up to [count] sentences that are fully known, not blacklisted, not cooling down
@@ -67,13 +69,22 @@ class SentenceRepository @Inject constructor(
      * enough are found.
      */
     suspend fun nextEligible(count: Int, exclude: Set<Long>): List<Sentence> = mutex.withLock {
-        val source = settings.current().source
-        if (pool == null || poolSource != source) {
-            pool = loadPool(source)
+        val current = settings.current()
+        val language = current.language
+        val source = current.source
+        if (language != poolLanguage) {
+            // Card words and verdicts depend on the language.
+            cardWords = null
+            knownCache.clear()
+        }
+        if (pool == null || poolSource != source || poolLanguage != language) {
+            pool = loadPool(source, language)
             poolSource = source
+            poolLanguage = language
         }
         val pool = pool.orEmpty()
-        val known = knownWords.words() + loadCardWords()
+        val tokenizer = tokenizers.forLanguage(language)
+        val known = (knownWords.words(language) + loadCardWords(language)).mapTo(HashSet(), tokenizer::normalize)
         if (known.isEmpty()) return@withLock emptyList()
         val blocked = dao.excludedIds(System.currentTimeMillis()).toHashSet()
 
@@ -97,13 +108,13 @@ class SentenceRepository @Inject constructor(
         dao.upsert(current.copy(blacklisted = true))
     }
 
-    private suspend fun loadPool(source: PracticeSource): List<Sentence> = when (source) {
-        PracticeSource.Anki -> decks.readSentences(settings.current().mapping).shuffled()
+    private suspend fun loadPool(source: PracticeSource, language: Language): List<Sentence> = when (source) {
+        PracticeSource.Anki -> decks.readSentences(settings.current().mapping, language).shuffled()
         is PracticeSource.Media -> media.sentences(source.id)
     }
 
-    private suspend fun loadCardWords(): Set<String> =
-        cardWords ?: runCatching { decks.readWords(settings.current().mapping) }.getOrDefault(emptySet())
+    private suspend fun loadCardWords(language: Language): Set<String> =
+        cardWords ?: runCatching { decks.readWords(settings.current().mapping, language) }.getOrDefault(emptySet())
             .also { cardWords = it }
 
     companion object {

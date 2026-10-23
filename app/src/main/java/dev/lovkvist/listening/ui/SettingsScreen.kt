@@ -5,6 +5,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -43,14 +47,16 @@ import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.media.MediaEntry
+import dev.lovkvist.listening.text.Language
+import dev.lovkvist.listening.text.Reading
 import java.text.DateFormat
 import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
     val settings by vm.settings.collectAsStateWithLifecycle()
-    val knownCount by vm.knownCount.collectAsStateWithLifecycle()
+    val knownCounts by vm.knownCounts.collectAsStateWithLifecycle()
     val blacklistCount by vm.blacklistCount.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
     val cooldownCount by vm.cooldownCount.collectAsStateWithLifecycle()
@@ -79,34 +85,52 @@ fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            Section("Language")
+            LanguagePicker(s.language, vm::selectLanguage)
+            Text(
+                "Cards, videos and known words are kept per language. Anki Miner Note cards are " +
+                    "matched by their Language field.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
             Section("Anki decks")
             Decks(vm)
 
             Section("Videos & audio")
-            MediaItems(vm)
+            MediaItems(vm, s.language)
 
             Section("Known words")
+            val list = if (s.language == Language.JAPANESE) "Jiten or Anki Miner" else "Anki Miner"
             Text(
-                when (val n = knownCount) {
+                when (val n = knownCounts[s.language]) {
                     null -> "Loading…"
-                    0 -> "No Jiten words imported yet."
-                    else -> "$n words from Jiten."
+                    0 -> "No ${s.language.englishName} words imported yet. Import a word list from $list, one word per line."
+                    else -> "$n ${s.language.englishName} words from your word list."
                 },
             )
             Text("$cardWordCount words from your cards' ${s.mapping.word.ifBlank { "word" }} field.")
             Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text("Import known_words.txt") }
 
             Section("Note type preset")
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                for (p in Preset.entries) {
-                    FilterChip(selected = p == s.preset, onClick = { vm.selectPreset(p) }, label = { Text(p.label) })
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                for (p in Preset.availableFor(s.language)) {
+                    FilterChip(selected = p == s.preset, onClick = { vm.selectPreset(s.language, p) }, label = { Text(p.label) })
                 }
+            }
+            if (s.language != Language.JAPANESE) {
+                Text(
+                    "Kiku, Lapis and Senren are Japanese note types. Other languages use Anki Miner Note.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             MappingEditor(
                 preset = s.preset,
+                language = s.language,
                 mapping = s.mapping,
-                onSave = { vm.saveMapping(s.preset, it) },
-                onReset = { vm.resetMapping(s.preset) },
+                onSave = { vm.saveMapping(s.preset, s.language, it) },
+                onReset = { vm.resetMapping(s.preset, s.language) },
             )
 
             Section("Progress")
@@ -158,6 +182,24 @@ private enum class Reset(val title: String, val body: String) {
         "Clear blacklist?",
         "Every blacklisted sentence comes back into practice.",
     ),
+}
+
+/** A menu of every language, labeled in the language itself. */
+@Composable
+private fun LanguagePicker(current: Language, onSelect: (Language) -> Unit) {
+    var open by remember { mutableStateOf(false) }
+    OutlinedButton(onClick = { open = true }) { Text("${current.label} ▾") }
+    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        for (l in Language.entries.sortedBy { it.englishName }) {
+            DropdownMenuItem(
+                text = { Text(l.label) },
+                onClick = {
+                    open = false
+                    if (l != current) onSelect(l)
+                },
+            )
+        }
+    }
 }
 
 @Composable
@@ -224,8 +266,9 @@ private fun Decks(vm: SettingsViewModel) {
 }
 
 @Composable
-private fun MediaItems(vm: SettingsViewModel) {
-    val items by vm.mediaItems.collectAsStateWithLifecycle()
+private fun MediaItems(vm: SettingsViewModel, language: Language) {
+    val allItems by vm.mediaItems.collectAsStateWithLifecycle()
+    val items = allItems.filter { it.language == language }
     val busy by vm.mediaBusy.collectAsStateWithLifecycle()
     var pickedMedia by remember { mutableStateOf<Uri?>(null) }
     var confirmRemove by remember { mutableStateOf<MediaEntry?>(null) }
@@ -244,7 +287,7 @@ private fun MediaItems(vm: SettingsViewModel) {
     }
 
     Text(
-        "Pick a video or audio file, then its Japanese subtitles (.srt, .vtt or .ass). Each subtitle " +
+        "Pick a video or audio file, then its ${language.englishName} subtitles (.srt, .vtt or .ass). Each subtitle " +
             "line becomes one sentence, in order. Choose it from the menu at the top of the practice screen.",
         style = MaterialTheme.typography.bodyMedium,
     )
@@ -272,7 +315,7 @@ private fun MediaItems(vm: SettingsViewModel) {
         OutlinedTextField(
             value = url,
             onValueChange = { url = it },
-            label = { Text("YouTube link with Japanese subtitles") },
+            label = { Text("YouTube link with ${language.englishName} subtitles") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -309,23 +352,31 @@ private fun MediaItems(vm: SettingsViewModel) {
 @Composable
 private fun MappingEditor(
     preset: Preset,
+    language: Language,
     mapping: FieldMapping,
     onSave: (FieldMapping) -> Unit,
     onReset: () -> Unit,
 ) {
-    var noteType by remember(preset, mapping) { mutableStateOf(mapping.noteTypeMatch) }
-    var sentence by remember(preset, mapping) { mutableStateOf(mapping.sentence) }
-    var furigana by remember(preset, mapping) { mutableStateOf(mapping.furigana) }
-    var translation by remember(preset, mapping) { mutableStateOf(mapping.translation) }
-    var audio by remember(preset, mapping) { mutableStateOf(mapping.audio) }
-    var word by remember(preset, mapping) { mutableStateOf(mapping.word) }
+    var noteType by remember(preset, language, mapping) { mutableStateOf(mapping.noteTypeMatch) }
+    var sentence by remember(preset, language, mapping) { mutableStateOf(mapping.sentence) }
+    var furigana by remember(preset, language, mapping) { mutableStateOf(mapping.furigana) }
+    var translation by remember(preset, language, mapping) { mutableStateOf(mapping.translation) }
+    var audio by remember(preset, language, mapping) { mutableStateOf(mapping.audio) }
+    var word by remember(preset, language, mapping) { mutableStateOf(mapping.word) }
+    var languageField by remember(preset, language, mapping) { mutableStateOf(mapping.language) }
 
     Field("Note type name contains", noteType) { noteType = it }
     Field("Sentence field", sentence) { sentence = it }
-    Field("Furigana field", furigana) { furigana = it }
+    // Only languages with readings above the text have a reading field.
+    when (val reading = language.reading) {
+        null -> {}
+        Reading.FURIGANA -> Field("Furigana field", furigana) { furigana = it }
+        else -> Field("${reading.label} field (optional)", furigana) { furigana = it }
+    }
     Field("Translation field (optional)", translation) { translation = it }
     Field("Sentence audio field", audio) { audio = it }
     Field("Word field (counts as known, optional)", word) { word = it }
+    Field("Language field (skips cards of other languages, optional)", languageField) { languageField = it }
 
     Text(
         "Imports keep only the audio from each preset's audio field. If you change the audio field, re-import your decks.",
@@ -333,10 +384,10 @@ private fun MappingEditor(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 
-    val edited = FieldMapping(noteType, sentence, furigana, translation, audio, word)
+    val edited = FieldMapping(noteType, sentence, furigana, translation, audio, word, languageField)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(onClick = { onSave(edited) }, enabled = edited != mapping) { Text("Save mapping") }
-        OutlinedButton(onClick = onReset, enabled = mapping != preset.defaults) { Text("Reset to defaults") }
+        OutlinedButton(onClick = onReset, enabled = mapping != preset.defaults(language)) { Text("Reset to defaults") }
     }
 }
 

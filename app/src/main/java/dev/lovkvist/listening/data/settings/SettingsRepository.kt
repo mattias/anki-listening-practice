@@ -3,6 +3,7 @@ package dev.lovkvist.listening.data.settings
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -28,6 +29,8 @@ data class Settings(
     val speed: Float,
     val delayMs: Long,
     val source: PracticeSource,
+    /** Look for a new release on GitHub when the app starts. */
+    val checkUpdates: Boolean,
 )
 
 @Singleton
@@ -38,6 +41,7 @@ class SettingsRepository @Inject constructor(
         val language = stringPreferencesKey("language")
         val speed = floatPreferencesKey("speed")
         val delayMs = longPreferencesKey("delay_ms")
+        val checkUpdates = booleanPreferencesKey("check_updates")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -66,6 +70,7 @@ class SettingsRepository @Inject constructor(
             speed = prefs[Keys.speed] ?: 1.0f,
             delayMs = prefs[Keys.delayMs] ?: 1000L,
             source = PracticeSource.fromKey(prefs[Keys.source]),
+            checkUpdates = prefs[Keys.checkUpdates] ?: true,
         )
     }
 
@@ -127,6 +132,8 @@ class SettingsRepository @Inject constructor(
         it.remove(Keys.word(p, l))
         it.remove(Keys.languageField(p, l))
     }
+
+    suspend fun setCheckUpdates(enabled: Boolean) = context.dataStore.edit { it[Keys.checkUpdates] = enabled }
 
     suspend fun setSpeed(speed: Float) = context.dataStore.edit { it[Keys.speed] = speed }
 

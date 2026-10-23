@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -47,6 +48,7 @@ import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.media.MediaEntry
+import dev.lovkvist.listening.data.update.UpdateState
 import dev.lovkvist.listening.text.Language
 import dev.lovkvist.listening.text.Reading
 import java.text.DateFormat
@@ -54,7 +56,7 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
+fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () -> Unit) {
     val settings by vm.settings.collectAsStateWithLifecycle()
     val knownCounts by vm.knownCounts.collectAsStateWithLifecycle()
     val blacklistCount by vm.blacklistCount.collectAsStateWithLifecycle()
@@ -142,6 +144,9 @@ fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
             OutlinedButton(onClick = { confirm = Reset.BLACKLIST }, enabled = blacklistCount > 0) {
                 Text("Clear blacklist")
             }
+
+            Section("App updates")
+            Updates(updateVm)
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -182,6 +187,25 @@ private enum class Reset(val title: String, val body: String) {
         "Clear blacklist?",
         "Every blacklisted sentence comes back into practice.",
     ),
+}
+
+@Composable
+private fun Updates(vm: UpdateViewModel) {
+    val state by vm.state.collectAsStateWithLifecycle()
+    val checkOnStart by vm.checkOnStart.collectAsStateWithLifecycle()
+    Text("Version ${vm.currentVersion}. New versions are downloaded from GitHub Releases.")
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text("Check for updates when the app starts", Modifier.weight(1f))
+        Switch(checked = checkOnStart, onCheckedChange = vm::setCheckOnStart)
+    }
+    if (state is UpdateState.Checking) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            CircularProgressIndicator(Modifier.size(24.dp))
+            Text("Checking…")
+        }
+    } else {
+        OutlinedButton(onClick = { vm.check() }) { Text("Check for updates") }
+    }
 }
 
 /** A menu of every language, labeled in the language itself. */

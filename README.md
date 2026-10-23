@@ -123,6 +123,14 @@ too.
   known if it splits entirely into listed words, French-style elisions (*l'homme*) if both parts
   are listed, and Korean words followed only by particles (*학교에서*) if the word is listed.
 
+### Updates
+
+The app checks GitHub Releases when it starts (turn it off under **Settings → App updates**, or
+check by hand there). When a newer version is out it shows the release notes and, on *Update*,
+downloads the APK, checks its SHA-256 against GitHub's digest and opens Android's installer. The
+first time, Android asks you to allow the app to install updates. Updating keeps your imports and
+progress; it only works for release builds signed with the same key as the installed app.
+
 ## Building
 
 Requirements: JDK 17 and the Android SDK (platform 35). Set `sdk.dir` in `local.properties`

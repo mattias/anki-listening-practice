@@ -86,3 +86,8 @@ app/src/main/java/dev/lovkvist/listening/
 ├── playback/        Looping player with a pause between repeats
 └── ui/              Compose screens and view models
 ```
+
+## License
+
+[MIT](LICENSE): use, modify and redistribute freely, including commercially. Just keep the
+copyright notice.

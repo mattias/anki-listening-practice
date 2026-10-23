@@ -72,4 +72,37 @@ class WordTokenizerTest {
         assertTrue(t.isFullyKnown("我喜欢猫。", known))
         assertFalse(t.isFullyKnown("我喜欢狗。", known))
     }
+
+    @Test
+    fun tagalogContractionsMatchTheFullWords() {
+        val (t, known) = known(Language.TAGALOG, "ako", "ay", "masaya", "siya", "at", "ikaw")
+        assertTrue(t.isFullyKnown("Ako'y masaya.", known))
+        assertTrue(t.isFullyKnown("Siya’t ikaw.", known))
+        assertFalse(t.isFullyKnown("Ako'y malungkot.", known))
+    }
+
+    @Test
+    fun tagalogLinkerAttachedToTheWord() {
+        val (t, known) = known(Language.TAGALOG, "maganda", "araw", "ulan", "malakas")
+        assertTrue(t.isFullyKnown("Magandang araw!", known))
+        assertTrue(t.isFullyKnown("Malakas na ulan.", known.plus("na")))
+        assertTrue(t.isFullyKnown("Ulang malakas.", known))
+        assertFalse(t.isFullyKnown("Mabuting araw!", known))
+    }
+
+    @Test
+    fun hyphenatedCompoundsListedAsAWhole() {
+        val (t, known) = known(Language.TAGALOG, "mag-aral", "tayo", "araw-araw")
+        assertTrue(t.isFullyKnown("Mag-aral tayo araw-araw.", known))
+        assertFalse(t.isFullyKnown("Mag-ingat tayo.", known))
+        val (en, enKnown) = known(Language.ENGLISH, "a", "well-known", "song")
+        assertTrue(en.isFullyKnown("A well-known song.", enKnown))
+    }
+
+    @Test
+    fun tagalogMatchesFilipinoTags() {
+        assertTrue(Language.TAGALOG.matchesTag("tl"))
+        assertTrue(Language.TAGALOG.matchesTag("fil"))
+        assertEquals(Language.TAGALOG, Language.fromCode("tl"))
+    }
 }

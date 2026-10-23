@@ -33,19 +33,41 @@ class WordTokenizer(private val language: Language) : SentenceTokenizer {
     override fun normalize(word: String): String = clean(word).trim().lowercase(locale)
 
     override fun isFullyKnown(sentence: String, known: Set<String>): Boolean {
-        val words = words(sentence).map(::normalize)
-        return words.isNotEmpty() && words.all { isKnown(it, known) }
+        val words = words(withoutKnownCompounds(clean(sentence), known)).map(::normalize)
+        return (words.isNotEmpty() || hasKnownCompound(clean(sentence), known)) && words.all { isKnown(it, known) }
     }
+
+    /**
+     * The word breaker splits at hyphens, so "mag-aral" or "well-known" become two words. A
+     * hyphenated compound that is listed as a whole is taken out before splitting.
+     */
+    private fun withoutKnownCompounds(text: String, known: Set<String>): String =
+        HYPHENATED.replace(text) { if (normalize(it.value) in known) " " else it.value }
+
+    private fun hasKnownCompound(text: String, known: Set<String>): Boolean =
+        HYPHENATED.findAll(text).any { normalize(it.value) in known }
 
     private fun isKnown(word: String, known: Set<String>): Boolean =
         word in known ||
             ('\'' in word && elisionsKnown(word, known)) ||
             (language.unspaced && segmentable(word, known, MAX_WORD_LENGTH)) ||
-            (language == Language.KOREAN && koreanStemKnown(word, known))
+            (language == Language.KOREAN && koreanStemKnown(word, known)) ||
+            (language == Language.TAGALOG && tagalogLinkerKnown(word, known))
 
-    /** "l'homme" is known if "l'" (or "l") and "homme" are. */
+    /** "l'homme" is known if "l'" (or "l") and "homme" are; Tagalog "ako'y" if "ako" and "ay" are. */
     private fun elisionsKnown(word: String, known: Set<String>): Boolean =
-        word.split('\'').filter { it.isNotEmpty() }.all { it in known || "$it'" in known || "'$it" in known }
+        word.split('\'').filter { it.isNotEmpty() }.all { part ->
+            part in known || "$part'" in known || "'$part" in known ||
+                (language == Language.TAGALOG && TAGALOG_CONTRACTIONS[part]?.let { it in known } == true)
+        }
+
+    /**
+     * Tagalog joins the linker "na" to a word ending in a vowel as "-ng" (maganda → magandang)
+     * and to a word ending in "n" as "-g" (ulan → ulang); word lists hold the bare word.
+     */
+    private fun tagalogLinkerKnown(word: String, known: Set<String>): Boolean =
+        (word.length > 3 && word.endsWith("ng") && word.dropLast(2) in known) ||
+            (word.length > 2 && word.endsWith("ng") && word.dropLast(1).endsWith('n') && word.dropLast(1) in known)
 
     /**
      * Korean attaches particles to the word they follow (학교에서 = 학교 + 에서), and word lists
@@ -62,6 +84,11 @@ class WordTokenizer(private val language: Language) : SentenceTokenizer {
 
     private companion object {
         const val MAX_WORD_LENGTH = 8
+
+        val HYPHENATED = Regex("\\p{L}+(?:-\\p{L}+)+")
+
+        /** Tagalog contractions after an apostrophe: ako'y = ako ay, siya't = siya at. */
+        val TAGALOG_CONTRACTIONS = mapOf("y" to "ay", "t" to "at")
 
         val KOREAN_PARTICLES = setOf(
             "은", "는", "이", "가", "을", "를", "에", "에서", "에게", "께", "께서", "한테", "와", "과", "랑", "이랑",

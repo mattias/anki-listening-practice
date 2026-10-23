@@ -8,8 +8,9 @@ enum class Reading(val label: String) {
 }
 
 /**
- * The study languages, the same set and codes as Anki Miner, so its Anki Miner Note
- * `Language` field ("ja", "sv", "zh-Hans", ...) tells the app which cards belong to which.
+ * The study languages: Anki Miner's set and codes, so its Anki Miner Note `Language` field
+ * ("ja", "sv", "zh-Hans", ...) tells the app which cards belong to which, plus Tagalog, which
+ * Anki Miner doesn't mine (its cards can still be practiced with an empty or "tl" Language field).
  */
 enum class Language(
     val code: String,
@@ -69,6 +70,8 @@ enum class Language(
         unspaced = true,
     ),
     HEBREW("he", "Hebrew", "עברית", listOf("iw", "he"), "windows-1255", noteTags = listOf("he", "iw"), ignoredMarks = Regex("\\p{Mn}")),
+    // YouTube labels Tagalog subtitles as Filipino ("fil").
+    TAGALOG("tl", "Tagalog", "Tagalog", listOf("fil", "tl"), "windows-1252", noteTags = listOf("tl", "fil")),
     ;
 
     /** "Svenska (Swedish)", or just the name when both are the same. */

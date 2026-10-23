@@ -33,6 +33,12 @@ interface SentenceStateDao {
 
     @Query("SELECT COUNT(*) FROM sentence_state WHERE blacklisted = 1")
     suspend fun blacklistCount(): Int
+
+    @Query("UPDATE sentence_state SET cooldownUntil = 0")
+    suspend fun clearCooldowns()
+
+    @Query("SELECT COUNT(*) FROM sentence_state WHERE cooldownUntil > :now")
+    suspend fun cooldownCount(now: Long): Int
 }
 
 @Database(entities = [SentenceState::class], version = 1, exportSchema = false)

@@ -35,8 +35,7 @@ android {
         compose = true
     }
     packaging {
-        resources.excludes += listOf("/META-INF/{AL2.0,LGPL2.1}", "/META-INF/*.md")
-    }
+        resources.excludes += listOf("/META-INF/{AL2.0,LGPL2.1}", "/META-INF/*.md")    }
 }
 
 dependencies {
@@ -66,7 +65,9 @@ dependencies {
     // Japanese morphological analyzer (IPADIC dictionary bundled in the jar)
     implementation(libs.kuromoji.ipadic)
 
-    // Modern .apkg/.colpkg exports compress the collection and media with zstd
+    // Modern .apkg/.colpkg exports compress the collection and media with zstd.
+    // 1.5.7-3+ is the first build Android 16 KB page devices accept (older ones align to 64 KB);
+    // 1.5.7-13+ would require compileSdk 37.
     implementation(libs.zstd.jni) { artifact { type = "aar" } }
 
     testImplementation(libs.junit)

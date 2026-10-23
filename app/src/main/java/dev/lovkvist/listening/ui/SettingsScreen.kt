@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,9 @@ fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
     val knownCount by vm.knownCount.collectAsStateWithLifecycle()
     val blacklistCount by vm.blacklistCount.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
+    val cooldownCount by vm.cooldownCount.collectAsStateWithLifecycle()
+    var confirm by remember { mutableStateOf<Reset?>(null) }
+    LaunchedEffect(Unit) { vm.refreshCounts() }
 
     val pickKnownWords = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let(vm::importKnownWords)
@@ -96,11 +100,35 @@ fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
                 onReset = { vm.resetMapping(s.preset) },
             )
 
-            Section("Blacklist")
+            Section("Progress")
+            Text("$cooldownCount sentences cooling down after Crystal Clear.")
+            OutlinedButton(onClick = { confirm = Reset.COOLDOWNS }, enabled = cooldownCount > 0) {
+                Text("Reset Crystal Clear cool-downs")
+            }
             Text("$blacklistCount sentences blacklisted.")
-            OutlinedButton(onClick = vm::clearBlacklist, enabled = blacklistCount > 0) { Text("Clear blacklist") }
+            OutlinedButton(onClick = { confirm = Reset.BLACKLIST }, enabled = blacklistCount > 0) {
+                Text("Clear blacklist")
+            }
             Spacer(Modifier.height(24.dp))
         }
+    }
+
+    confirm?.let { reset ->
+        AlertDialog(
+            onDismissRequest = { confirm = null },
+            title = { Text(reset.title) },
+            text = { Text(reset.body) },
+            confirmButton = {
+                TextButton(onClick = {
+                    when (reset) {
+                        Reset.COOLDOWNS -> vm.resetCooldowns()
+                        Reset.BLACKLIST -> vm.clearBlacklist()
+                    }
+                    confirm = null
+                }) { Text("Reset") }
+            },
+            dismissButton = { TextButton(onClick = { confirm = null }) { Text("Cancel") } },
+        )
     }
 
     message?.let {
@@ -110,6 +138,17 @@ fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
             text = { Text(it) },
         )
     }
+}
+
+private enum class Reset(val title: String, val body: String) {
+    COOLDOWNS(
+        "Reset cool-downs?",
+        "Every sentence you marked Crystal Clear comes back into practice now instead of after 10 days.",
+    ),
+    BLACKLIST(
+        "Clear blacklist?",
+        "Every blacklisted sentence comes back into practice.",
+    ),
 }
 
 @Composable
@@ -132,7 +171,7 @@ private fun Decks(vm: SettingsViewModel) {
 
     Text(
         "In AnkiDroid, export a deck (.apkg) or your collection (.colpkg) with \"Include media\" " +
-            "checked, then import it here. Re-import after adding cards.",
+            "checked, then import it here. Only sentence audio is kept. Re-import after adding cards.",
         style = MaterialTheme.typography.bodyMedium,
     )
     for (deck in decks) {
@@ -140,7 +179,7 @@ private fun Decks(vm: SettingsViewModel) {
             Column(Modifier.weight(1f)) {
                 Text(deck.name, style = MaterialTheme.typography.bodyLarge)
                 Text(
-                    "${deck.noteCount} notes · ${deck.mediaCount} media · " +
+                    "${deck.noteCount} notes · ${deck.mediaCount} audio · ${formatBytes(deck.freedBytes)} saved · " +
                         DateFormat.getDateInstance().format(Date(deck.importedAt)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -194,11 +233,23 @@ private fun MappingEditor(
     Field("Translation field (optional)", translation) { translation = it }
     Field("Sentence audio field", audio) { audio = it }
 
+    Text(
+        "Imports keep only the audio from each preset's audio field. If you change the audio field, re-import your decks.",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+
     val edited = FieldMapping(noteType, sentence, furigana, translation, audio)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(onClick = { onSave(edited) }, enabled = edited != mapping) { Text("Save mapping") }
         OutlinedButton(onClick = onReset, enabled = mapping != preset.defaults) { Text("Reset to defaults") }
     }
+}
+
+fun formatBytes(bytes: Long): String = when {
+    bytes >= 1 shl 30 -> "%.1f GB".format(bytes / (1L shl 30).toDouble())
+    bytes >= 1 shl 20 -> "%.1f MB".format(bytes / (1L shl 20).toDouble())
+    else -> "${bytes / 1024} KB"
 }
 
 @Composable

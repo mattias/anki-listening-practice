@@ -29,16 +29,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.lovkvist.listening.data.anki.AnkiSentence
-import dev.lovkvist.listening.data.anki.AnkiText
 
 private val delayOptions = listOf(0L, 500L, 1000L, 2000L, 3000L, 5000L)
 
@@ -135,8 +130,11 @@ private fun Box(content: @Composable () -> Unit) {
 
 @Composable
 private fun SentenceText(sentence: AnkiSentence) {
-    val main = if (sentence.furigana.isNotBlank()) furiganaText(sentence.furigana) else AnnotatedString(sentence.text)
-    Text(main, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
+    // Without a furigana field the sentence still goes through RubyText, so it lays out the same.
+    RubyText(
+        furigana = sentence.furigana.ifBlank { sentence.text },
+        style = MaterialTheme.typography.headlineSmall,
+    )
     if (sentence.translation.isNotBlank()) {
         Spacer(Modifier.height(12.dp))
         Text(
@@ -145,21 +143,6 @@ private fun SentenceText(sentence: AnkiSentence) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
-    }
-}
-
-/** Renders `漢字[かんじ]` as 漢字 followed by a small reading, since Compose has no ruby layout. */
-@Composable
-private fun furiganaText(furigana: String): AnnotatedString {
-    val readingStyle = SpanStyle(
-        fontSize = 13.sp,
-        color = MaterialTheme.colorScheme.primary,
-    )
-    return buildAnnotatedString {
-        for (seg in AnkiText.ruby(furigana)) {
-            append(seg.base)
-            seg.reading?.let { withStyle(readingStyle) { append("($it)") } }
-        }
     }
 }
 

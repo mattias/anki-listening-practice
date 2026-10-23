@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.provider.OpenableColumns
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.data.settings.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,9 @@ data class ImportedDeck(
     val importedAt: Long,
     val noteCount: Int,
     val mediaCount: Int,
+    /** Unused media (images, word audio, fonts...) already deleted; see [DeckLibrary.prune]. */
+    val pruned: Boolean = false,
+    val freedBytes: Long = 0,
 )
 
 class AnkiReadException(message: String) : Exception(message)
@@ -42,6 +46,7 @@ class AnkiReadException(message: String) : Exception(message)
 @Singleton
 class DeckLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val settings: SettingsRepository,
 ) {
     private val root = File(context.filesDir, "decks").apply { mkdirs() }
 
@@ -64,15 +69,8 @@ class DeckLibrary @Inject constructor(
             val noteCount = openCollection(result.collection) { db ->
                 db.rawQuery("SELECT COUNT(*) FROM notes", null).use { c -> if (c.moveToFirst()) c.getInt(0) else 0 }
             }
-            val deck = ImportedDeck(id, displayName(uri), id.toLong(), noteCount, result.mediaCount)
-            File(dir, INFO_FILE).writeText(
-                JSONObject()
-                    .put("name", deck.name)
-                    .put("importedAt", deck.importedAt)
-                    .put("noteCount", deck.noteCount)
-                    .put("mediaCount", deck.mediaCount)
-                    .toString(),
-            )
+            val unpruned = ImportedDeck(id, displayName(uri), id.toLong(), noteCount, result.mediaCount)
+            val deck = prune(dir, unpruned)
             _decks.value = loadDecks()
             deck
         } catch (e: Exception) {
@@ -89,8 +87,13 @@ class DeckLibrary @Inject constructor(
     }
 
     suspend fun readSentences(mapping: FieldMapping): List<AnkiSentence> = withContext(Dispatchers.IO) {
+        if (_decks.value.isEmpty()) throw AnkiReadException("Import an Anki deck (.apkg) or collection (.colpkg) in Settings")
+        // Imports made before pruning existed get cleaned up once.
+        if (_decks.value.any { !it.pruned }) {
+            _decks.value.filterNot { it.pruned }.forEach { prune(File(root, it.id), it) }
+            _decks.value = loadDecks()
+        }
         val decks = _decks.value
-        if (decks.isEmpty()) throw AnkiReadException("Import an Anki deck (.apkg) or collection (.colpkg) in Settings")
         val sentences = decks.flatMap { deck ->
             val dir = File(root, deck.id)
             openCollection(File(dir, ApkgUnpacker.COLLECTION_FILE)) { db ->
@@ -109,6 +112,68 @@ class DeckLibrary @Inject constructor(
         sentences.distinctBy { it.noteId }
     }
 
+    /**
+     * Deletes every media file that isn't sentence audio, i.e. not referenced by a [sound:...]
+     * tag in a field that any preset maps as its audio field. Images, word audio, fonts and
+     * unused files go. If no note type has such a field, nothing is deleted, so an unusual
+     * note type never loses its audio. Saves the result in info.json.
+     */
+    private suspend fun prune(dir: File, deck: ImportedDeck): ImportedDeck {
+        val audioFields = Preset.entries
+            .map { settings.mappingFor(it).audio.trim().lowercase() }
+            .filter { it.isNotEmpty() }
+            .toSet()
+        val mediaDir = File(dir, "media")
+
+        val keep = openCollection(File(dir, ApkgUnpacker.COLLECTION_FILE)) { db ->
+            val types = loadNoteTypes(db).mapNotNull { type ->
+                val idx = type.fields.indices.filter { type.fields[it].lowercase() in audioFields }
+                if (idx.isEmpty()) null else type to idx
+            }
+            if (types.isEmpty()) return@openCollection null
+            val names = HashSet<String>()
+            for ((type, idx) in types) {
+                db.rawQuery("SELECT flds FROM notes WHERE mid = ?", arrayOf(type.id.toString())).use { c ->
+                    while (c.moveToNext()) {
+                        val values = c.getString(0).split('\u001f')
+                        idx.forEach { i -> values.getOrNull(i)?.let { names += AnkiText.soundFiles(it) } }
+                    }
+                }
+            }
+            names
+        }
+
+        var freed = 0L
+        var kept = deck.mediaCount
+        if (keep != null) {
+            kept = 0
+            mediaDir.listFiles().orEmpty().forEach { f ->
+                if (f.name in keep) {
+                    kept++
+                } else {
+                    freed += f.length()
+                    f.delete()
+                }
+            }
+        }
+        val result = deck.copy(mediaCount = kept, pruned = true, freedBytes = deck.freedBytes + freed)
+        writeInfo(dir, result)
+        return result
+    }
+
+    private fun writeInfo(dir: File, deck: ImportedDeck) {
+        File(dir, INFO_FILE).writeText(
+            JSONObject()
+                .put("name", deck.name)
+                .put("importedAt", deck.importedAt)
+                .put("noteCount", deck.noteCount)
+                .put("mediaCount", deck.mediaCount)
+                .put("pruned", deck.pruned)
+                .put("freedBytes", deck.freedBytes)
+                .toString(),
+        )
+    }
+
     private fun loadDecks(): List<ImportedDeck> =
         root.listFiles().orEmpty()
             .mapNotNull { dir ->
@@ -121,6 +186,8 @@ class DeckLibrary @Inject constructor(
                         importedAt = j.getLong("importedAt"),
                         noteCount = j.optInt("noteCount"),
                         mediaCount = j.optInt("mediaCount"),
+                        pruned = j.optBoolean("pruned"),
+                        freedBytes = j.optLong("freedBytes"),
                     )
                 }.getOrNull()
             }

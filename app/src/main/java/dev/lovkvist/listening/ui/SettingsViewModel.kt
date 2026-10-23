@@ -41,11 +41,25 @@ class SettingsViewModel @Inject constructor(
     private val _blacklistCount = MutableStateFlow(0)
     val blacklistCount: StateFlow<Int> = _blacklistCount.asStateFlow()
 
+    private val _cooldownCount = MutableStateFlow(0)
+    /** Sentences hidden by "Crystal Clear" whose 10-day cool-down hasn't run out. */
+    val cooldownCount: StateFlow<Int> = _cooldownCount.asStateFlow()
+
     init {
-        viewModelScope.launch {
-            knownWords.words() // populates knownCount
-            _blacklistCount.value = dao.blacklistCount()
-        }
+        viewModelScope.launch { knownWords.words() } // populates knownCount
+    }
+
+    /** Called whenever Settings opens, since practice changes these counts in the meantime. */
+    fun refreshCounts() = viewModelScope.launch {
+        _blacklistCount.value = dao.blacklistCount()
+        _cooldownCount.value = dao.cooldownCount(System.currentTimeMillis())
+    }
+
+    fun resetCooldowns() = viewModelScope.launch {
+        dao.clearCooldowns()
+        _cooldownCount.value = 0
+        sentences.invalidate(collection = false, known = false)
+        _message.value = "Cool-downs reset. All Crystal Clear sentences are back in practice."
     }
 
     fun importKnownWords(uri: Uri) = viewModelScope.launch {
@@ -82,7 +96,8 @@ class SettingsViewModel @Inject constructor(
         _message.value = try {
             val deck = library.import(uri)
             sentences.invalidate(collection = true, known = false)
-            "Imported ${deck.name}: ${deck.noteCount} notes, ${deck.mediaCount} media files"
+            "Imported ${deck.name}: ${deck.noteCount} notes, ${deck.mediaCount} sentence audio files. " +
+                "Removed ${formatBytes(deck.freedBytes)} of unused media (images, word audio, etc.)."
         } catch (e: Exception) {
             "Import failed: ${e.message ?: e}"
         }

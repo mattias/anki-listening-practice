@@ -6,6 +6,13 @@ An Android app for Japanese listening practice built on your own Anki cards, vid
 It plays only sentences made entirely of words you already know, loops the audio, and hides the
 text until you ask for it — so you train your ear, not your reading.
 
+## Demo
+
+<a href="docs/demo.mp4"><img src="docs/demo-poster.png" alt="Watch the 1-minute demo" width="270"></a>
+
+One minute with sound: practicing Anki cards, the settings, downloading a YouTube video with
+Japanese subtitles, and practicing it line by line.
+
 ## Features
 
 - **Uses your Anki deck** — import an AnkiDroid export (`.apkg` deck or `.colpkg` collection).

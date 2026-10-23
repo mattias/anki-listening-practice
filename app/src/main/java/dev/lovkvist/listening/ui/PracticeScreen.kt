@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -166,15 +167,14 @@ private fun Box(content: @Composable () -> Unit) {
 
 @Composable
 private fun SentenceText(sentence: Sentence, language: Language) {
+    // Tagging the text with its language makes Android draw the right Han glyph variants.
+    val style = MaterialTheme.typography.headlineSmall.copy(localeList = LocaleList(language.textLocale))
     if (language == Language.JAPANESE || sentence.furigana.isNotBlank()) {
         // Without a furigana field the sentence still goes through RubyText, so it lays out the same.
-        RubyText(
-            furigana = sentence.furigana.ifBlank { sentence.text },
-            style = MaterialTheme.typography.headlineSmall,
-        )
+        RubyText(furigana = sentence.furigana.ifBlank { sentence.text }, style = style)
     } else {
         // Plain text keeps words whole when wrapping, and Arabic letters joined.
-        Text(sentence.text, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
+        Text(sentence.text, style = style, textAlign = TextAlign.Center)
     }
     if (sentence.translation.isNotBlank()) {
         Spacer(Modifier.height(12.dp))

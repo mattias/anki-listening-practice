@@ -68,6 +68,15 @@ class SubtitlesTest {
     }
 
     @Test
+    fun linesJoinWithSpacesOnlyWhereTheLanguageUsesThem() {
+        assertEquals("Jag dricker kaffe", Subtitles.joinLines("Jag dricker\nkaffe", unspaced = false))
+        assertEquals("今日はいい天気", Subtitles.joinLines("今日は\nいい天気", unspaced = true))
+        // Romanized Taiwanese inside an unspaced language keeps its word boundary.
+        assertEquals("Guá beh khì tshit-thô", Subtitles.joinLines("Guá beh khì\ntshit-thô", unspaced = true))
+        assertEquals("我欲去tshit-thô", Subtitles.joinLines("我欲去\ntshit-thô", unspaced = true))
+    }
+
+    @Test
     fun identicalBackToBackCuesMerge() {
         val srt = "1\n00:00:01,000 --> 00:00:02,000\nあ\n\n2\n00:00:02,000 --> 00:00:03,000\nあ\n"
         assertEquals(listOf(SubtitleCue(1000, 3000, "あ")), Subtitles.parse("a.srt", srt))

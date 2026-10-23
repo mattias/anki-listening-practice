@@ -100,6 +100,25 @@ object Subtitles {
         return out
     }
 
+    /**
+     * Joins a cue's lines into one sentence. Spaced languages get a space at each break.
+     * Unspaced ones (Japanese, Chinese, Taiwanese) are joined directly, except between two
+     * Latin-script words, e.g. romanized Taiwanese, which would otherwise run together.
+     */
+    fun joinLines(text: String, unspaced: Boolean): String {
+        if (!unspaced) return text.replace("\n", " ")
+        val lines = text.split("\n")
+        return buildString {
+            lines.forEachIndexed { i, line ->
+                if (i > 0 && isLatin(lines[i - 1].lastOrNull()) && isLatin(line.firstOrNull())) append(' ')
+                append(line)
+            }
+        }
+    }
+
+    private fun isLatin(c: Char?): Boolean =
+        c != null && (c.isDigit() || Character.UnicodeScript.of(c.code) == Character.UnicodeScript.LATIN)
+
     /** Accepts h:mm:ss.cc (ASS), hh:mm:ss,mmm (SRT), hh:mm:ss.mmm and mm:ss.mmm (VTT). */
     internal fun parseTime(value: String): Long {
         val parts = value.trim().replace(',', '.').split(':')

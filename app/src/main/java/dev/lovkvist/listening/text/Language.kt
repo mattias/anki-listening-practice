@@ -5,12 +5,14 @@ enum class Reading(val label: String) {
     FURIGANA("Furigana"),
     PINYIN("Pinyin"),
     JYUTPING("Jyutping"),
+    TAILO("Tâi-lô"),
 }
 
 /**
  * The study languages: Anki Miner's set and codes, so its Anki Miner Note `Language` field
- * ("ja", "sv", "zh-Hans", ...) tells the app which cards belong to which, plus Tagalog, which
- * Anki Miner doesn't mine (its cards can still be practiced with an empty or "tl" Language field).
+ * ("ja", "sv", "zh-Hans", ...) tells the app which cards belong to which, plus Tagalog and
+ * Taiwanese, which Anki Miner doesn't mine (their cards can still be practiced with an empty
+ * Language field or their own code).
  */
 enum class Language(
     val code: String,
@@ -28,6 +30,10 @@ enum class Language(
     val unspaced: Boolean = false,
     /** Combining marks to ignore when matching words, like Arabic vowel marks or Russian stress. */
     val ignoredMarks: Regex? = null,
+    /** Anki Miner mines this language, so its word lists and note tags apply. */
+    val inAnkiMiner: Boolean = true,
+    /** Locale for drawing text: picks the right Han glyph variants (Japanese, Taiwanese, Hong Kong). */
+    val textLocale: String = code,
 ) {
     JAPANESE("ja", "Japanese", "日本語", listOf("ja"), "Shift_JIS", reading = Reading.FURIGANA, unspaced = true),
     KOREAN("ko", "Korean", "한국어", listOf("ko"), "EUC-KR"),
@@ -68,10 +74,21 @@ enum class Language(
         // Anki Miner tags Cantonese cards with the script ("zh-Hant") rather than "yue".
         noteTags = listOf("yue", "zh-Hant", "zh-HK"),
         unspaced = true,
+        textLocale = "zh-HK",
     ),
     HEBREW("he", "Hebrew", "עברית", listOf("iw", "he"), "windows-1255", noteTags = listOf("he", "iw"), ignoredMarks = Regex("\\p{Mn}")),
     // YouTube labels Tagalog subtitles as Filipino ("fil").
-    TAGALOG("tl", "Tagalog", "Tagalog", listOf("fil", "tl"), "windows-1252", noteTags = listOf("tl", "fil")),
+    TAGALOG("tl", "Tagalog", "Tagalog", listOf("fil", "tl"), "windows-1252", noteTags = listOf("tl", "fil"), inAnkiMiner = false),
+    // Taiwanese Hokkien (Taigi), "nan" for Min Nan. Written in Han characters, in Tâi-lô/POJ
+    // romanization (syllables joined by hyphens) or mixed; Han text is segmented like Chinese.
+    TAIWANESE(
+        "nan", "Taiwanese", "台語", listOf("nan-TW", "nan"), "Big5",
+        reading = Reading.TAILO,
+        noteTags = listOf("nan"),
+        unspaced = true,
+        inAnkiMiner = false,
+        textLocale = "zh-TW",
+    ),
     ;
 
     /** "Svenska (Swedish)", or just the name when both are the same. */

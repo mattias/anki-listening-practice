@@ -2,7 +2,7 @@
 
 # Listening Practice
 
-An Android app for listening practice in Japanese and 32 other languages, built on your own Anki
+An Android app for listening practice in Japanese and 33 other languages, built on your own Anki
 cards, videos and YouTube.
 It plays only sentences made entirely of words you already know, loops the audio, and hides the
 text until you ask for it — so you train your ear, not your reading.
@@ -19,13 +19,17 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
 
 - **Uses your Anki deck** — import an AnkiDroid export (`.apkg` deck or `.colpkg` collection).
   Both the default modern format and the "Support older Anki versions" format work.
-- **33 languages** — the languages of [Anki Miner](https://github.com/0xzerolight/anki_miner):
+- **34 languages** — the languages of [Anki Miner](https://github.com/0xzerolight/anki_miner):
   Japanese, Korean, Chinese (Mandarin), Cantonese, English, Catalan, German, Portuguese, French,
   Spanish, Italian, Dutch, Norwegian, Romanian, Greek, Finnish, Hungarian, Croatian, Swedish,
   Polish, Lithuanian, Danish, Turkish, Indonesian, Russian, Arabic, Thai, Persian, Slovenian,
-  Ukrainian, Vietnamese and Hebrew — plus Tagalog. Known words, videos, the note type preset and
-  the practice source are kept per language. Anki Miner doesn't mine Tagalog, so for Tagalog use
-  word lists, videos and YouTube, or cards whose Language field is empty or `tl`.
+  Ukrainian, Vietnamese and Hebrew — plus Tagalog and Taiwanese (Taigi, 台語). Known words,
+  videos, the note type preset and the practice source are kept per language. Anki Miner doesn't
+  mine Tagalog or Taiwanese, so for those use word lists, videos and YouTube, or cards whose
+  Language field is empty or `tl` / `nan`.
+- **Taiwanese** — Han characters, Tâi-lô/POJ romanization (hyphenated syllables like *Tâi-gí*)
+  or a mix. Han text is split into words like Chinese, and an optional Tâi-lô field shows the
+  reading above the characters, like pinyin. Text is drawn with Taiwanese glyph forms.
 - **Videos and audio with subtitles** — pick a video or audio file plus subtitles in the language
   you study (`.srt`, `.vtt`, `.ass`). Each subtitle line is one sentence, played in order through
   the file. For Japanese, furigana is generated automatically.

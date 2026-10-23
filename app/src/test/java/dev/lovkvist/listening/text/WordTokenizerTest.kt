@@ -100,6 +100,29 @@ class WordTokenizerTest {
     }
 
     @Test
+    fun taiwaneseInHanCharacters() {
+        val (t, known) = known(Language.TAIWANESE, "我", "欲", "去", "台北")
+        assertTrue(t.isFullyKnown("我欲去台北。", known))
+        assertFalse(t.isFullyKnown("我欲去高雄。", known))
+    }
+
+    @Test
+    fun taiwaneseInTailoWithToneMarks() {
+        val (t, known) = known(Language.TAIWANESE, "guá", "beh", "khì", "tshit-thô")
+        assertTrue(t.isFullyKnown("Guá beh khì tshit-thô.", known))
+        // The same tone mark typed as a separate combining character still matches.
+        assertTrue(t.isFullyKnown("Guá beh khì tshit-thô.", known))
+        assertFalse(t.isFullyKnown("Guá beh khì tsia̍h-pn̄g.", known))
+    }
+
+    @Test
+    fun taiwaneseMatchesItsTagAndCode() {
+        assertTrue(Language.TAIWANESE.matchesTag("nan-TW"))
+        assertEquals(Language.TAIWANESE, Language.fromCode("nan"))
+        assertEquals("台語 (Taiwanese)", Language.TAIWANESE.label)
+    }
+
+    @Test
     fun tagalogMatchesFilipinoTags() {
         assertTrue(Language.TAGALOG.matchesTag("tl"))
         assertTrue(Language.TAGALOG.matchesTag("fil"))

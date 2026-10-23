@@ -93,8 +93,7 @@ class MediaLibrary @Inject constructor(
             Sentence(
                 // Negative so media ids never collide with Anki note ids.
                 id = -(base + i),
-                // Japanese doesn't separate words with spaces, other languages need one at the line break.
-                text = text.replace("\n", if (entry.language.unspaced) "" else " "),
+                text = Subtitles.joinLines(text, entry.language.unspaced),
                 furigana = if (entry.language == Language.JAPANESE) tokenizer.furigana(text) else "",
                 translation = "",
                 audio = entry.media,

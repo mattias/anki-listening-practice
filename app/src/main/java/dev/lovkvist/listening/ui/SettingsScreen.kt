@@ -103,11 +103,15 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
             MediaItems(vm, s.language)
 
             Section("Known words")
-            val list = if (s.language == Language.JAPANESE) "Jiten or Anki Miner" else "Anki Miner"
+            val list = when {
+                s.language == Language.JAPANESE -> " from Jiten or Anki Miner"
+                s.language.inAnkiMiner -> " from Anki Miner"
+                else -> ""
+            }
             Text(
                 when (val n = knownCounts[s.language]) {
                     null -> "Loading…"
-                    0 -> "No ${s.language.englishName} words imported yet. Import a word list from $list, one word per line."
+                    0 -> "No ${s.language.englishName} words imported yet. Import a word list$list, one word per line."
                     else -> "$n ${s.language.englishName} words from your word list."
                 },
             )

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="18 18 72 72" width="128" height="128">
+  <!-- Same artwork as the Android adaptive icon (app/src/main/res/drawable/ic_launcher_*.xml). -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E3B6E"/>
+      <stop offset="1" stop-color="#18203F"/>
+    </linearGradient>
+    <clipPath id="shape"><rect x="18" y="18" width="72" height="72" rx="20"/></clipPath>
+  </defs>
+  <g clip-path="url(#shape)">
+    <rect x="0" y="0" width="108" height="108" fill="url(#bg)"/>
+    <g transform="translate(54 56) scale(0.92) translate(-54 -56)">
+      <circle cx="54" cy="58" r="15" fill="#E4572E"/>
+      <path d="M33,64 L33,55 A21,21 0 0,1 75,55 L75,64" fill="none" stroke="#F6EEDC" stroke-width="4.5" stroke-linecap="round"/>
+      <rect x="28.5" y="56" width="10" height="17" rx="4" fill="#F6EEDC"/>
+      <rect x="69.5" y="56" width="10" height="17" rx="4" fill="#F6EEDC"/>
+      <g fill="#F6EEDC">
+        <rect x="44.6" y="55.5" width="2.8" height="5" rx="1.4"/>
+        <rect x="49.1" y="51.5" width="2.8" height="13" rx="1.4"/>
+        <rect x="53.6" y="48.5" width="2.8" height="19" rx="1.4"/>
+        <rect x="58.1" y="51.5" width="2.8" height="13" rx="1.4"/>
+        <rect x="62.6" y="55.5" width="2.8" height="5" rx="1.4"/>
+      </g>
+    </g>
+  </g>
+</svg>

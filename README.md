@@ -1,3 +1,5 @@
+<img src="docs/icon.svg" alt="" width="96" align="right">
+
 # Listening Practice
 
 An Android app for Japanese listening practice built on your own Anki cards. It plays only

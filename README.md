@@ -9,10 +9,11 @@ text until you ask for it — so you train your ear, not your reading.
 
 ## Demo
 
-https://github.com/user-attachments/assets/60efe71b-f156-44d7-ba4a-4adf54268731
+https://github.com/user-attachments/assets/cf47ab01-1802-49d4-a804-0faa4bd11d2d
 
-One minute with sound: practicing Anki cards, the settings, downloading a YouTube video with
-Japanese subtitles, and practicing it line by line. If the player doesn't show (outside
+A minute and a half with sound: practicing Anki cards one sentence at a time, picking a
+language, downloading a YouTube video with Japanese subtitles and practicing it line by line,
+hands-free auto Crystal Clear, the blacklist, and in-app updates. If the player doesn't show (outside
 github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-listening-practice@main/docs/demo.mp4).
 
 ## Features

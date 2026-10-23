@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.Preset
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,7 @@ data class Settings(
     val mapping: FieldMapping,
     val speed: Float,
     val delayMs: Long,
+    val source: PracticeSource,
 )
 
 @Singleton
@@ -41,6 +43,9 @@ class SettingsRepository @Inject constructor(
         fun furigana(p: Preset) = stringPreferencesKey("${p.name}_furigana")
         fun translation(p: Preset) = stringPreferencesKey("${p.name}_translation")
         fun audio(p: Preset) = stringPreferencesKey("${p.name}_audio")
+        fun word(p: Preset) = stringPreferencesKey("${p.name}_word")
+
+        val source = stringPreferencesKey("source")
     }
 
     val settings: Flow<Settings> = context.dataStore.data.map { prefs ->
@@ -50,8 +55,11 @@ class SettingsRepository @Inject constructor(
             mapping = mappingFor(prefs, preset),
             speed = prefs[Keys.speed] ?: 1.0f,
             delayMs = prefs[Keys.delayMs] ?: 1000L,
+            source = PracticeSource.fromKey(prefs[Keys.source]),
         )
     }
+
+    suspend fun setSource(source: PracticeSource) = context.dataStore.edit { it[Keys.source] = source.key() }
 
     suspend fun current(): Settings = settings.first()
 
@@ -65,6 +73,7 @@ class SettingsRepository @Inject constructor(
             furigana = prefs[Keys.furigana(p)] ?: d.furigana,
             translation = prefs[Keys.translation(p)] ?: d.translation,
             audio = prefs[Keys.audio(p)] ?: d.audio,
+            word = prefs[Keys.word(p)] ?: d.word,
         )
     }
 
@@ -76,6 +85,7 @@ class SettingsRepository @Inject constructor(
         it[Keys.furigana(p)] = m.furigana
         it[Keys.translation(p)] = m.translation
         it[Keys.audio(p)] = m.audio
+        it[Keys.word(p)] = m.word
     }
 
     suspend fun resetMapping(p: Preset) = context.dataStore.edit {
@@ -84,6 +94,7 @@ class SettingsRepository @Inject constructor(
         it.remove(Keys.furigana(p))
         it.remove(Keys.translation(p))
         it.remove(Keys.audio(p))
+        it.remove(Keys.word(p))
     }
 
     suspend fun setSpeed(speed: Float) = context.dataStore.edit { it[Keys.speed] = speed }

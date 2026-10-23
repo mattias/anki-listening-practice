@@ -1,5 +1,6 @@
 package dev.lovkvist.listening.ui
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -31,14 +32,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
+import dev.lovkvist.listening.data.media.MediaEntry
 import java.text.DateFormat
 import java.util.Date
 
@@ -50,6 +54,7 @@ fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
     val blacklistCount by vm.blacklistCount.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
     val cooldownCount by vm.cooldownCount.collectAsStateWithLifecycle()
+    val cardWordCount by vm.cardWordCount.collectAsStateWithLifecycle()
     var confirm by remember { mutableStateOf<Reset?>(null) }
     LaunchedEffect(Unit) { vm.refreshCounts() }
 
@@ -77,14 +82,18 @@ fun SettingsScreen(vm: SettingsViewModel, onBack: () -> Unit) {
             Section("Anki decks")
             Decks(vm)
 
-            Section("Known words (Jiten .txt)")
+            Section("Videos & audio")
+            MediaItems(vm)
+
+            Section("Known words")
             Text(
                 when (val n = knownCount) {
                     null -> "Loading…"
-                    0 -> "No known words imported yet."
-                    else -> "$n known words imported."
+                    0 -> "No Jiten words imported yet."
+                    else -> "$n words from Jiten."
                 },
             )
+            Text("$cardWordCount words from your cards' ${s.mapping.word.ifBlank { "word" }} field.")
             Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text("Import known_words.txt") }
 
             Section("Note type preset")
@@ -215,6 +224,89 @@ private fun Decks(vm: SettingsViewModel) {
 }
 
 @Composable
+private fun MediaItems(vm: SettingsViewModel) {
+    val items by vm.mediaItems.collectAsStateWithLifecycle()
+    val busy by vm.mediaBusy.collectAsStateWithLifecycle()
+    var pickedMedia by remember { mutableStateOf<Uri?>(null) }
+    var confirmRemove by remember { mutableStateOf<MediaEntry?>(null) }
+
+    // Two steps: the video/audio first, then its subtitle file.
+    val pickSubtitles = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val media = pickedMedia
+        pickedMedia = null
+        if (uri != null && media != null) vm.importMedia(media, uri)
+    }
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            pickedMedia = uri
+            pickSubtitles.launch(arrayOf("*/*"))
+        }
+    }
+
+    Text(
+        "Pick a video or audio file, then its Japanese subtitles (.srt, .vtt or .ass). Each subtitle " +
+            "line becomes one sentence, in order. Choose it from the menu at the top of the practice screen.",
+        style = MaterialTheme.typography.bodyMedium,
+    )
+    for (item in items) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(item.name, style = MaterialTheme.typography.bodyLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    "${item.chunkCount} subtitle lines · " + DateFormat.getDateInstance().format(Date(item.importedAt)),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            TextButton(onClick = { confirmRemove = item }) { Text("Remove") }
+        }
+    }
+    if (busy != null) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            CircularProgressIndicator(Modifier.size(24.dp))
+            Text(busy.orEmpty())
+        }
+    } else {
+        Button(onClick = { pickMedia.launch(arrayOf("video/*", "audio/*")) }) { Text("Add video/audio + subtitles") }
+        var url by rememberSaveable { mutableStateOf("") }
+        OutlinedTextField(
+            value = url,
+            onValueChange = { url = it },
+            label = { Text("YouTube link with Japanese subtitles") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Button(
+            onClick = {
+                vm.importYouTube(url)
+                url = ""
+            },
+            enabled = url.isNotBlank(),
+        ) { Text("Download from YouTube") }
+    }
+
+    confirmRemove?.let { item ->
+        AlertDialog(
+            onDismissRequest = { confirmRemove = null },
+            title = { Text("Remove ${item.name}?") },
+            text = {
+                Text(
+                    if (item.sourceUrl != null) "The downloaded audio and subtitles are deleted."
+                    else "Only the app's subtitle copy is deleted; your video file stays where it is.",
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.removeMedia(item.id)
+                    confirmRemove = null
+                }) { Text("Remove") }
+            },
+            dismissButton = { TextButton(onClick = { confirmRemove = null }) { Text("Cancel") } },
+        )
+    }
+}
+
+@Composable
 private fun MappingEditor(
     preset: Preset,
     mapping: FieldMapping,
@@ -226,12 +318,14 @@ private fun MappingEditor(
     var furigana by remember(preset, mapping) { mutableStateOf(mapping.furigana) }
     var translation by remember(preset, mapping) { mutableStateOf(mapping.translation) }
     var audio by remember(preset, mapping) { mutableStateOf(mapping.audio) }
+    var word by remember(preset, mapping) { mutableStateOf(mapping.word) }
 
     Field("Note type name contains", noteType) { noteType = it }
     Field("Sentence field", sentence) { sentence = it }
     Field("Furigana field", furigana) { furigana = it }
     Field("Translation field (optional)", translation) { translation = it }
     Field("Sentence audio field", audio) { audio = it }
+    Field("Word field (counts as known, optional)", word) { word = it }
 
     Text(
         "Imports keep only the audio from each preset's audio field. If you change the audio field, re-import your decks.",
@@ -239,7 +333,7 @@ private fun MappingEditor(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 
-    val edited = FieldMapping(noteType, sentence, furigana, translation, audio)
+    val edited = FieldMapping(noteType, sentence, furigana, translation, audio, word)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(onClick = { onSave(edited) }, enabled = edited != mapping) { Text("Save mapping") }
         OutlinedButton(onClick = onReset, enabled = mapping != preset.defaults) { Text("Reset to defaults") }

@@ -18,6 +18,8 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
+        // The bundled Python runtime is large per ABI; virtually all current phones are arm64.
+        ndk { abiFilters += listOf("arm64-v8a") }
     }
 
     // Release signing reads keystore.properties (git-ignored) from the project root:
@@ -54,7 +56,10 @@ android {
         compose = true
     }
     packaging {
-        resources.excludes += listOf("/META-INF/{AL2.0,LGPL2.1}", "/META-INF/*.md")    }
+        resources.excludes += listOf("/META-INF/{AL2.0,LGPL2.1}", "/META-INF/*.md")
+        // youtubedl-android runs Python and QuickJS from extracted native libraries.
+        jniLibs.useLegacyPackaging = true
+    }
 }
 
 dependencies {
@@ -88,6 +93,9 @@ dependencies {
     // 1.5.7-3+ is the first build Android 16 KB page devices accept (older ones align to 64 KB);
     // 1.5.7-13+ would require compileSdk 37.
     implementation(libs.zstd.jni) { artifact { type = "aar" } }
+
+    // yt-dlp with its own Python runtime and QuickJS, for YouTube audio and subtitles
+    implementation(libs.youtubedl.android)
 
     testImplementation(libs.junit)
     // Desktop build of zstd-jni and a real org.json, since android.jar only has stubs on the JVM

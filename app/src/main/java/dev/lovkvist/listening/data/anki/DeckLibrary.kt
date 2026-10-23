@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.provider.OpenableColumns
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +17,6 @@ import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
-
-data class AnkiSentence(
-    val noteId: Long,
-    val text: String,
-    val furigana: String,
-    val translation: String,
-    val audioFile: File,
-)
 
 data class ImportedDeck(
     val id: String,
@@ -86,7 +79,32 @@ class DeckLibrary @Inject constructor(
         _decks.value = loadDecks()
     }
 
-    suspend fun readSentences(mapping: FieldMapping): List<AnkiSentence> = withContext(Dispatchers.IO) {
+    /**
+     * The target word of every imported card (the preset's word field, e.g. Expression),
+     * with HTML and furigana removed. Used as extra known words.
+     */
+    suspend fun readWords(mapping: FieldMapping): Set<String> = withContext(Dispatchers.IO) {
+        if (mapping.word.isBlank()) return@withContext emptySet()
+        val words = HashSet<String>()
+        for (deck in _decks.value) {
+            openCollection(File(File(root, deck.id), ApkgUnpacker.COLLECTION_FILE)) { db ->
+                for (type in loadNoteTypes(db)) {
+                    if (!type.name.contains(mapping.noteTypeMatch.trim(), ignoreCase = true)) continue
+                    val idx = type.fields.indexOfFirst { it.equals(mapping.word.trim(), ignoreCase = true) }
+                    if (idx < 0) continue
+                    db.rawQuery("SELECT flds FROM notes WHERE mid = ?", arrayOf(type.id.toString())).use { c ->
+                        while (c.moveToNext()) {
+                            val field = c.getString(0).split('\u001f').getOrNull(idx) ?: continue
+                            AnkiText.stripFurigana(AnkiText.plain(field)).trim().takeIf { it.isNotEmpty() }?.let(words::add)
+                        }
+                    }
+                }
+            }
+        }
+        words
+    }
+
+    suspend fun readSentences(mapping: FieldMapping): List<Sentence> = withContext(Dispatchers.IO) {
         if (_decks.value.isEmpty()) throw AnkiReadException("Import an Anki deck (.apkg) or collection (.colpkg) in Settings")
         // Imports made before pruning existed get cleaned up once.
         if (_decks.value.any { !it.pruned }) {
@@ -109,7 +127,7 @@ class DeckLibrary @Inject constructor(
             )
         }
         // The same note can appear in several imports; keep one.
-        sentences.distinctBy { it.noteId }
+        sentences.distinctBy { it.id }
     }
 
     /**
@@ -262,7 +280,7 @@ class DeckLibrary @Inject constructor(
         noteType: NoteType,
         mapping: FieldMapping,
         mediaDir: File,
-    ): List<AnkiSentence> {
+    ): List<Sentence> {
         fun indexOf(name: String) =
             if (name.isBlank()) -1 else noteType.fields.indexOfFirst { it.equals(name.trim(), ignoreCase = true) }
 
@@ -272,7 +290,7 @@ class DeckLibrary @Inject constructor(
         val furiganaIdx = indexOf(mapping.furigana)
         val translationIdx = indexOf(mapping.translation)
 
-        val out = mutableListOf<AnkiSentence>()
+        val out = mutableListOf<Sentence>()
         db.rawQuery("SELECT id, flds FROM notes WHERE mid = ?", arrayOf(noteType.id.toString())).use { c ->
             while (c.moveToNext()) {
                 val values = c.getString(1).split('\u001f')
@@ -283,12 +301,12 @@ class DeckLibrary @Inject constructor(
                 val text = AnkiText.stripFurigana(AnkiText.plain(field(sentenceIdx)))
                 if (text.isBlank() || !audio.isFile) continue
 
-                out += AnkiSentence(
-                    noteId = c.getLong(0),
+                out += Sentence(
+                    id = c.getLong(0),
                     text = text,
                     furigana = AnkiText.plain(field(furiganaIdx)),
                     translation = AnkiText.plain(field(translationIdx)),
-                    audioFile = audio,
+                    audio = Uri.fromFile(audio),
                 )
             }
         }

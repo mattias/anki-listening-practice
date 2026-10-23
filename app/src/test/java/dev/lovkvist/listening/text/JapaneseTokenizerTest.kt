@@ -29,6 +29,20 @@ class JapaneseTokenizerTest {
     }
 
     @Test
+    fun generatedFuriganaKeepsOkuriganaOutside() {
+        val segments = AnkiText.ruby(tokenizer.furigana("私は本を食べました")).filter { it.reading != null }
+        assertEquals(
+            listOf(
+                AnkiText.RubySegment("私", "わたし"),
+                AnkiText.RubySegment("本", "ほん"),
+                AnkiText.RubySegment("食", "た"),
+            ),
+            segments,
+        )
+        assertEquals("私は本を食べました", AnkiText.stripFurigana(tokenizer.furigana("私は本を食べました")))
+    }
+
+    @Test
     fun rubySegmentsParseAnkiFurigana() {
         val segs = AnkiText.ruby("日本語[にほんご]を 勉強[べんきょう]する")
         assertEquals(

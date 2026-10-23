@@ -10,6 +10,8 @@ data class FieldMapping(
     val furigana: String,
     val translation: String,
     val audio: String,
+    /** The card's target word; every card's word counts as known. */
+    val word: String,
 )
 
 enum class Preset(val label: String, val defaults: FieldMapping) {
@@ -21,6 +23,7 @@ enum class Preset(val label: String, val defaults: FieldMapping) {
             furigana = "SentenceFurigana",
             translation = "SentenceTranslation",
             audio = "SentenceAudio",
+            word = "Expression",
         ),
     ),
     LAPIS(
@@ -32,6 +35,7 @@ enum class Preset(val label: String, val defaults: FieldMapping) {
             // Lapis ships without a translation field; set one here if you added it.
             translation = "",
             audio = "SentenceAudio",
+            word = "Expression",
         ),
     ),
     SENREN(
@@ -42,6 +46,7 @@ enum class Preset(val label: String, val defaults: FieldMapping) {
             furigana = "sentenceFurigana",
             translation = "sentenceTranslation",
             audio = "sentenceAudio",
+            word = "word",
         ),
     ),
 }

@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.SentenceRepository
 import dev.lovkvist.listening.data.anki.DeckLibrary
 import dev.lovkvist.listening.data.anki.FieldMapping
@@ -11,6 +12,9 @@ import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.known.KnownWordsRepository
 import dev.lovkvist.listening.data.local.SentenceStateDao
+import dev.lovkvist.listening.data.media.MediaEntry
+import dev.lovkvist.listening.data.media.MediaLibrary
+import dev.lovkvist.listening.data.media.YouTubeImporter
 import dev.lovkvist.listening.data.settings.Settings
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +32,8 @@ class SettingsViewModel @Inject constructor(
     private val sentences: SentenceRepository,
     private val dao: SentenceStateDao,
     private val library: DeckLibrary,
+    private val media: MediaLibrary,
+    private val youTube: YouTubeImporter,
 ) : ViewModel() {
 
     val settings: StateFlow<Settings?> =
@@ -53,6 +59,7 @@ class SettingsViewModel @Inject constructor(
     fun refreshCounts() = viewModelScope.launch {
         _blacklistCount.value = dao.blacklistCount()
         _cooldownCount.value = dao.cooldownCount(System.currentTimeMillis())
+        _cardWordCount.value = sentences.cardWordCount()
     }
 
     fun resetCooldowns() = viewModelScope.launch {
@@ -75,17 +82,20 @@ class SettingsViewModel @Inject constructor(
     fun selectPreset(p: Preset) = viewModelScope.launch {
         settingsRepo.setPreset(p)
         sentences.invalidate()
+        refreshCounts()
     }
 
     fun saveMapping(p: Preset, m: FieldMapping) = viewModelScope.launch {
         settingsRepo.setMapping(p, m)
         sentences.invalidate()
+        refreshCounts()
         _message.value = "Saved ${p.label} field mapping"
     }
 
     fun resetMapping(p: Preset) = viewModelScope.launch {
         settingsRepo.resetMapping(p)
         sentences.invalidate()
+        refreshCounts()
     }
 
     val decks: StateFlow<List<ImportedDeck>> = library.decks
@@ -106,7 +116,49 @@ class SettingsViewModel @Inject constructor(
     fun removeDeck(id: String) = viewModelScope.launch {
         library.remove(id)
         sentences.invalidate(collection = true, known = false)
+        refreshCounts()
     }
+
+    val mediaItems: StateFlow<List<MediaEntry>> = media.items
+
+    private val _mediaBusy = MutableStateFlow<String?>(null)
+    /** What a running media import/download is doing, or null when idle. */
+    val mediaBusy: StateFlow<String?> = _mediaBusy.asStateFlow()
+
+    fun importMedia(file: Uri, subtitles: Uri) = viewModelScope.launch {
+        _mediaBusy.value = "Reading subtitles…"
+        _message.value = try {
+            val item = media.importLocal(file, subtitles)
+            "Added ${item.name}: ${item.chunkCount} subtitle lines. Pick it from the menu at the top of the practice screen."
+        } catch (e: Exception) {
+            "Import failed: ${e.message ?: e}"
+        } finally {
+            _mediaBusy.value = null
+        }
+    }
+
+    fun importYouTube(url: String) = viewModelScope.launch {
+        _mediaBusy.value = "Starting…"
+        _message.value = try {
+            val item = youTube.import(url.trim()) { _mediaBusy.value = it }
+            "Added ${item.name}: ${item.chunkCount} subtitle lines. Pick it from the menu at the top of the practice screen."
+        } catch (e: Exception) {
+            "YouTube download failed: ${e.message ?: e}"
+        } finally {
+            _mediaBusy.value = null
+        }
+    }
+
+    fun removeMedia(id: String) = viewModelScope.launch {
+        media.remove(id)
+        if (settingsRepo.current().source == PracticeSource.Media(id)) settingsRepo.setSource(PracticeSource.Anki)
+        sentences.invalidate(collection = true, known = false)
+        refreshCounts()
+    }
+
+    private val _cardWordCount = MutableStateFlow(0)
+    /** Card target words (e.g. Expression) that count as known. */
+    val cardWordCount: StateFlow<Int> = _cardWordCount.asStateFlow()
 
     fun clearBlacklist() = viewModelScope.launch {
         dao.clearBlacklist()

@@ -2,6 +2,7 @@ package dev.lovkvist.listening.playback
 
 import android.content.Context
 import android.net.Uri
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 
 /**
  * Plays one clip on repeat with a configurable pause between repetitions.
@@ -38,6 +38,10 @@ class LoopPlayer(context: Context, private val scope: CoroutineScope) {
         }
 
     init {
+        // Audio only: for video files, don't spend time and battery decoding pictures.
+        player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
+            .setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, true)
+            .build()
         player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 if (state == Player.STATE_ENDED && _isPlaying.value) scheduleRepeat()
@@ -45,10 +49,20 @@ class LoopPlayer(context: Context, private val scope: CoroutineScope) {
         })
     }
 
-    fun load(file: File, autoPlay: Boolean = true) {
+    /** Loads [uri], or just the [clip] range of it (milliseconds), and loops that. */
+    fun load(uri: Uri, clip: LongRange? = null, autoPlay: Boolean = true) {
         gapJob?.cancel()
         _repeats.value = 0
-        player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)))
+        val item = MediaItem.Builder().setUri(uri)
+        if (clip != null) {
+            item.setClippingConfiguration(
+                MediaItem.ClippingConfiguration.Builder()
+                    .setStartPositionMs(clip.first)
+                    .setEndPositionMs(clip.last)
+                    .build(),
+            )
+        }
+        player.setMediaItem(item.build())
         player.playbackParameters = PlaybackParameters(speed)
         player.prepare()
         if (autoPlay) play() else pause()

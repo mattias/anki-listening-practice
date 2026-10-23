@@ -2,17 +2,23 @@
 
 # Listening Practice
 
-An Android app for Japanese listening practice built on your own Anki cards. It plays only
-sentences made entirely of words you already know, loops the audio, and hides the text until
-you ask for it — so you train your ear, not your reading.
+An Android app for Japanese listening practice built on your own Anki cards, videos and YouTube.
+It plays only sentences made entirely of words you already know, loops the audio, and hides the
+text until you ask for it — so you train your ear, not your reading.
 
 ## Features
 
 - **Uses your Anki deck** — import an AnkiDroid export (`.apkg` deck or `.colpkg` collection).
   Both the default modern format and the "Support older Anki versions" format work.
+- **Videos and audio with subtitles** — pick a video or audio file plus Japanese subtitles
+  (`.srt`, `.vtt`, `.ass`). Each subtitle line is one sentence, played in order through the file.
+  Furigana is generated automatically.
+- **YouTube** — paste a link; the app checks for Japanese subtitles (manual first, then
+  auto-generated), downloads just the audio and subtitles with
+  [yt-dlp](https://github.com/yt-dlp/yt-dlp), and adds it like a local file.
 - **Only fully known sentences** — sentences are split into words with
-  [Kuromoji](https://github.com/atilika/kuromoji) and kept only if every word is in your
-  known-words list exported from [Jiten](https://jiten.moe).
+  [Kuromoji](https://github.com/atilika/kuromoji) and kept only if every word is known: in your
+  [Jiten](https://jiten.moe) list or the target word (e.g. *Expression*) of one of your cards.
 - **Looping audio** — adjustable speed (0.5x–1.5x) and pause between repeats (0–5 s).
 - **Audio first** — text, furigana and translation stay hidden until you tap *Show Text*.
   Furigana is drawn above the kanji, from either Anki's `漢字[かんじ]` syntax or HTML `<ruby>`.
@@ -32,7 +38,8 @@ you ask for it — so you train your ear, not your reading.
 Download the latest `.apk` from
 [Releases](https://github.com/mattias/anki-listening-practice/releases/latest) on your phone and
 open it. Android will ask you to allow installing apps from your browser or file manager the first
-time. Requires Android 8.0 or newer.
+time. Requires Android 8.0 or newer on a 64-bit ARM phone (practically every phone from the last
+several years).
 
 ## Getting started
 
@@ -48,21 +55,33 @@ time. Requires Android 8.0 or newer.
 Re-import your deck after adding cards. Removing an import in Settings deletes only the app's
 copy.
 
+### Videos, audio and YouTube
+
+Under **Settings → Videos & audio**, either tap **Add video/audio + subtitles** and pick the
+media file and then its subtitle file, or paste a **YouTube link** and tap **Download from
+YouTube**. Then choose the video from the menu at the top of the practice screen. Sentences come
+in the order they're spoken; ones with unknown words are skipped.
+
+Picked files stay where they are, so don't move or delete them. YouTube downloads are stored in
+the app. Downloading from YouTube is against YouTube's terms of service; use it for your own
+study only.
+
 ### Field presets
 
-| Preset | Note type contains | Sentence  | Furigana           | Translation           | Audio           |
-|--------|--------------------|-----------|--------------------|-----------------------|-----------------|
-| Kiku   | `Kiku`             | `Sentence`| `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` |
-| Lapis  | `Lapis`            | `Sentence`| `SentenceFurigana` | —                     | `SentenceAudio` |
-| Senren | `Senren`           | `sentence`| `sentenceFurigana` | `sentenceTranslation` | `sentenceAudio` |
+| Preset | Note type contains | Sentence  | Furigana           | Translation           | Audio           | Word         |
+|--------|--------------------|-----------|--------------------|-----------------------|-----------------|--------------|
+| Kiku   | `Kiku`             | `Sentence`| `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` |
+| Lapis  | `Lapis`            | `Sentence`| `SentenceFurigana` | —                     | `SentenceAudio` | `Expression` |
+| Senren | `Senren`           | `sentence`| `sentenceFurigana` | `sentenceTranslation` | `sentenceAudio` | `word`       |
 
 Field names match case-insensitively. Imports keep only audio referenced by each preset's
 audio field, so if you point a preset at a different audio field, re-import your decks.
 
 ### How "known" is decided
 
-A word counts as known if its dictionary form, the form in the sentence, or its kana reading is
-in your list. Punctuation is ignored; particles are not, so they need to be in the list too.
+Known words are your Jiten list plus the word field of every imported card. A word in a sentence
+counts as known if its dictionary form, the form in the sentence, or its kana reading is among
+them. Punctuation is ignored; particles are not, so they need to be in the list too.
 
 ## Building
 
@@ -84,13 +103,15 @@ To build a signed release (`./gradlew assembleRelease`), create a git-ignored
 ## Tech stack
 
 Kotlin, Jetpack Compose (Material 3), Hilt, Coroutines/Flow, Media3 ExoPlayer, Room, DataStore,
-Kuromoji (IPADIC) and zstd-jni.
+Kuromoji (IPADIC), zstd-jni and [youtubedl-android](https://github.com/yausername/youtubedl-android)
+(yt-dlp with Python and QuickJS).
 
 ## Project layout
 
 ```
 app/src/main/java/dev/lovkvist/listening/
 ├── data/anki/       Anki package import (ApkgUnpacker), deck storage (DeckLibrary), presets, text cleanup
+├── data/media/      Subtitle parsing, video/audio library, YouTube import
 ├── data/known/      Known-words list
 ├── data/local/      Room database for cool-downs and blacklist
 ├── data/settings/   DataStore settings
@@ -102,5 +123,6 @@ app/src/main/java/dev/lovkvist/listening/
 
 ## License
 
-[MIT](LICENSE): use, modify and redistribute freely, including commercially. Just keep the
-copyright notice.
+[GPL-3.0](LICENSE): use, modify and redistribute freely, including commercially, as long as
+what you distribute is also GPL-3.0 with its source code available. The app is GPL because it
+bundles youtubedl-android, which is GPL-3.0. Version 0.1.0 was released under MIT.

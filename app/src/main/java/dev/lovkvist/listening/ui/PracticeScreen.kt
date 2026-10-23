@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
@@ -27,13 +29,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.lovkvist.listening.data.anki.AnkiSentence
+import dev.lovkvist.listening.data.PracticeSource
+import dev.lovkvist.listening.data.Sentence
 
 private val delayOptions = listOf(0L, 500L, 1000L, 2000L, 3000L, 5000L)
 
@@ -45,11 +52,13 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
     val repeats by vm.player.repeats.collectAsStateWithLifecycle()
     val speed by vm.speed.collectAsStateWithLifecycle()
     val delayMs by vm.delayMs.collectAsStateWithLifecycle()
+    val sources by vm.sources.collectAsStateWithLifecycle()
+    val source by vm.source.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Listening Practice") },
+                title = { SourcePicker(sources, source, vm::selectSource) },
                 actions = { TextButton(onClick = onOpenSettings) { Text("Settings") } },
             )
         },
@@ -119,6 +128,31 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
     }
 }
 
+/** The top bar title doubles as a menu of everything you can practice. */
+@Composable
+private fun SourcePicker(
+    sources: List<Pair<PracticeSource, String>>,
+    current: PracticeSource,
+    onSelect: (PracticeSource) -> Unit,
+) {
+    var open by remember { mutableStateOf(false) }
+    val label = sources.firstOrNull { it.first == current }?.second ?: "Anki cards"
+    TextButton(onClick = { open = true }) {
+        Text("$label ▾", style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        for ((source, name) in sources) {
+            DropdownMenuItem(
+                text = { Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis) },
+                onClick = {
+                    open = false
+                    if (source != current) onSelect(source)
+                },
+            )
+        }
+    }
+}
+
 @Composable
 private fun Box(content: @Composable () -> Unit) {
     Column(
@@ -129,7 +163,7 @@ private fun Box(content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun SentenceText(sentence: AnkiSentence) {
+private fun SentenceText(sentence: Sentence) {
     // Without a furigana field the sentence still goes through RubyText, so it lays out the same.
     RubyText(
         furigana = sentence.furigana.ifBlank { sentence.text },

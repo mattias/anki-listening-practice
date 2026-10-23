@@ -6,12 +6,17 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.lovkvist.listening.data.SentenceRepository
-import dev.lovkvist.listening.data.anki.AnkiSentence
+import dev.lovkvist.listening.data.PracticeSource
+import dev.lovkvist.listening.data.Sentence
+import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.playback.LoopPlayer
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -22,7 +27,7 @@ sealed interface PracticeState {
     data object Loading : PracticeState
     data class Message(val text: String) : PracticeState
     data class Ready(
-        val current: AnkiSentence,
+        val current: Sentence,
         val queueSize: Int,
         val showText: Boolean,
     ) : PracticeState
@@ -33,6 +38,7 @@ class PracticeViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val repository: SentenceRepository,
     private val settings: SettingsRepository,
+    media: MediaLibrary,
 ) : ViewModel() {
 
     val player = LoopPlayer(context, viewModelScope)
@@ -46,8 +52,23 @@ class PracticeViewModel @Inject constructor(
     private val _delayMs = MutableStateFlow(1000L)
     val delayMs: StateFlow<Long> = _delayMs.asStateFlow()
 
+    /** Everything that can be practiced: Anki cards plus each imported video/audio. */
+    val sources: StateFlow<List<Pair<PracticeSource, String>>> = media.items
+        .map { items -> listOf(PracticeSource.Anki to "Anki cards") + items.map { PracticeSource.Media(it.id) to it.name } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, listOf(PracticeSource.Anki to "Anki cards"))
+
+    val source: StateFlow<PracticeSource> = settings.settings.map { it.source }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PracticeSource.Anki)
+
+    fun selectSource(source: PracticeSource) {
+        viewModelScope.launch {
+            settings.setSource(source)
+            repository.invalidate(collection = false, known = false)
+        }
+    }
+
     /** Active queue; the head is the sentence being practiced. */
-    private val queue = ArrayDeque<AnkiSentence>()
+    private val queue = ArrayDeque<Sentence>()
     private val queueLock = Mutex()
 
     init {
@@ -79,9 +100,9 @@ class PracticeViewModel @Inject constructor(
         if (_state.value is PracticeState.Message) rebuild()
     }
 
-    fun crystalClear() = removeCurrent { repository.markCrystalClear(it.noteId) }
+    fun crystalClear() = removeCurrent { repository.markCrystalClear(it.id) }
 
-    fun blacklist() = removeCurrent { repository.blacklist(it.noteId) }
+    fun blacklist() = removeCurrent { repository.blacklist(it.id) }
 
     fun skip() {
         viewModelScope.launch {
@@ -110,7 +131,7 @@ class PracticeViewModel @Inject constructor(
         if (persist) viewModelScope.launch { settings.setDelayMs(ms) }
     }
 
-    private fun removeCurrent(record: suspend (AnkiSentence) -> Unit) {
+    private fun removeCurrent(record: suspend (Sentence) -> Unit) {
         viewModelScope.launch {
             queueLock.withLock {
                 val current = queue.removeFirstOrNull() ?: return@withLock
@@ -125,7 +146,7 @@ class PracticeViewModel @Inject constructor(
     }
 
     private suspend fun refill() {
-        val exclude = queue.mapTo(HashSet()) { it.noteId }
+        val exclude = queue.mapTo(HashSet()) { it.id }
         val more = try {
             repository.nextEligible(QUEUE_SIZE - queue.size, exclude)
         } catch (e: Exception) {
@@ -140,21 +161,26 @@ class PracticeViewModel @Inject constructor(
         if (head == null) {
             if (_state.value !is PracticeState.Message) {
                 _state.value = PracticeState.Message(
-                    "No eligible sentences. Import your known words, check the note type preset " +
-                        "in Settings, or wait for cool-downs to expire."
+                    if (source.value is PracticeSource.Media) {
+                        "No more sentences you know in this video. Pick another source, or reset " +
+                            "cool-downs in Settings to go through it again."
+                    } else {
+                        "No eligible sentences. Import your known words, check the note type preset " +
+                            "in Settings, or wait for cool-downs to expire."
+                    },
                 )
             }
             player.stop()
             return
         }
         val prev = _state.value as? PracticeState.Ready
-        val changed = newSentence && prev?.current?.noteId != head.noteId
+        val changed = newSentence && prev?.current?.id != head.id
         _state.value = PracticeState.Ready(
             current = head,
             queueSize = queue.size,
             showText = if (changed) false else prev?.showText ?: false,
         )
-        if (changed || prev == null) player.load(head.audioFile)
+        if (changed || prev == null) player.load(head.audio, head.clip)
     }
 
     override fun onCleared() {

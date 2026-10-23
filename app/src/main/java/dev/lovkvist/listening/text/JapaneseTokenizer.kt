@@ -32,6 +32,39 @@ class JapaneseTokenizer @Inject constructor() {
         return words.isNotEmpty() && words.all { w -> w.candidates.any { it in known } }
     }
 
+    /**
+     * Generates Anki bracket furigana (`食[た]べる`) from Kuromoji's readings, for text that
+     * has none, such as subtitles. Kana before and after the kanji (okurigana) stays outside
+     * the brackets. Line breaks are preserved.
+     */
+    fun furigana(text: String): String = text.lines().joinToString("\n") { line ->
+        tokenizer.tokenize(line).joinToString("") { t -> annotate(t.surface, t.reading) }
+    }
+
+    private fun annotate(surface: String, katakanaReading: String?): String {
+        if (surface.none(::isKanji) || katakanaReading.isNullOrBlank() || katakanaReading == "*") return surface
+        val reading = toHiragana(katakanaReading)
+        val kana = toHiragana(surface)
+        if (kana == reading) return surface
+
+        // Peel off matching kana at both ends; what remains is the kanji core and its reading.
+        var head = 0
+        while (head < surface.length && head < reading.length && !isKanji(surface[head]) && kana[head] == reading[head]) head++
+        var tail = 0
+        while (tail < surface.length - head && tail < reading.length - head &&
+            !isKanji(surface[surface.length - 1 - tail]) &&
+            kana[kana.length - 1 - tail] == reading[reading.length - 1 - tail]
+        ) tail++
+
+        val core = surface.substring(head, surface.length - tail)
+        val coreReading = reading.substring(head, reading.length - tail)
+        if (core.isEmpty() || coreReading.isEmpty()) return surface
+        // The leading space marks where the annotated word starts, as in Anki.
+        return surface.substring(0, head) + " $core[$coreReading]" + surface.substring(surface.length - tail)
+    }
+
+    private fun isKanji(c: Char) = c in '一'..'鿿' || c in '㐀'..'䶿' || c == '々'
+
     private fun isIgnorable(t: Token): Boolean {
         val pos = t.partOfSpeechLevel1
         // Punctuation/symbols and whitespace aren't words.

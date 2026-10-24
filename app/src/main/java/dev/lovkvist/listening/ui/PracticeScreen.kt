@@ -1,5 +1,6 @@
 package dev.lovkvist.listening.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
@@ -44,6 +45,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -642,7 +644,11 @@ private fun WordSheet(word: TappableWord, practice: PracticeController, onDismis
     LaunchedEffect(word) { result = runCatching { practice.lookup(word.span) }.getOrDefault(LookupResult()) }
     val tagColor = MaterialTheme.colorScheme.tertiary
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        // The sheet's own Back handling leaves this (tall, scrolling) sheet open; close it here.
+        BackHandler { scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() } }
         Column(
             Modifier
                 .padding(horizontal = 24.dp)

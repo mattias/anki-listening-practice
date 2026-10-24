@@ -144,4 +144,6 @@
     <string name="dark_dark">Oscuro</string>
     <string name="library">Biblioteca</string>
     <string name="languages">Idiomas</string>
+    <string name="unknown_words">Palabras desconocidas por frase</string>
+    <string name="unknown_words_help">n+0 solo reproduce frases en las que conoces todas las palabras. De n+1 a n+5 también admiten frases con hasta esa cantidad de palabras que aún no conoces: más frases y palabras nuevas que aprender de oído.</string>
 </resources>

@@ -144,4 +144,6 @@
     <string name="dark_dark">Mørk</string>
     <string name="library">Bibliotek</string>
     <string name="languages">Sprog</string>
+    <string name="unknown_words">Ukendte ord pr. sætning</string>
+    <string name="unknown_words_help">n+0 afspiller kun sætninger, hvor du kender alle ord. n+1 til n+5 lukker også sætninger ind med op til så mange ord, du ikke kender endnu: flere sætninger og nye ord at lære med øret.</string>
 </resources>

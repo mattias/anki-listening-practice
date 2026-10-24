@@ -44,8 +44,8 @@ class SentenceRepository @Inject constructor(
     /** Target words of the language's cards (e.g. Expression); they count as known. */
     private var cardWords: Set<String>? = null
 
-    /** Memoized "every word is known" results, keyed by sentence id. Cleared when known words change. */
-    private val knownCache = HashMap<Long, Boolean>()
+    /** Memoized unknown-word counts (null: no words), keyed by sentence id. Cleared when known words change. */
+    private val knownCache = HashMap<Long, Int?>()
 
     private val _generation = MutableStateFlow(0)
     /** Bumped whenever the source data changes, so the practice queue knows to rebuild. */
@@ -68,10 +68,11 @@ class SentenceRepository @Inject constructor(
 
     /**
      * The sentence to practice after [afterId] (or the first one if null): the next one in the
-     * source's order that is fully known and not blacklisted or cooling down. Anki cards are in
-     * random order, reshuffled each time the end is reached; a video plays in order and starts
-     * over at its end. Returns [afterId]'s sentence again only if nothing else is eligible, and
-     * null if nothing is. Tokenizes lazily, so it stops at the first match.
+     * source's order with no more unknown words than allowed (n+0 to n+5), and not blacklisted or
+     * cooling down. Anki cards are in random order, reshuffled each time the end is reached; a
+     * video plays in order and starts over at its end. Returns [afterId]'s sentence again only if
+     * nothing else is eligible, and null if nothing is. Tokenizes lazily, so it stops at the first
+     * match.
      */
     suspend fun next(afterId: Long?): Sentence? = mutex.withLock {
         val current = settings.current()
@@ -91,12 +92,15 @@ class SentenceRepository @Inject constructor(
         val known = (knownWords.words(language) + loadCardWords(language)).mapTo(HashSet(), tokenizer::normalize)
         if (known.isEmpty()) return@withLock null
         val blocked = dao.excludedIds(System.currentTimeMillis()).toHashSet()
+        val maxUnknown = current.maxUnknownWords
 
         withContext(Dispatchers.Default) {
             var list = pool.orEmpty()
             val start = list.indexOfFirst { it.id == afterId } + 1 // 0 when there's no current one
+            fun unknownWords(s: Sentence): Int? =
+                if (s.id in knownCache) knownCache[s.id] else tokenizer.unknownWords(s.text, known).also { knownCache[s.id] = it }
             fun eligible(s: Sentence) =
-                s.id !in blocked && knownCache.getOrPut(s.id) { tokenizer.isFullyKnown(s.text, known) }
+                s.id !in blocked && unknownWords(s)?.let { it <= maxUnknown } == true
 
             list.drop(start).firstOrNull { it.id != afterId && eligible(it) }?.let { return@withContext it }
             // Reached the end: Anki cards get a new random order, a video starts over.

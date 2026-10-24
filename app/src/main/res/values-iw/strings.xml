@@ -144,4 +144,6 @@
     <string name="dark_dark">כהה</string>
     <string name="library">ספרייה</string>
     <string name="languages">שפות</string>
+    <string name="unknown_words">מילים לא מוכרות במשפט</string>
+    <string name="unknown_words_help">n+0 משמיע רק משפטים שבהם אתם מכירים כל מילה. n+1 עד n+5 מכניסים גם משפטים עם עד מספר כזה של מילים שעדיין לא מוכרות לכם: יותר משפטים, ומילים חדשות ללמוד מהשמיעה.</string>
 </resources>

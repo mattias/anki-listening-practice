@@ -144,4 +144,6 @@
     <string name="dark_dark">Mörkt</string>
     <string name="library">Bibliotek</string>
     <string name="languages">Språk</string>
+    <string name="unknown_words">Okända ord per mening</string>
+    <string name="unknown_words_help">n+0 spelar bara meningar där du kan alla ord. n+1 till n+5 släpper även in meningar med upp till så många ord du inte kan än: fler meningar, och nya ord att lära dig med örat.</string>
 </resources>

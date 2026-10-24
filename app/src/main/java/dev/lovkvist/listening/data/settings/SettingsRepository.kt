@@ -42,6 +42,8 @@ data class Settings(
     val theme: String,
     /** Light or dark for Material You. */
     val darkMode: DarkMode,
+    /** Unknown words a sentence may have and still be practiced: 0 (n+0) to [MAX_UNKNOWN_WORDS]. */
+    val maxUnknownWords: Int,
 )
 
 @Singleton
@@ -57,6 +59,7 @@ class SettingsRepository @Inject constructor(
         val translationLanguage = stringPreferencesKey("translation_language")
         val theme = stringPreferencesKey("theme")
         val darkMode = stringPreferencesKey("dark_mode")
+        val maxUnknownWords = intPreferencesKey("max_unknown_words")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -93,6 +96,7 @@ class SettingsRepository @Inject constructor(
             },
             theme = prefs[Keys.theme]?.takeIf { Palette.byId(it) != null } ?: Palette.MATERIAL_YOU,
             darkMode = prefs[Keys.darkMode]?.let { runCatching { DarkMode.valueOf(it) }.getOrNull() } ?: DarkMode.SYSTEM,
+            maxUnknownWords = (prefs[Keys.maxUnknownWords] ?: 0).coerceIn(0, MAX_UNKNOWN_WORDS),
         )
     }
 
@@ -162,11 +166,14 @@ class SettingsRepository @Inject constructor(
 
     suspend fun setDarkMode(mode: DarkMode) = context.dataStore.edit { it[Keys.darkMode] = mode.name }
 
+    suspend fun setMaxUnknownWords(n: Int) = context.dataStore.edit { it[Keys.maxUnknownWords] = n.coerceIn(0, MAX_UNKNOWN_WORDS) }
+
     suspend fun setSpeed(speed: Float) = context.dataStore.edit { it[Keys.speed] = speed }
 
     suspend fun setDelayMs(delayMs: Long) = context.dataStore.edit { it[Keys.delayMs] = delayMs }
 
-    private companion object {
-        const val OFF = "off"
+    companion object {
+        private const val OFF = "off"
+        const val MAX_UNKNOWN_WORDS = 5
     }
 }

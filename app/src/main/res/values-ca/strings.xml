@@ -144,4 +144,6 @@
     <string name="dark_dark">Fosc</string>
     <string name="library">Biblioteca</string>
     <string name="languages">Idiomes</string>
+    <string name="unknown_words">Paraules desconegudes per frase</string>
+    <string name="unknown_words_help">n+0 només reprodueix frases on coneixes totes les paraules. De n+1 a n+5 també admeten frases amb fins a aquest nombre de paraules que encara no coneixes: més frases i paraules noves per aprendre d\'oïda.</string>
 </resources>

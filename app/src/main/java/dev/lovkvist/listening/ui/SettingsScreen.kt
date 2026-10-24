@@ -76,6 +76,7 @@ import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.media.MediaEntry
+import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.data.update.UpdateState
 import dev.lovkvist.listening.l10n.AppLanguage
 import dev.lovkvist.listening.l10n.displayName
@@ -204,7 +205,12 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                             page = Page.MEDIA
                         }
                         RowDivider()
-                        NavRow(R.drawable.ic_abc, stringResource(R.string.known_words), (knownCounts[s.language] ?: 0).toString()) {
+                        val known = (knownCounts[s.language] ?: 0).toString()
+                        NavRow(
+                            R.drawable.ic_abc,
+                            stringResource(R.string.known_words),
+                            if (s.maxUnknownWords > 0) "$known · n+${s.maxUnknownWords}" else known,
+                        ) {
                             page = Page.KNOWN
                         }
                         RowDivider()
@@ -245,6 +251,18 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                         else stringResource(R.string.card_words, cardWordCount, s.mapping.word),
                     )
                     Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text(stringResource(R.string.import_known_words)) }
+                    HorizontalDivider()
+                    Text(stringResource(R.string.unknown_words), style = MaterialTheme.typography.titleMedium)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        for (n in 0..SettingsRepository.MAX_UNKNOWN_WORDS) {
+                            FilterChip(selected = s.maxUnknownWords == n, onClick = { vm.setMaxUnknownWords(n) }, label = { Text("n+$n") })
+                        }
+                    }
+                    Text(
+                        stringResource(R.string.unknown_words_help),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
 
                 Page.PRESET -> {

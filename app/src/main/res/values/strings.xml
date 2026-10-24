@@ -104,6 +104,8 @@
     <string name="no_word_field">No word field is set, so your cards\' words don\'t count as known.</string>
     <string name="import_known_words">Import known_words.txt</string>
     <string name="known_imported">Imported known words: %1$d</string>
+    <string name="unknown_words">Unknown words per sentence</string>
+    <string name="unknown_words_help">n+0 plays only sentences where you know every word. n+1 to n+5 also let in sentences with up to that many words you don\'t know yet: more sentences, and new words to pick up by ear.</string>
 
     <string name="note_type_preset">Note type preset</string>
     <string name="japanese_presets_note">Kiku, Lapis and Senren are Japanese note types. Other languages use Anki Miner Note.</string>

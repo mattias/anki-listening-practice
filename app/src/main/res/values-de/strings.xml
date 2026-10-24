@@ -144,4 +144,6 @@
     <string name="dark_dark">Dunkel</string>
     <string name="library">Bibliothek</string>
     <string name="languages">Sprachen</string>
+    <string name="unknown_words">Unbekannte Wörter pro Satz</string>
+    <string name="unknown_words_help">n+0 spielt nur Sätze, in denen du jedes Wort kennst. n+1 bis n+5 lassen auch Sätze mit bis zu so vielen Wörtern zu, die du noch nicht kennst: mehr Sätze und neue Wörter, die du nach Gehör lernst.</string>
 </resources>

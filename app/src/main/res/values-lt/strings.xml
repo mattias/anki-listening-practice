@@ -144,4 +144,6 @@
     <string name="dark_dark">Tamsi</string>
     <string name="library">Biblioteka</string>
     <string name="languages">Kalbos</string>
+    <string name="unknown_words">Nežinomi žodžiai sakinyje</string>
+    <string name="unknown_words_help">n+0 groja tik sakinius, kuriuose žinote visus žodžius. n+1–n+5 įtraukia ir sakinius, kuriuose yra iki tiek dar nežinomų žodžių: daugiau sakinių ir nauji žodžiai, kuriuos išmoksite iš klausos.</string>
 </resources>

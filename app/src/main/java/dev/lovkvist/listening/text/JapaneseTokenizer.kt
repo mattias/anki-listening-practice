@@ -26,13 +26,14 @@ class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
     override fun normalize(word: String): String = word.trim()
 
     /**
-     * True only if every word in [sentence] is in [known].
+     * Different words in [sentence] that aren't in [known], told apart by dictionary form.
      * A word counts as known if its base form, its surface form or its kana reading is listed,
      * since Jiten exports may spell words in kana where IPADIC uses kanji (or vice versa).
      */
-    override fun isFullyKnown(sentence: String, known: Set<String>): Boolean {
+    override fun unknownWords(sentence: String, known: Set<String>): Int? {
         val words = words(sentence)
-        return words.isNotEmpty() && words.all { w -> w.candidates.any { it in known } }
+        if (words.isEmpty()) return null
+        return words.filter { w -> w.candidates.none { it in known } }.distinctBy { it.baseForm }.size
     }
 
     /**

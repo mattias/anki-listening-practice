@@ -144,4 +144,6 @@
     <string name="dark_dark">Escuro</string>
     <string name="library">Biblioteca</string>
     <string name="languages">Idiomas</string>
+    <string name="unknown_words">Palavras desconhecidas por frase</string>
+    <string name="unknown_words_help">n+0 só toca frases em que você conhece todas as palavras. De n+1 a n+5 também entram frases com até esse número de palavras que você ainda não conhece: mais frases e palavras novas para aprender de ouvido.</string>
 </resources>

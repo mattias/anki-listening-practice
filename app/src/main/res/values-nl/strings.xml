@@ -144,4 +144,6 @@
     <string name="dark_dark">Donker</string>
     <string name="library">Bibliotheek</string>
     <string name="languages">Talen</string>
+    <string name="unknown_words">Onbekende woorden per zin</string>
+    <string name="unknown_words_help">n+0 speelt alleen zinnen waarin je elk woord kent. n+1 tot n+5 laten ook zinnen toe met maximaal zoveel woorden die je nog niet kent: meer zinnen, en nieuwe woorden om op het gehoor te leren.</string>
 </resources>

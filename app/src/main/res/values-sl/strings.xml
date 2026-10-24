@@ -144,4 +144,6 @@
     <string name="dark_dark">Temno</string>
     <string name="library">Knjižnica</string>
     <string name="languages">Jeziki</string>
+    <string name="unknown_words">Neznane besede v stavku</string>
+    <string name="unknown_words_help">n+0 predvaja samo stavke, v katerih poznaš vse besede. n+1 do n+5 dovolijo tudi stavke z največ toliko besedami, ki jih še ne poznaš: več stavkov in nove besede za učenje na posluh.</string>
 </resources>

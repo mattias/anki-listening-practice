@@ -144,4 +144,6 @@
     <string name="dark_dark">ダーク</string>
     <string name="library">ライブラリ</string>
     <string name="languages">言語</string>
+    <string name="unknown_words">1文あたりの未知語</string>
+    <string name="unknown_words_help">n+0 はすべての単語を知っている文だけを再生します。n+1〜n+5 では、まだ知らない単語がその数まである文も含めます。文が増え、新しい単語を耳で覚えられます。</string>
 </resources>

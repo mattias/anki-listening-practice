@@ -144,4 +144,6 @@
     <string name="dark_dark">Темний</string>
     <string name="library">Бібліотека</string>
     <string name="languages">Мови</string>
+    <string name="unknown_words">Незнайомих слів у реченні</string>
+    <string name="unknown_words_help">n+0 відтворює лише речення, в яких ви знаєте всі слова. n+1–n+5 додають і речення, де не більше стількох ще незнайомих слів: більше речень і нові слова, які запам\'ятовуються на слух.</string>
 </resources>

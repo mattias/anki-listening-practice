@@ -144,4 +144,6 @@
     <string name="dark_dark">تیره</string>
     <string name="library">کتابخانه</string>
     <string name="languages">زبان‌ها</string>
+    <string name="unknown_words">واژه‌های ناآشنا در هر جمله</string>
+    <string name="unknown_words_help">n+0 فقط جمله‌هایی را پخش می‌کند که همهٔ واژه‌هایشان را می‌دانید. n+1 تا n+5 جمله‌هایی را هم می‌آورند که حداکثر همین تعداد واژهٔ هنوز ناآشنا دارند: جمله‌های بیشتر، و واژه‌های تازه برای یادگیری با گوش.</string>
 </resources>

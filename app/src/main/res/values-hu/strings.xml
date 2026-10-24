@@ -144,4 +144,6 @@
     <string name="dark_dark">Sötét</string>
     <string name="library">Könyvtár</string>
     <string name="languages">Nyelvek</string>
+    <string name="unknown_words">Ismeretlen szavak mondatonként</string>
+    <string name="unknown_words_help">Az n+0 csak olyan mondatokat játszik le, amelyek minden szavát ismered. Az n+1–n+5 olyan mondatokat is beenged, amelyekben legfeljebb ennyi még ismeretlen szó van: több mondat, és új szavak, amelyeket hallás után tanulhatsz meg.</string>
 </resources>

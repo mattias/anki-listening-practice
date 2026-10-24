@@ -144,4 +144,6 @@
     <string name="dark_dark">Mørk</string>
     <string name="library">Bibliotek</string>
     <string name="languages">Språk</string>
+    <string name="unknown_words">Ukjente ord per setning</string>
+    <string name="unknown_words_help">n+0 spiller bare setninger der du kan alle ordene. n+1 til n+5 slipper også inn setninger med opptil så mange ord du ikke kan ennå: flere setninger, og nye ord å lære med øret.</string>
 </resources>

@@ -144,4 +144,6 @@
     <string name="dark_dark">Sombre</string>
     <string name="library">Bibliothèque</string>
     <string name="languages">Langues</string>
+    <string name="unknown_words">Mots inconnus par phrase</string>
+    <string name="unknown_words_help">n+0 ne lit que les phrases dont vous connaissez tous les mots. n+1 à n+5 acceptent aussi des phrases avec jusqu\'à autant de mots encore inconnus : plus de phrases, et de nouveaux mots à apprendre à l\'oreille.</string>
 </resources>

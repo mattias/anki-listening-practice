@@ -22,6 +22,14 @@ class JapaneseTokenizerTest {
     }
 
     @Test
+    fun unknownWordsAreCountedOncePerDictionaryForm() {
+        val known = setOf("私", "は", "を", "ます", "た")
+        // 本 and 読む are unknown; 本 appears twice but counts once.
+        assertEquals(2, tokenizer.unknownWords("私は本を読みました。本は", known))
+        assertEquals(null, tokenizer.unknownWords("。！", known))
+    }
+
+    @Test
     fun kanaSpellingInKnownListCounts() {
         // Known list has the kana spelling; the sentence uses kanji.
         val known = setOf("わたし", "は", "ねこ", "が", "好き", "です")

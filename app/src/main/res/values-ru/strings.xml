@@ -144,4 +144,6 @@
     <string name="dark_dark">Тёмный</string>
     <string name="library">Библиотека</string>
     <string name="languages">Языки</string>
+    <string name="unknown_words">Незнакомых слов в предложении</string>
+    <string name="unknown_words_help">n+0 воспроизводит только предложения, в которых вы знаете все слова. n+1–n+5 добавляют и предложения, где не больше стольких ещё незнакомых слов: больше предложений и новые слова, которые запоминаются на слух.</string>
 </resources>

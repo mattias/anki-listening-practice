@@ -144,4 +144,6 @@
     <string name="dark_dark">Σκούρο</string>
     <string name="library">Βιβλιοθήκη</string>
     <string name="languages">Γλώσσες</string>
+    <string name="unknown_words">Άγνωστες λέξεις ανά πρόταση</string>
+    <string name="unknown_words_help">Το n+0 παίζει μόνο προτάσεις όπου ξέρεις κάθε λέξη. Τα n+1 έως n+5 επιτρέπουν και προτάσεις με έως τόσες λέξεις που δεν ξέρεις ακόμα: περισσότερες προτάσεις και νέες λέξεις να μάθεις ακουστικά.</string>
 </resources>

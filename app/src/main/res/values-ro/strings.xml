@@ -144,4 +144,6 @@
     <string name="dark_dark">Întunecat</string>
     <string name="library">Bibliotecă</string>
     <string name="languages">Limbi</string>
+    <string name="unknown_words">Cuvinte necunoscute pe propoziție</string>
+    <string name="unknown_words_help">n+0 redă doar propozițiile în care cunoști fiecare cuvânt. n+1–n+5 includ și propoziții cu cel mult atâtea cuvinte pe care nu le știi încă: mai multe propoziții și cuvinte noi de învățat după ureche.</string>
 </resources>

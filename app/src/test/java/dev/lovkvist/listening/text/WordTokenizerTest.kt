@@ -32,6 +32,15 @@ class WordTokenizerTest {
     }
 
     @Test
+    fun unknownWordsAreCountedOnce() {
+        val (t, known) = known(Language.SWEDISH, "jag", "dricker")
+        assertEquals(0, t.unknownWords("Jag dricker.", known))
+        // "kaffe" twice counts once: kaffe, och, te.
+        assertEquals(3, t.unknownWords("Jag dricker kaffe och te, kaffe!", known))
+        assertEquals(null, t.unknownWords("…!", known))
+    }
+
+    @Test
     fun inflectedFormsMustBeListed() {
         val (t, known) = known(Language.GERMAN, "ich", "gehen")
         assertFalse(t.isFullyKnown("Ich gehe.", known))

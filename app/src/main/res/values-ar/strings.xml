@@ -144,4 +144,6 @@
     <string name="dark_dark">داكن</string>
     <string name="library">المكتبة</string>
     <string name="languages">اللغات</string>
+    <string name="unknown_words">الكلمات غير المعروفة في كل جملة</string>
+    <string name="unknown_words_help">n+0 يشغّل فقط الجمل التي تعرف كل كلماتها. من n+1 إلى n+5 تُدخل أيضًا جملًا فيها حتى هذا العدد من الكلمات التي لا تعرفها بعد: جمل أكثر، وكلمات جديدة تتعلمها بالسمع.</string>
 </resources>

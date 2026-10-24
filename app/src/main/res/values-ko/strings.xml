@@ -144,4 +144,6 @@
     <string name="dark_dark">어둡게</string>
     <string name="library">라이브러리</string>
     <string name="languages">언어</string>
+    <string name="unknown_words">문장당 모르는 단어</string>
+    <string name="unknown_words_help">n+0은 모든 단어를 아는 문장만 재생합니다. n+1~n+5는 아직 모르는 단어가 그 개수까지 있는 문장도 포함합니다. 문장이 늘고 새 단어를 귀로 익힐 수 있습니다.</string>
 </resources>

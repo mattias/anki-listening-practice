@@ -144,4 +144,6 @@
     <string name="dark_dark">Tumma</string>
     <string name="library">Kirjasto</string>
     <string name="languages">Kielet</string>
+    <string name="unknown_words">Tuntemattomia sanoja lauseessa</string>
+    <string name="unknown_words_help">n+0 toistaa vain lauseita, joiden jokaisen sanan osaat. n+1–n+5 päästävät mukaan myös lauseita, joissa on enintään niin monta vielä tuntematonta sanaa: enemmän lauseita ja uusia sanoja opittavaksi korvalla.</string>
 </resources>

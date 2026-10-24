@@ -178,6 +178,11 @@ class SettingsViewModel @Inject constructor(
 
     fun setDarkMode(mode: DarkMode) = viewModelScope.launch { settingsRepo.setDarkMode(mode) }
 
+    fun setMaxUnknownWords(n: Int) = viewModelScope.launch {
+        settingsRepo.setMaxUnknownWords(n)
+        sentences.invalidate(collection = false, known = false)
+    }
+
     fun removeMedia(id: String) = viewModelScope.launch {
         media.remove(id)
         if (settingsRepo.current().source == PracticeSource.Media(id)) settingsRepo.setSource(PracticeSource.Anki)

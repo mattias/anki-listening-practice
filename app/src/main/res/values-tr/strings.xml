@@ -144,4 +144,6 @@
     <string name="dark_dark">Koyu</string>
     <string name="library">Kitaplık</string>
     <string name="languages">Diller</string>
+    <string name="unknown_words">Cümle başına bilinmeyen kelime</string>
+    <string name="unknown_words_help">n+0 yalnızca her kelimesini bildiğin cümleleri oynatır. n+1 ile n+5 arası, henüz bilmediğin en fazla o kadar kelime içeren cümleleri de alır: daha çok cümle ve kulaktan öğrenilecek yeni kelimeler.</string>
 </resources>

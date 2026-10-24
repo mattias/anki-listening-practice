@@ -144,4 +144,6 @@
     <string name="dark_dark">深色</string>
     <string name="library">資料庫</string>
     <string name="languages">語言</string>
+    <string name="unknown_words">每句的生詞數</string>
+    <string name="unknown_words_help">n+0 只播放你認識每個詞的句子。n+1 到 n+5 還會加入最多含有這麼多生詞的句子：句子更多，還能用耳朵學新詞。</string>
 </resources>

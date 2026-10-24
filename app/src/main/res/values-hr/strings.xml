@@ -144,4 +144,6 @@
     <string name="dark_dark">Tamno</string>
     <string name="library">Biblioteka</string>
     <string name="languages">Jezici</string>
+    <string name="unknown_words">Nepoznate riječi po rečenici</string>
+    <string name="unknown_words_help">n+0 reproducira samo rečenice u kojima znaš svaku riječ. n+1 do n+5 propuštaju i rečenice s najviše toliko riječi koje još ne znaš: više rečenica i nove riječi za učenje na sluh.</string>
 </resources>

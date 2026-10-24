@@ -144,4 +144,6 @@
     <string name="dark_dark">Tối</string>
     <string name="library">Thư viện</string>
     <string name="languages">Ngôn ngữ</string>
+    <string name="unknown_words">Số từ chưa biết mỗi câu</string>
+    <string name="unknown_words_help">n+0 chỉ phát những câu mà bạn biết mọi từ. n+1 đến n+5 cho phép thêm câu có tối đa bấy nhiêu từ bạn chưa biết: nhiều câu hơn, và từ mới để học qua tai.</string>
 </resources>

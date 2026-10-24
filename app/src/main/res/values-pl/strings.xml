@@ -144,4 +144,6 @@
     <string name="dark_dark">Ciemny</string>
     <string name="library">Biblioteka</string>
     <string name="languages">Języki</string>
+    <string name="unknown_words">Nieznane słowa w zdaniu</string>
+    <string name="unknown_words_help">n+0 odtwarza tylko zdania, w których znasz każde słowo. n+1–n+5 dopuszczają też zdania z co najwyżej tyloma słowami, których jeszcze nie znasz: więcej zdań i nowe słowa do nauki ze słuchu.</string>
 </resources>

@@ -144,4 +144,6 @@
     <string name="dark_dark">มืด</string>
     <string name="library">คลัง</string>
     <string name="languages">ภาษา</string>
+    <string name="unknown_words">คำที่ไม่รู้จักต่อประโยค</string>
+    <string name="unknown_words_help">n+0 เล่นเฉพาะประโยคที่คุณรู้ทุกคำ n+1 ถึง n+5 จะรวมประโยคที่มีคำที่คุณยังไม่รู้ได้ไม่เกินจำนวนนั้นด้วย: ได้ประโยคมากขึ้น และได้คำใหม่ให้เรียนรู้จากการฟัง</string>
 </resources>

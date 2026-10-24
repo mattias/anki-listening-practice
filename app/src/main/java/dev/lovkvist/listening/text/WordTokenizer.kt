@@ -32,9 +32,11 @@ class WordTokenizer(private val language: Language) : SentenceTokenizer {
 
     override fun normalize(word: String): String = clean(word).trim().lowercase(locale)
 
-    override fun isFullyKnown(sentence: String, known: Set<String>): Boolean {
-        val words = words(withoutKnownCompounds(clean(sentence), known)).map(::normalize)
-        return (words.isNotEmpty() || hasKnownCompound(clean(sentence), known)) && words.all { isKnown(it, known) }
+    override fun unknownWords(sentence: String, known: Set<String>): Int? {
+        val text = clean(sentence)
+        val words = words(withoutKnownCompounds(text, known)).map(::normalize)
+        if (words.isEmpty() && !hasKnownCompound(text, known)) return null
+        return words.filterNot { isKnown(it, known) }.distinct().size
     }
 
     /**

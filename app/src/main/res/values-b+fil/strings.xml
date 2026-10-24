@@ -144,4 +144,6 @@
     <string name="dark_dark">Madilim</string>
     <string name="library">Library</string>
     <string name="languages">Mga wika</string>
+    <string name="unknown_words">Mga hindi kilalang salita bawat pangungusap</string>
+    <string name="unknown_words_help">Ang n+0 ay nagpe-play lang ng mga pangungusap na alam mo ang bawat salita. Ang n+1 hanggang n+5 ay nagpapapasok din ng mga pangungusap na may hanggang ganoong dami ng salitang hindi mo pa alam: mas maraming pangungusap, at bagong salitang matututunan sa pakikinig.</string>
 </resources>

@@ -41,6 +41,8 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
 - **Only fully known sentences** — sentences are split into words and kept only if every word is
   known: in your word list (from [Jiten](https://jiten.moe) or Anki Miner) or the target word
   (e.g. *Expression*) of one of your cards.
+  Want more sentences? Under **Settings → Known words** you can allow up to 1–5 unknown words
+  per sentence (n+1 to n+5); the default is n+0.
 - **Looping audio** — adjustable speed (0.5x–1.5x) and pause between repeats (0–5 s), set from
   the chips under the sentence. A ring around the play button shows how far the sentence (or,
   with auto Crystal Clear, all its plays) has come.
@@ -148,6 +150,9 @@ audio field, so if you point a preset at a different audio field, re-import your
 Known words are your word list for the selected language plus the word field of every imported
 card in that language. Punctuation is ignored; particles are not, so they need to be in the list
 too.
+
+With n+1 to n+5 set, a sentence may also have up to that many different unknown words (a word
+that appears twice counts once).
 
 - **Japanese**: sentences are split with [Kuromoji](https://github.com/atilika/kuromoji). A word
   counts as known if its dictionary form, the form in the sentence, or its kana reading is listed.

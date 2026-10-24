@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Aby słuchać bez użycia rąk, ustaw automatyczne „Wszystko jasne” lub pominięcie po kilku odtworzeniach.</string>
     <string name="onboarding_tip_headset">Ze słuchawkami: dotknij, aby odtworzyć lub wstrzymać, dotknij dwa razy, aby pominąć. Powiadomienie ma te same przyciski.</string>
     <string name="auto_advance_after">Automatycznie dalej po</string>
+    <string name="wiktionary_help">Słowniki z Wikisłownika dla każdego języka, którego możesz się uczyć. Aktualizują się same.</string>
+    <string name="definitions_in">Definicje w języku</string>
+    <string name="wiktionary_unavailable">Nie udało się pobrać listy słowników Wikisłownika. Sprawdź połączenie.</string>
+    <string name="dictionary_order_help">Wyszukiwanie pokazuje Twoje słowniki w tej kolejności; przesuwaj je strzałkami.</string>
+    <string name="move_up">Przesuń w górę</string>
+    <string name="move_down">Przesuń w dół</string>
+    <string name="onboarding_wiktionary_body">Ze słownikiem możesz dotknąć dowolnego słowa w zdaniu, aby je sprawdzić i oznaczyć jako znane lub ignorowane. Wikisłownik ma słownik dla każdego języka: wybierz język definicji. Aktualizuje się sam.</string>
 </resources>

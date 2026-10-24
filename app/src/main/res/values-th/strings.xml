@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">หากต้องการฟังโดยไม่ต้องใช้มือ ให้ตั้งเข้าใจชัดเจนหรือข้ามอัตโนมัติหลังเล่นไม่กี่ครั้ง</string>
     <string name="onboarding_tip_headset">กับหูฟัง: แตะเพื่อเล่นหรือหยุดชั่วคราว แตะสองครั้งเพื่อข้าม การแจ้งเตือนก็มีปุ่มเดียวกัน</string>
     <string name="auto_advance_after">ไปต่ออัตโนมัติหลังเล่น</string>
+    <string name="wiktionary_help">พจนานุกรมที่สร้างจากวิกิพจนานุกรม สำหรับทุกภาษาที่คุณเรียนได้ อัปเดตเองได้</string>
+    <string name="definitions_in">คำอธิบายเป็นภาษา</string>
+    <string name="wiktionary_unavailable">โหลดรายการพจนานุกรมวิกิพจนานุกรมไม่ได้ ตรวจสอบการเชื่อมต่อ</string>
+    <string name="dictionary_order_help">การค้นหาจะแสดงพจนานุกรมตามลำดับนี้ ย้ายได้ด้วยลูกศร</string>
+    <string name="move_up">ย้ายขึ้น</string>
+    <string name="move_down">ย้ายลง</string>
+    <string name="onboarding_wiktionary_body">เมื่อมีพจนานุกรม คุณแตะคำใดก็ได้ในประโยคเพื่อค้นหาและทำเครื่องหมายว่ารู้แล้วหรือละเว้นได้ วิกิพจนานุกรมมีพจนานุกรมของทุกภาษา เลือกภาษาของคำอธิบายได้ และอัปเดตเองได้</string>
 </resources>

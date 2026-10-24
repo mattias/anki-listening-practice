@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Zum freihändigen Hören stell nach einigen Wiedergaben automatisch Glasklar oder Überspringen ein.</string>
     <string name="onboarding_tip_headset">Mit Kopfhörern: tippen für Play oder Pause, doppelt tippen zum Überspringen. Die Benachrichtigung hat dieselben Tasten.</string>
     <string name="auto_advance_after">Automatisch weiter nach</string>
+    <string name="wiktionary_help">Wörterbücher aus dem Wiktionary, für jede Sprache, die du lernen kannst. Sie aktualisieren sich selbst.</string>
+    <string name="definitions_in">Definitionen auf</string>
+    <string name="wiktionary_unavailable">Die Liste der Wiktionary-Wörterbücher konnte nicht geladen werden. Prüfe deine Verbindung.</string>
+    <string name="dictionary_order_help">Beim Nachschlagen erscheinen deine Wörterbücher in dieser Reihenfolge; verschiebe sie mit den Pfeilen.</string>
+    <string name="move_up">Nach oben</string>
+    <string name="move_down">Nach unten</string>
+    <string name="onboarding_wiktionary_body">Mit einem Wörterbuch kannst du jedes Wort in einem Satz antippen, um es nachzuschlagen und als bekannt oder ignoriert zu markieren. Wiktionary hat eines für jede Sprache: Wähle die Sprache der Definitionen. Es aktualisiert sich selbst.</string>
 </resources>

@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Para makinig nang hands-free, itakda ang awtomatikong Malinaw na malinaw o Laktawan pagkatapos ng ilang pag-play.</string>
     <string name="onboarding_tip_headset">Gamit ang headphones: i-tap para mag-play o mag-pause, i-double tap para laktawan. Pareho ang mga button sa notification.</string>
     <string name="auto_advance_after">Awtomatikong magpatuloy pagkatapos ng</string>
+    <string name="wiktionary_help">Mga diksyunaryong gawa mula sa Wiktionary, para sa bawat wikang puwede mong pag-aralan. Kusa silang nag-a-update.</string>
+    <string name="definitions_in">Mga kahulugan sa</string>
+    <string name="wiktionary_unavailable">Hindi ma-load ang listahan ng mga diksyunaryong Wiktionary. Tingnan ang koneksyon mo.</string>
+    <string name="dictionary_order_help">Sa paghahanap, ipinapakita ang mga diksyunaryo mo sa ganitong ayos; ilipat sila gamit ang mga arrow.</string>
+    <string name="move_up">Ilipat pataas</string>
+    <string name="move_down">Ilipat pababa</string>
+    <string name="onboarding_wiktionary_body">Sa isang diksyunaryo, puwede mong i-tap ang kahit anong salita sa pangungusap para hanapin ito at markahang kilala o balewalain. May diksyunaryo ang Wiktionary para sa bawat wika: piliin ang wika ng mga kahulugan. Kusa itong nag-a-update.</string>
 </resources>

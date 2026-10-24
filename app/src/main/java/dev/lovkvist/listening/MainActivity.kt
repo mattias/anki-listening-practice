@@ -36,8 +36,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.lovkvist.listening.playback.PlaybackService
 import dev.lovkvist.listening.playback.PracticeController
 import dev.lovkvist.listening.data.settings.SettingsRepository
-import dev.lovkvist.listening.data.anki.DeckLibrary
-import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.ui.OnboardingScreen
 import dev.lovkvist.listening.ui.PracticeScreen
 import dev.lovkvist.listening.ui.SettingsScreen
@@ -53,8 +51,6 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     @Inject lateinit var practice: PracticeController
     @Inject lateinit var settingsRepo: SettingsRepository
-    @Inject lateinit var decks: DeckLibrary
-    @Inject lateinit var media: MediaLibrary
 
     /** Keeps the playback service and its media session up while the app is visible. */
     private var controller: ListenableFuture<MediaController>? = null
@@ -64,10 +60,9 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         // Read once up front, so the first frame already has the chosen theme.
         val initialSettings = runBlocking { settingsRepo.current() }
-        // People who used the app before setup existed already have what it would set up.
-        val usedBefore = decks.decks.value.isNotEmpty() || media.items.value.isNotEmpty()
-        if (!initialSettings.onboardingDone && usedBefore) runBlocking { settingsRepo.setOnboardingDone(true) }
-        val needsSetup = !initialSettings.onboardingDone && !usedBefore
+        // Everyone sees the setup guide once, also people who used the app before it existed:
+        // it shows what they have already and what is new (dictionaries).
+        val needsSetup = !initialSettings.onboardingDone
         setContent {
             val settings by settingsRepo.settings.collectAsStateWithLifecycle(initialSettings)
             val palette = Palette.byId(settings.theme)

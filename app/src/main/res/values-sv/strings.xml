@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">För att lyssna handsfree, ställ in automatisk Kristallklart eller Hoppa över efter några uppspelningar.</string>
     <string name="onboarding_tip_headset">Med hörlurar: tryck för play eller paus, dubbeltryck för att hoppa över. Notisen har samma knappar.</string>
     <string name="auto_advance_after">Gå vidare automatiskt efter</string>
+    <string name="wiktionary_help">Ordböcker gjorda av Wiktionary, för alla språk du kan studera. De uppdaterar sig själva.</string>
+    <string name="definitions_in">Definitioner på</string>
+    <string name="wiktionary_unavailable">Kunde inte hämta listan över Wiktionary-ordböcker. Kontrollera anslutningen.</string>
+    <string name="dictionary_order_help">Uppslag visar dina ordböcker i den här ordningen; flytta dem med pilarna.</string>
+    <string name="move_up">Flytta upp</string>
+    <string name="move_down">Flytta ned</string>
+    <string name="onboarding_wiktionary_body">Med en ordbok kan du trycka på vilket ord som helst i en mening för att slå upp det och markera det som känt eller ignorerat. Wiktionary har en för varje språk: välj språket för definitionerna. Den uppdaterar sig själv.</string>
 </resources>

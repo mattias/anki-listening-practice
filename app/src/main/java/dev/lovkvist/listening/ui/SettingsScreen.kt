@@ -77,6 +77,7 @@ import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.dict.InstallProgress
 import dev.lovkvist.listening.data.dict.InstalledDictionary
 import dev.lovkvist.listening.data.dict.RecommendedDictionary
+import dev.lovkvist.listening.data.dict.WiktionaryCatalog
 import dev.lovkvist.listening.data.local.WordStatus
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
@@ -872,17 +873,36 @@ private fun DictionariesPage(vm: SettingsViewModel, language: Language, installe
         HorizontalDivider()
     }
 
+    Text("Wiktionary", style = MaterialTheme.typography.titleMedium)
+    Text(stringResource(R.string.wiktionary_help), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    WiktionaryPicker(vm, language, mine)
+    HorizontalDivider()
+
     Text(stringResource(R.string.your_dictionaries), style = MaterialTheme.typography.titleMedium)
-    for ((key, p) in progress.filterKeys { k -> recommended.none { it.sourceId == k } }) {
+    if (mine.size > 1) {
+        Text(stringResource(R.string.dictionary_order_help), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    for ((key, p) in progress.filterKeys { k -> recommended.none { it.sourceId == k } && !WiktionaryCatalog.isWiktionary(k) }) {
         Column {
             Text(p.name, style = MaterialTheme.typography.bodyLarge)
             InstallStatus(p) { vm.dismissDictionaryError(key) }
         }
     }
-    for (d in mine) {
+    for ((i, d) in mine.withIndex()) {
         Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainer, modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (mine.size > 1) {
+                        Column {
+                            IconButton(onClick = { vm.moveDictionary(d.id, -1) }, enabled = i > 0, modifier = Modifier.size(36.dp)) {
+                                Icon(painterResource(R.drawable.ic_arrow_up), contentDescription = stringResource(R.string.move_up))
+                            }
+                            IconButton(onClick = { vm.moveDictionary(d.id, 1) }, enabled = i < mine.lastIndex, modifier = Modifier.size(36.dp)) {
+                                Icon(painterResource(R.drawable.ic_arrow_down), contentDescription = stringResource(R.string.move_down))
+                            }
+                        }
+                        Spacer(Modifier.width(4.dp))
+                    }
                     Column(Modifier.weight(1f)) {
                         Text(d.title, style = MaterialTheme.typography.bodyLarge)
                         Text(
@@ -916,7 +936,7 @@ private fun DictionariesPage(vm: SettingsViewModel, language: Language, installe
 }
 
 @Composable
-private fun InstallStatus(p: InstallProgress, onDismiss: () -> Unit) {
+internal fun InstallStatus(p: InstallProgress, onDismiss: () -> Unit) {
     val text = when {
         p.error != null -> stringResource(R.string.dictionary_failed, p.error)
         p.entries > 0 -> stringResource(R.string.importing_entries, p.entries)

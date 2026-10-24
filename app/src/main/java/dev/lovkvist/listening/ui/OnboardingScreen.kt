@@ -201,7 +201,10 @@ private fun Dictionaries(vm: SettingsViewModel, language: Language) {
     Title(stringResource(R.string.dictionaries))
     val recommended = RecommendedDictionary.forLanguage(language)
     if (recommended.isEmpty()) {
-        Body(stringResource(R.string.onboarding_no_recommended, language.displayName()))
+        // Other languages: a dictionary from Wiktionary, with definitions in a language of your choice.
+        Body(stringResource(R.string.onboarding_wiktionary_body))
+        WiktionaryPicker(vm, language, installed.filter { it.language == language })
+        Text(stringResource(R.string.onboarding_dictionaries_background), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         return
     }
     Body(stringResource(R.string.onboarding_dictionaries_body))

@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">想空出雙手，就設定幾遍之後自動「完全聽懂」或自動略過。</string>
     <string name="onboarding_tip_headset">使用耳機時：輕觸播放或暫停，點兩下略過。通知中也有同樣的按鈕。</string>
     <string name="auto_advance_after">播放幾遍後自動繼續</string>
+    <string name="wiktionary_help">用維基詞典製作的詞典，涵蓋你能學習的所有語言。會自動更新。</string>
+    <string name="definitions_in">釋義語言</string>
+    <string name="wiktionary_unavailable">無法載入維基詞典詞典清單。請檢查網路連線。</string>
+    <string name="dictionary_order_help">查詞時按此順序顯示你的詞典；用箭頭調整順序。</string>
+    <string name="move_up">上移</string>
+    <string name="move_down">下移</string>
+    <string name="onboarding_wiktionary_body">有了詞典，你可以點句子裡的任何詞來查詢，並標為已知或忽略。維基詞典為每種語言都提供詞典：選擇釋義的語言。它會自動更新。</string>
 </resources>

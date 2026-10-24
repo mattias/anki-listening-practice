@@ -654,15 +654,14 @@ private fun WordSheet(word: TappableWord, practice: PracticeController, onDismis
                 fontFamily = FontFamily.Serif,
                 localeList = LocaleList(language.textLocale),
             )
-            Row(verticalAlignment = Alignment.Bottom) {
-                Text(word.span.key, style = textStyle)
-                val reading = word.span.reading
-                // Only words with kanji need their reading spelled out.
-                if (reading != null && reading != word.span.key && word.span.key.any { it.code in 0x3400..0x9FFF }) {
-                    Spacer(Modifier.width(10.dp))
-                    Text(reading, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
+            // Only words with kanji need their reading, as furigana.
+            val hasKanji = word.span.key.any { it.code in 0x3400..0x9FFF }
+            Headword(
+                word.span.key,
+                word.span.reading?.takeIf { hasKanji }.orEmpty(),
+                style = textStyle,
+                readingColor = MaterialTheme.colorScheme.primary,
+            )
             Text(
                 stringResource(
                     when (word.state) {
@@ -742,9 +741,11 @@ private fun DictionaryEntryView(entry: DictionaryEntry, language: Language, tagC
     Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainer, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    if (entry.reading.isNotEmpty() && entry.reading != entry.expression) "${entry.expression}【${entry.reading}】" else entry.expression,
+                Headword(
+                    entry.expression,
+                    entry.reading,
                     style = MaterialTheme.typography.titleMedium.copy(localeList = LocaleList(language.textLocale)),
+                    readingColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f),
                 )
                 Text(entry.dictionary, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
@@ -752,8 +753,12 @@ private fun DictionaryEntryView(entry: DictionaryEntry, language: Language, tagC
             if (entry.tags.isNotEmpty()) {
                 Text(entry.tags.joinToString(" · "), style = MaterialTheme.typography.labelSmall, color = tagColor)
             }
-            val glossary = remember(entry.glossary, tagColor) { glossaryText(entry.glossary, tagColor) }
-            Text(glossary, style = MaterialTheme.typography.bodyMedium.copy(localeList = LocaleList(language.textLocale)))
+            GlossaryText(
+                entry.glossary,
+                style = MaterialTheme.typography.bodyMedium.copy(localeList = LocaleList(language.textLocale)),
+                tagColor = tagColor,
+                readingColor = MaterialTheme.colorScheme.primary,
+            )
         }
     }
 }

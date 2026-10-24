@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">כדי להאזין בלי ידיים, הגדירו ברור לגמרי או דילוג אוטומטי אחרי כמה השמעות.</string>
     <string name="onboarding_tip_headset">עם אוזניות: הקשה להשמעה או השהיה, הקשה כפולה לדילוג. בהתראה יש את אותם כפתורים.</string>
     <string name="auto_advance_after">להמשיך אוטומטית אחרי</string>
+    <string name="wiktionary_help">מילונים מוויקימילון, לכל שפה שאפשר ללמוד. הם מתעדכנים בעצמם.</string>
+    <string name="definitions_in">הגדרות בשפה</string>
+    <string name="wiktionary_unavailable">לא ניתן לטעון את רשימת המילונים של ויקימילון. בדקו את החיבור.</string>
+    <string name="dictionary_order_help">בחיפוש המילונים מוצגים בסדר הזה; הזיזו אותם עם החצים.</string>
+    <string name="move_up">הזזה למעלה</string>
+    <string name="move_down">הזזה למטה</string>
+    <string name="onboarding_wiktionary_body">עם מילון אפשר להקיש על כל מילה במשפט כדי לחפש אותה ולסמן אותה כמוכרת או להתעלם ממנה. בוויקימילון יש מילון לכל שפה: בחרו את שפת ההגדרות. הוא מתעדכן בעצמו.</string>
 </resources>

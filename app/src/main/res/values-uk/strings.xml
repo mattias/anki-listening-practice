@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Щоб слухати без рук, увімкніть автоматичне «Кришталево ясно» або пропуск після кількох відтворень.</string>
     <string name="onboarding_tip_headset">З навушниками: натискання — відтворення або пауза, подвійне натискання — пропуск. У сповіщенні ті самі кнопки.</string>
     <string name="auto_advance_after">Автоматично далі після</string>
+    <string name="wiktionary_help">Словники з Вікісловника для кожної мови, яку можна вивчати. Вони оновлюються самі.</string>
+    <string name="definitions_in">Визначення мовою</string>
+    <string name="wiktionary_unavailable">Не вдалося завантажити список словників Вікісловника. Перевірте з\'єднання.</string>
+    <string name="dictionary_order_help">Під час пошуку словники показано в цьому порядку; змінюйте його стрілками.</string>
+    <string name="move_up">Вгору</string>
+    <string name="move_down">Вниз</string>
+    <string name="onboarding_wiktionary_body">Зі словником можна торкнутися будь-якого слова в реченні, щоб знайти його й позначити як відоме чи ігнороване. У Вікісловнику є словник для кожної мови: виберіть мову визначень. Він оновлюється сам.</string>
 </resources>

@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Untuk mendengarkan tanpa tangan, atur Jelas sekali atau Lewati otomatis setelah beberapa putaran.</string>
     <string name="onboarding_tip_headset">Dengan headset: ketuk untuk putar atau jeda, ketuk dua kali untuk melewati. Notifikasinya punya tombol yang sama.</string>
     <string name="auto_advance_after">Lanjut otomatis setelah</string>
+    <string name="wiktionary_help">Kamus dari Wikikamus untuk setiap bahasa yang bisa Anda pelajari. Kamus ini memperbarui dirinya sendiri.</string>
+    <string name="definitions_in">Definisi dalam</string>
+    <string name="wiktionary_unavailable">Daftar kamus Wikikamus tidak dapat dimuat. Periksa koneksi Anda.</string>
+    <string name="dictionary_order_help">Pencarian menampilkan kamus Anda dalam urutan ini; pindahkan dengan panah.</string>
+    <string name="move_up">Pindah ke atas</string>
+    <string name="move_down">Pindah ke bawah</string>
+    <string name="onboarding_wiktionary_body">Dengan kamus, Anda bisa mengetuk kata apa pun dalam kalimat untuk mencarinya dan menandainya dikenal atau diabaikan. Wikikamus punya kamus untuk setiap bahasa: pilih bahasa definisinya. Kamus ini memperbarui dirinya sendiri.</string>
 </resources>

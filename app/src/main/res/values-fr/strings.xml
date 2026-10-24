@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Pour écouter les mains libres, réglez Limpide ou Passer automatique après quelques lectures.</string>
     <string name="onboarding_tip_headset">Avec des écouteurs : touchez pour lire ou mettre en pause, touchez deux fois pour passer. La notification a les mêmes boutons.</string>
     <string name="auto_advance_after">Passer automatiquement après</string>
+    <string name="wiktionary_help">Des dictionnaires tirés du Wiktionnaire, pour chaque langue que vous pouvez étudier. Ils se mettent à jour d\'eux-mêmes.</string>
+    <string name="definitions_in">Définitions en</string>
+    <string name="wiktionary_unavailable">Impossible de charger la liste des dictionnaires du Wiktionnaire. Vérifiez votre connexion.</string>
+    <string name="dictionary_order_help">Les recherches affichent vos dictionnaires dans cet ordre ; déplacez-les avec les flèches.</string>
+    <string name="move_up">Monter</string>
+    <string name="move_down">Descendre</string>
+    <string name="onboarding_wiktionary_body">Avec un dictionnaire, touchez n\'importe quel mot d\'une phrase pour le chercher et le marquer connu ou ignoré. Le Wiktionnaire en a un pour chaque langue : choisissez la langue des définitions. Il se met à jour tout seul.</string>
 </resources>

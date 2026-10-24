@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Để nghe rảnh tay, hãy đặt tự động Rõ ràng hoặc Bỏ qua sau vài lượt phát.</string>
     <string name="onboarding_tip_headset">Với tai nghe: chạm để phát hoặc tạm dừng, chạm hai lần để bỏ qua. Thông báo cũng có các nút như vậy.</string>
     <string name="auto_advance_after">Tự động chuyển tiếp sau</string>
+    <string name="wiktionary_help">Từ điển được tạo từ Wiktionary cho mọi ngôn ngữ bạn có thể học. Chúng tự cập nhật.</string>
+    <string name="definitions_in">Định nghĩa bằng</string>
+    <string name="wiktionary_unavailable">Không tải được danh sách từ điển Wiktionary. Hãy kiểm tra kết nối.</string>
+    <string name="dictionary_order_help">Khi tra từ, từ điển của bạn hiện theo thứ tự này; dùng mũi tên để sắp xếp.</string>
+    <string name="move_up">Chuyển lên</string>
+    <string name="move_down">Chuyển xuống</string>
+    <string name="onboarding_wiktionary_body">Có từ điển, bạn có thể chạm vào bất kỳ từ nào trong câu để tra và đánh dấu là đã biết hoặc bỏ qua. Wiktionary có từ điển cho mọi ngôn ngữ: hãy chọn ngôn ngữ của phần định nghĩa. Nó tự cập nhật.</string>
 </resources>

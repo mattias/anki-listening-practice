@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Para escuchar sin manos, activa Cristalino o Saltar automático tras unas reproducciones.</string>
     <string name="onboarding_tip_headset">Con auriculares: toca para reproducir o pausar, toca dos veces para saltar. La notificación tiene los mismos botones.</string>
     <string name="auto_advance_after">Avanzar automáticamente tras</string>
+    <string name="wiktionary_help">Diccionarios hechos a partir de Wikcionario, para cada idioma que puedes estudiar. Se actualizan solos.</string>
+    <string name="definitions_in">Definiciones en</string>
+    <string name="wiktionary_unavailable">No se pudo cargar la lista de diccionarios de Wikcionario. Revisa tu conexión.</string>
+    <string name="dictionary_order_help">Las búsquedas muestran tus diccionarios en este orden; muévelos con las flechas.</string>
+    <string name="move_up">Subir</string>
+    <string name="move_down">Bajar</string>
+    <string name="onboarding_wiktionary_body">Con un diccionario puedes tocar cualquier palabra de una frase para buscarla y marcarla como conocida o ignorada. Wikcionario tiene uno para cada idioma: elige el idioma de las definiciones. Se actualiza solo.</string>
 </resources>

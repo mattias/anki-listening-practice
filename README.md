@@ -48,10 +48,13 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   mark it *Known* or *Ignore*. Known words count as known from then on; ignored ones (names,
   sounds) only stop counting as unknown and aren't exported. They're listed under
   **Settings → My words**, where you can search, switch between known and ignored, or remove them.
-- **Yomitan dictionaries, Hachidori-style** — under **Settings → Dictionaries**, install with one
+- **Yomitan dictionaries for every language** — under **Settings → Dictionaries**, install with one
   tap the five dictionaries [Hachidori](https://github.com/bee-san/hachidori) sets up by default
-  for Japanese, or import any Yomitan `.zip`. Dictionaries that publish updates are checked daily
-  and updated by themselves (per dictionary, can be turned off).
+  for Japanese, or for any language a [Wiktionary](https://github.com/yomidevs/wiktionary-to-yomitan)
+  dictionary with definitions in the language you choose (your app language by default). Import any
+  other Yomitan `.zip` too, and put your dictionaries in the order lookups should show them.
+  Dictionaries that publish updates are checked daily and updated by themselves (per dictionary,
+  can be turned off). Readings are shown as furigana above the kanji, in headwords and examples.
 - **Export known words** — **Settings → Known words → Export** writes your word list, your cards'
   words and the words you marked known to a `.txt` file, one per line, for Jiten or Migaku.
 - **Looping audio** — adjustable speed (0.5x–1.5x) and pause between repeats (0–5 s), set from
@@ -107,9 +110,9 @@ several years).
 
 ## Getting started
 
-The first time you open the app, a setup guide walks you through the steps below: app language,
-the language you study, dictionaries, known words and your Anki deck. You can open it again
-under **Settings → Setup guide**.
+The first time you open the app (also after updating from a version without it), a setup guide
+walks you through the steps below: app language, the language you study, dictionaries, known
+words and your Anki deck. You can open it again under **Settings → Setup guide**.
 
 1. **Export from AnkiDroid**: export your mining deck as `.apkg` (or your whole collection as
    `.colpkg`) with *Include media* checked.
@@ -192,9 +195,20 @@ from their authors:
 - [Jiten](https://jiten.moe) frequency list
 - [Bee's Ultimate Grammar Dictionary](https://github.com/bee-san/bees-ultimate-grammar-dictionary)
 
-Each is under its own license. Any other [Yomitan](https://github.com/yomidevs/yomitan)
-dictionary can be imported as a `.zip`, in any language. The dictionaries are stored in the app;
-removing one frees the space.
+Each is under its own license.
+
+For every language there are dictionaries built from Wiktionary by
+[wiktionary-to-yomitan](https://github.com/yomidevs/wiktionary-to-yomitan) (data from
+[Kaikki](https://kaikki.org), CC BY-SA). Each covers the words of one language with definitions
+from one Wiktionary edition (English, German, French, Japanese and more); the app suggests your
+app language if there is one, else English. Inflected forms lead to their base form (*dricker* →
+*dricka*). Chinese dictionaries serve Mandarin, Cantonese and Taiwanese, and Croatian uses the
+Serbo-Croatian one.
+
+Any other [Yomitan](https://github.com/yomidevs/yomitan) dictionary can be imported as a `.zip`;
+it belongs to the language you study when you import it, like decks. Lookups show dictionaries in
+the order under **Your dictionaries** (move them with the arrows). The dictionaries are stored in
+the app; removing one frees the space.
 
 ### Updates
 

@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Za slušanje bez ruku postavi automatsko Kristalno jasno ili preskakanje nakon nekoliko reprodukcija.</string>
     <string name="onboarding_tip_headset">Sa slušalicama: dodir za reprodukciju ili pauzu, dvostruki dodir za preskakanje. Obavijest ima iste gumbe.</string>
     <string name="auto_advance_after">Automatski dalje nakon</string>
+    <string name="wiktionary_help">Rječnici iz Wječnika (Wiktionary) za svaki jezik koji možeš učiti. Sami se ažuriraju.</string>
+    <string name="definitions_in">Definicije na jeziku</string>
+    <string name="wiktionary_unavailable">Popis Wiktionary rječnika nije se mogao učitati. Provjeri vezu.</string>
+    <string name="dictionary_order_help">Pretraga prikazuje tvoje rječnike ovim redom; premjesti ih strelicama.</string>
+    <string name="move_up">Pomakni gore</string>
+    <string name="move_down">Pomakni dolje</string>
+    <string name="onboarding_wiktionary_body">S rječnikom možeš dodirnuti bilo koju riječ u rečenici da je potražiš i označiš kao poznatu ili zanemarenu. Wiktionary ima rječnik za svaki jezik: odaberi jezik definicija. Sam se ažurira.</string>
 </resources>

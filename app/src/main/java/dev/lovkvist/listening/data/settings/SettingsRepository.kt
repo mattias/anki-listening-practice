@@ -65,7 +65,7 @@ class SettingsRepository @Inject constructor(
         val darkMode = stringPreferencesKey("dark_mode")
         val maxUnknownWords = intPreferencesKey("max_unknown_words")
         val autoAdvanceSkip = booleanPreferencesKey("auto_advance_skip")
-        val onboardingDone = booleanPreferencesKey("onboarding_done")
+        val onboardingDone = booleanPreferencesKey("setup_guide_seen")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")

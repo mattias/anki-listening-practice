@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Kuunnellaksesi ilman käsiä aseta automaattinen Kristallinkirkas tai Ohita muutaman toiston jälkeen.</string>
     <string name="onboarding_tip_headset">Kuulokkeilla: napauta toistaaksesi tai keskeyttääksesi, kaksoisnapauta ohittaaksesi. Ilmoituksessa on samat painikkeet.</string>
     <string name="auto_advance_after">Siirry automaattisesti eteenpäin, kun toistoja</string>
+    <string name="wiktionary_help">Wikisanakirjasta tehtyjä sanakirjoja jokaiselle kielelle, jota voit opiskella. Ne päivittyvät itsestään.</string>
+    <string name="definitions_in">Määritelmien kieli</string>
+    <string name="wiktionary_unavailable">Wikisanakirjan sanakirjaluetteloa ei voitu ladata. Tarkista yhteys.</string>
+    <string name="dictionary_order_help">Haut näyttävät sanakirjasi tässä järjestyksessä; siirrä niitä nuolilla.</string>
+    <string name="move_up">Siirrä ylös</string>
+    <string name="move_down">Siirrä alas</string>
+    <string name="onboarding_wiktionary_body">Sanakirjan avulla voit napauttaa mitä tahansa lauseen sanaa, hakea sen ja merkitä sen tunnetuksi tai ohitetuksi. Wikisanakirjassa on sanakirja jokaiselle kielelle: valitse määritelmien kieli. Se päivittyy itsestään.</string>
 </resources>

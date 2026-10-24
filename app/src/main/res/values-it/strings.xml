@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Per ascoltare a mani libere, imposta Cristallino o Salta automatico dopo qualche riproduzione.</string>
     <string name="onboarding_tip_headset">Con le cuffie: tocca per riprodurre o mettere in pausa, tocca due volte per saltare. La notifica ha gli stessi pulsanti.</string>
     <string name="auto_advance_after">Vai avanti automaticamente dopo</string>
+    <string name="wiktionary_help">Dizionari ricavati dal Wikizionario, per ogni lingua che puoi studiare. Si aggiornano da soli.</string>
+    <string name="definitions_in">Definizioni in</string>
+    <string name="wiktionary_unavailable">Impossibile caricare l\'elenco dei dizionari del Wikizionario. Controlla la connessione.</string>
+    <string name="dictionary_order_help">Le ricerche mostrano i tuoi dizionari in quest\'ordine; spostali con le frecce.</string>
+    <string name="move_up">Sposta su</string>
+    <string name="move_down">Sposta giù</string>
+    <string name="onboarding_wiktionary_body">Con un dizionario puoi toccare qualsiasi parola di una frase per cercarla e segnarla come nota o ignorata. Il Wikizionario ne ha uno per ogni lingua: scegli la lingua delle definizioni. Si aggiorna da solo.</string>
 </resources>

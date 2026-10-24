@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Norėdami klausytis be rankų, nustatykite automatinį „Visiškai aišku“ arba praleidimą po kelių grojimų.</string>
     <string name="onboarding_tip_headset">Su ausinėmis: bakstelėkite grojimui ar pauzei, bakstelėkite dukart praleidimui. Pranešime yra tie patys mygtukai.</string>
     <string name="auto_advance_after">Automatiškai toliau po</string>
+    <string name="wiktionary_help">Žodynai iš Vikižodyno kiekvienai kalbai, kurios galite mokytis. Jie atsinaujina patys.</string>
+    <string name="definitions_in">Apibrėžimų kalba</string>
+    <string name="wiktionary_unavailable">Nepavyko įkelti Vikižodyno žodynų sąrašo. Patikrinkite ryšį.</string>
+    <string name="dictionary_order_help">Paieškoje žodynai rodomi šia tvarka; perkelkite juos rodyklėmis.</string>
+    <string name="move_up">Perkelti aukštyn</string>
+    <string name="move_down">Perkelti žemyn</string>
+    <string name="onboarding_wiktionary_body">Su žodynu galite bakstelėti bet kurį sakinio žodį, jį surasti ir pažymėti kaip žinomą ar ignoruojamą. Vikižodynas turi žodyną kiekvienai kalbai: pasirinkite apibrėžimų kalbą. Jis atsinaujina pats.</string>
 </resources>

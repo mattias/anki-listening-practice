@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">ハンズフリーで聞くなら、数回再生した後の自動「完璧に理解」か自動スキップを設定しましょう。</string>
     <string name="onboarding_tip_headset">イヤホンでは、タップで再生・一時停止、ダブルタップでスキップ。通知にも同じボタンがあります。</string>
     <string name="auto_advance_after">自動で次へ進む回数</string>
+    <string name="wiktionary_help">ウィクショナリーから作られた辞書で、学べるすべての言語に対応しています。自動で更新されます。</string>
+    <string name="definitions_in">定義の言語</string>
+    <string name="wiktionary_unavailable">ウィクショナリー辞書の一覧を読み込めませんでした。接続を確認してください。</string>
+    <string name="dictionary_order_help">検索結果ではこの順番で辞書が表示されます。矢印で並べ替えられます。</string>
+    <string name="move_up">上へ移動</string>
+    <string name="move_down">下へ移動</string>
+    <string name="onboarding_wiktionary_body">辞書があれば、文の中の単語をタップして調べ、既知や無視に設定できます。ウィクショナリーにはどの言語の辞書もあります。定義の言語を選んでください。自動で更新されます。</string>
 </resources>

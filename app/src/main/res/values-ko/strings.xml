@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">손을 쓰지 않고 들으려면 몇 번 재생한 뒤 자동 완벽히 이해나 건너뛰기를 설정하세요.</string>
     <string name="onboarding_tip_headset">이어폰으로: 탭하면 재생 또는 일시정지, 두 번 탭하면 건너뛰기. 알림에도 같은 버튼이 있습니다.</string>
     <string name="auto_advance_after">자동으로 넘어가는 횟수</string>
+    <string name="wiktionary_help">위키낱말사전으로 만든 사전으로, 공부할 수 있는 모든 언어를 지원합니다. 자동으로 업데이트됩니다.</string>
+    <string name="definitions_in">정의 언어</string>
+    <string name="wiktionary_unavailable">위키낱말사전 사전 목록을 불러오지 못했습니다. 연결을 확인하세요.</string>
+    <string name="dictionary_order_help">검색 결과에 이 순서대로 사전이 표시됩니다. 화살표로 순서를 바꾸세요.</string>
+    <string name="move_up">위로 이동</string>
+    <string name="move_down">아래로 이동</string>
+    <string name="onboarding_wiktionary_body">사전이 있으면 문장의 단어를 탭해서 찾아보고 아는 단어나 무시로 표시할 수 있습니다. 위키낱말사전에는 모든 언어의 사전이 있습니다. 정의 언어를 고르세요. 자동으로 업데이트됩니다.</string>
 </resources>

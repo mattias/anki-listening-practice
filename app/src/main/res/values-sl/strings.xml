@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Za poslušanje brez rok nastavi samodejno Kristalno jasno ali preskok po nekaj predvajanjih.</string>
     <string name="onboarding_tip_headset">S slušalkami: tapni za predvajanje ali premor, dvakrat tapni za preskok. Obvestilo ima enake gumbe.</string>
     <string name="auto_advance_after">Samodejno naprej po</string>
+    <string name="wiktionary_help">Slovarji iz Wikislovarja za vsak jezik, ki se ga lahko učiš. Posodabljajo se sami.</string>
+    <string name="definitions_in">Definicije v jeziku</string>
+    <string name="wiktionary_unavailable">Seznama slovarjev Wikislovarja ni bilo mogoče naložiti. Preveri povezavo.</string>
+    <string name="dictionary_order_help">Iskanje prikaže tvoje slovarje v tem vrstnem redu; premikaj jih s puščicami.</string>
+    <string name="move_up">Premakni gor</string>
+    <string name="move_down">Premakni dol</string>
+    <string name="onboarding_wiktionary_body">S slovarjem lahko tapneš katero koli besedo v stavku, jo poiščeš in označiš kot znano ali prezrto. Wikislovar ima slovar za vsak jezik: izberi jezik definicij. Posodablja se sam.</string>
 </resources>

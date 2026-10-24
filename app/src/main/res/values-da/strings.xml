@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Vil du lytte håndfrit, så indstil automatisk Krystalklart eller Spring over efter et par afspilninger.</string>
     <string name="onboarding_tip_headset">Med høretelefoner: tryk for at afspille eller sætte på pause, dobbelttryk for at springe over. Notifikationen har de samme knapper.</string>
     <string name="auto_advance_after">Gå automatisk videre efter</string>
+    <string name="wiktionary_help">Ordbøger lavet ud fra Wiktionary, til alle de sprog, du kan studere. De opdaterer sig selv.</string>
+    <string name="definitions_in">Definitioner på</string>
+    <string name="wiktionary_unavailable">Listen over Wiktionary-ordbøger kunne ikke hentes. Tjek din forbindelse.</string>
+    <string name="dictionary_order_help">Opslag viser dine ordbøger i denne rækkefølge; flyt dem med pilene.</string>
+    <string name="move_up">Flyt op</string>
+    <string name="move_down">Flyt ned</string>
+    <string name="onboarding_wiktionary_body">Med en ordbog kan du trykke på et hvilket som helst ord i en sætning for at slå det op og markere det som kendt eller ignoreret. Wiktionary har en til hvert sprog: vælg sproget for definitionerne. Den opdaterer sig selv.</string>
 </resources>

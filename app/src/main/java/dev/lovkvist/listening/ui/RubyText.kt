@@ -109,4 +109,4 @@ private fun keepTogether(units: List<RubyUnit>): List<List<RubyUnit>> {
 private const val NO_LINE_START = "、。，．,.!?！？)）]］}｝」』】〉》〕ー・：；:;～…ゃゅょっぁぃぅぇぉャュョッァィゥェォ"
 private const val NO_LINE_END = "(（[［{｛「『【〈《〔"
 
-private const val READING_SCALE = 0.5f
+internal const val READING_SCALE = 0.5f

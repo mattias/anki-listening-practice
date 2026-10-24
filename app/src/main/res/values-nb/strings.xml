@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Vil du lytte håndfritt, still inn automatisk Krystallklart eller Hopp over etter noen avspillinger.</string>
     <string name="onboarding_tip_headset">Med hodetelefoner: trykk for å spille av eller pause, dobbelttrykk for å hoppe over. Varselet har de samme knappene.</string>
     <string name="auto_advance_after">Gå automatisk videre etter</string>
+    <string name="wiktionary_help">Ordbøker laget fra Wiktionary, for alle språkene du kan studere. De oppdaterer seg selv.</string>
+    <string name="definitions_in">Definisjoner på</string>
+    <string name="wiktionary_unavailable">Kunne ikke hente listen over Wiktionary-ordbøker. Sjekk tilkoblingen.</string>
+    <string name="dictionary_order_help">Oppslag viser ordbøkene dine i denne rekkefølgen; flytt dem med pilene.</string>
+    <string name="move_up">Flytt opp</string>
+    <string name="move_down">Flytt ned</string>
+    <string name="onboarding_wiktionary_body">Med en ordbok kan du trykke på et hvilket som helst ord i en setning for å slå det opp og merke det som kjent eller ignorert. Wiktionary har en for hvert språk: velg språket for definisjonene. Den oppdaterer seg selv.</string>
 </resources>

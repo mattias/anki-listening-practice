@@ -97,7 +97,7 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
                 runInstall(source.sourceId, source.name) {
                     val file = download(source.downloadUrl, source.sourceId)
                     try {
-                        importFile(file, source.sourceId, source.role, source.language, source.sourceId, replacing = installedId(source.sourceId))
+                        importFile(file, source.sourceId, source.role, source.language, source.sourceId, replacing = installedId(source.sourceId), title = source.name.takeIf { WiktionaryCatalog.isWiktionary(source.sourceId) })
                     } finally {
                         file.delete()
                     }
@@ -106,13 +106,13 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
         }
     }
 
-    /** Imports a Yomitan zip the user picked, for [language] unless its index names another. */
+    /** Imports a Yomitan zip the user picked, for [language]. */
     fun importUri(uri: Uri, name: String, language: Language) {
         _progress.update { it + (name to InstallProgress(name)) }
         scope.launch {
             runInstall(name, name) {
                 val input = context.contentResolver.openInputStream(uri) ?: throw IOException("Could not open $name")
-                input.use { importStream(it, sourceId = null, role = null, fallbackLanguage = language, key = name, replacing = null) }
+                input.use { importStream(it, sourceId = null, role = null, language = language, key = name, replacing = null) }
             }
         }
     }
@@ -124,6 +124,22 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
 
     fun setEnabled(id: Long, enabled: Boolean) = scope.launch {
         db.update(id, ContentValues().apply { put("enabled", if (enabled) 1 else 0) })
+        refresh()
+    }
+
+    /** Moves a dictionary one place up ([by] -1) or down (+1) among those of its language; lookups follow this order. */
+    fun move(id: Long, by: Int) = scope.launch {
+        val list = loadInstalled()
+        val d = list.firstOrNull { it.id == id } ?: return@launch
+        val same = list.filter { it.language == d.language }
+        val other = same.getOrNull(same.indexOf(d) + by) ?: return@launch
+        val positions = query("SELECT id, position FROM dictionary WHERE id IN (${d.id}, ${other.id})") { it.getLong(0) to it.getInt(1) }.toMap()
+        var a = positions[d.id] ?: return@launch
+        var b = positions[other.id] ?: return@launch
+        // Two dictionaries can share a position (their order then goes by id); split them first.
+        if (a == b) if (d.id < other.id) b++ else a++
+        db.update(d.id, ContentValues().apply { put("position", b) })
+        db.update(other.id, ContentValues().apply { put("position", a) })
         refresh()
     }
 
@@ -156,7 +172,7 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
                 runInstall(key, d.title) {
                     val file = download(url, key)
                     try {
-                        importFile(file, d.sourceId, role, d.language, key, replacing = d.id)
+                        importFile(file, d.sourceId, role, d.language, key, replacing = d.id, title = d.title.takeIf { d.sourceId?.let(WiktionaryCatalog::isWiktionary) == true })
                     } finally {
                         file.delete()
                     }
@@ -176,32 +192,19 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
      */
     suspend fun lookup(language: Language, forms: List<String>, reading: String?): LookupResult = withContext(Dispatchers.IO) {
         if (forms.isEmpty()) return@withContext LookupResult()
-        val marks = forms.joinToString(",") { "?" }
-        val args = (listOf(language.code) + forms + forms).toTypedArray()
-        val terms = mutableListOf<DictionaryEntry>()
+        val terms = queryTerms(language, forms).toMutableList()
+        // Inflected forms (Wiktionary's "dricker") point to their lemma ("dricka"); add its entries.
+        val lemmas = terms.flatMap { lemmasOf(it.glossary) }.distinct().filter { it !in forms }
+        if (lemmas.isNotEmpty()) terms += queryTerms(language, lemmas)
         val kanji = mutableListOf<DictionaryEntry>()
-        db.readableDatabase.rawQuery(
-            "SELECT d.title, d.role, t.expression, t.reading, t.def_tags, t.term_tags, t.glossary FROM term t " +
-                "JOIN dictionary d ON d.id = t.dict WHERE d.ready = 1 AND d.enabled = 1 AND d.language = ? " +
-                "AND (d.role IS NULL OR d.role != '$ROLE_KANJI') AND (t.expression IN ($marks) OR t.reading IN ($marks)) ORDER BY d.position, d.id, t.score DESC LIMIT 60",
-            args,
-        ).use { c ->
-            while (c.moveToNext()) {
-                val entry = DictionaryEntry(
-                    dictionary = c.getString(0),
-                    expression = c.getString(2),
-                    reading = c.getString(3),
-                    tags = (c.getString(4).orEmpty() + " " + c.getString(5).orEmpty()).split(' ').filter { it.isNotBlank() }.distinct(),
-                    glossary = DictionaryDatabase.inflate(c.getBlob(6)),
-                )
-                terms += entry
-            }
-        }
-        // Like Yomitan: entries with the word's reading first, then the most frequent headwords
-        // (so 成る comes before 生る), then the dictionaries' own order.
+        // Entries with the word's reading first, then in the order of your dictionaries, and within
+        // a dictionary the most frequent headwords first (so 成る comes before 生る).
         val ranks = terms.map { it.expression }.distinct().associateWith { rankOf(language, it, reading) }
+        val order = terms.map { it.dictionary }.distinct()
         val sorted = terms.sortedWith(
-            compareBy<DictionaryEntry> { reading != null && it.reading != reading }.thenBy { ranks[it.expression] ?: Int.MAX_VALUE },
+            compareBy<DictionaryEntry> { reading != null && it.reading != reading }
+                .thenBy { order.indexOf(it.dictionary) }
+                .thenBy { ranks[it.expression] ?: Int.MAX_VALUE },
         ).take(MAX_TERMS)
 
         val word = forms.first()
@@ -232,6 +235,25 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
         LookupResult(sorted, frequencies, kanji)
     }
 
+    /** Term entries (not kanji) whose expression or reading is one of [forms]. */
+    private fun queryTerms(language: Language, forms: List<String>): List<DictionaryEntry> {
+        val marks = forms.joinToString(",") { "?" }
+        return query(
+            "SELECT d.title, t.expression, t.reading, t.def_tags, t.term_tags, t.glossary FROM term t " +
+                "JOIN dictionary d ON d.id = t.dict WHERE d.ready = 1 AND d.enabled = 1 AND d.language = ? " +
+                "AND (d.role IS NULL OR d.role != '$ROLE_KANJI') AND (t.expression IN ($marks) OR t.reading IN ($marks)) ORDER BY d.position, d.id, t.score DESC LIMIT 60",
+            (listOf(language.code) + forms + forms).toTypedArray(),
+        ) { c ->
+            DictionaryEntry(
+                dictionary = c.getString(0),
+                expression = c.getString(1),
+                reading = c.getString(2),
+                tags = (c.getString(3).orEmpty() + " " + c.getString(4).orEmpty()).split(' ').filter { it.isNotBlank() }.distinct(),
+                glossary = DictionaryDatabase.inflate(c.getBlob(5)),
+            )
+        }
+    }
+
     /** The best (lowest) rank any frequency dictionary gives [expression], or null. */
     private fun rankOf(language: Language, expression: String, reading: String?): Int? {
         var best: Int? = null
@@ -258,12 +280,16 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
         refresh()
     }
 
-    private fun importFile(file: File, sourceId: String?, role: String?, language: Language, key: String, replacing: Long?) {
-        file.inputStream().use { importStream(it, sourceId, role, language, key, replacing) }
+    private fun importFile(file: File, sourceId: String?, role: String?, language: Language, key: String, replacing: Long?, title: String? = null) {
+        file.inputStream().use { importStream(it, sourceId, role, language, key, replacing, title) }
     }
 
-    /** Imports a zip as a new dictionary; when it's ready, it takes the place of [replacing]. */
-    private fun importStream(input: InputStream, sourceId: String?, role: String?, fallbackLanguage: Language, key: String, replacing: Long?) {
+    /**
+     * Imports a zip as a new dictionary of [language] (the one being studied, like decks: a
+     * Chinese dictionary serves Mandarin, Cantonese or Taiwanese); when it's ready, it takes the
+     * place of [replacing]. A [title] replaces the one in its index (wty titles are like "wty-sv-en").
+     */
+    private fun importStream(input: InputStream, sourceId: String?, role: String?, language: Language, key: String, replacing: Long?, title: String? = null) {
         val position = replacing?.let { id -> query("SELECT position FROM dictionary WHERE id = $id") { it.getInt(0) }.firstOrNull() }
             ?: ((query("SELECT MAX(position) FROM dictionary") { it.getInt(0) }.firstOrNull() ?: 0) + 1)
         val id = db.insertDictionary(
@@ -272,7 +298,7 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
                 put("revision", "")
                 put("source_id", sourceId)
                 put("role", role)
-                put("language", fallbackLanguage.code)
+                put("language", language.code)
                 put("position", position)
                 put("imported_at", System.currentTimeMillis())
             },
@@ -283,13 +309,11 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
                 if (n % 2000 == 0) _progress.update { it + (key to (it[key] ?: InstallProgress(key)).copy(entries = n)) }
             }
             writer.finish(success = true)
-            val language = index.sourceLanguage?.let { code -> Language.entries.firstOrNull { it.matchesTag(code) } } ?: fallbackLanguage
             db.update(
                 id,
                 ContentValues().apply {
-                    put("title", index.title)
+                    put("title", title ?: index.title)
                     put("revision", index.revision)
-                    put("language", language.code)
                     put("index_url", index.indexUrl)
                     put("download_url", index.downloadUrl)
                     put("updatable", if (index.updatable && index.indexUrl != null) 1 else 0)
@@ -401,6 +425,12 @@ class DictionaryRepository @Inject constructor(@ApplicationContext private val c
                 return if (f is JSONObject) f.optString("displayValue").ifEmpty { f.opt("value")?.toString() } else f.toString()
             }
             return o.optString("displayValue").ifEmpty { o.opt("value")?.toString() }
+        }
+
+        /** The lemmas an inflected form's glossary points to: [["dricka", ["present"]]] → dricka. */
+        fun lemmasOf(glossary: String): List<String> {
+            val items = runCatching { org.json.JSONArray(glossary) }.getOrNull() ?: return emptyList()
+            return (0 until items.length()).mapNotNull { i -> (items.opt(i) as? org.json.JSONArray)?.optString(0)?.takeIf { it.isNotEmpty() } }
         }
 
         /** The numeric rank in a frequency entry, or null if it has none (or is for another reading). */

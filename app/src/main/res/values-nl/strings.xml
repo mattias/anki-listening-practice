@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Om handsfree te luisteren, stel na een paar keer afspelen automatisch Glashelder of Overslaan in.</string>
     <string name="onboarding_tip_headset">Met een koptelefoon: tik om af te spelen of te pauzeren, dubbeltik om over te slaan. De melding heeft dezelfde knoppen.</string>
     <string name="auto_advance_after">Automatisch verder na</string>
+    <string name="wiktionary_help">Woordenboeken gemaakt van WikiWoordenboek (Wiktionary), voor elke taal die je kunt leren. Ze werken zichzelf bij.</string>
+    <string name="definitions_in">Definities in het</string>
+    <string name="wiktionary_unavailable">De lijst met Wiktionary-woordenboeken kon niet worden geladen. Controleer je verbinding.</string>
+    <string name="dictionary_order_help">Opzoeken toont je woordenboeken in deze volgorde; verplaats ze met de pijlen.</string>
+    <string name="move_up">Omhoog</string>
+    <string name="move_down">Omlaag</string>
+    <string name="onboarding_wiktionary_body">Met een woordenboek tik je op elk woord in een zin om het op te zoeken en als bekend of genegeerd te markeren. Wiktionary heeft er een voor elke taal: kies de taal van de definities. Het werkt zichzelf bij.</string>
 </resources>

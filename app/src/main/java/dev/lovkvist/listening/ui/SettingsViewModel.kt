@@ -7,6 +7,7 @@ import dev.lovkvist.listening.data.dict.DictionaryRepository
 import dev.lovkvist.listening.data.dict.InstallProgress
 import dev.lovkvist.listening.data.dict.InstalledDictionary
 import dev.lovkvist.listening.data.dict.RecommendedDictionary
+import dev.lovkvist.listening.data.dict.WiktionaryCatalog
 import dev.lovkvist.listening.data.known.MyWords
 import dev.lovkvist.listening.data.local.WordStatus
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +58,7 @@ class SettingsViewModel @Inject constructor(
     private val youTube: YouTubeImporter,
     private val strings: Strings,
     private val dictionaries: DictionaryRepository,
+    private val wiktionary: WiktionaryCatalog,
     private val myWords: MyWords,
 ) : ViewModel() {
 
@@ -235,6 +237,14 @@ class SettingsViewModel @Inject constructor(
     fun setDictionaryAutoUpdate(id: Long, auto: Boolean) = dictionaries.setAutoUpdate(id, auto)
 
     fun dismissDictionaryError(key: String) = dictionaries.dismissError(key)
+
+    fun moveDictionary(id: Long, by: Int) = dictionaries.move(id, by)
+
+    /** Wiktionary dictionaries on offer, by source and target language (null until loaded). */
+    val wiktionaryPairs = wiktionary.pairs
+    val wiktionaryFailed = wiktionary.failed
+
+    fun loadWiktionary() = viewModelScope.launch { wiktionary.load() }
 
     private val _checkingUpdates = MutableStateFlow(false)
     val checkingUpdates: StateFlow<Boolean> = _checkingUpdates.asStateFlow()

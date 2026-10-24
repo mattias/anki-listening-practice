@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Ca să asculți fără mâini, setează Limpede sau Sari peste automat după câteva redări.</string>
     <string name="onboarding_tip_headset">Cu căști: atinge pentru redare sau pauză, atinge de două ori ca să sari peste. Notificarea are aceleași butoane.</string>
     <string name="auto_advance_after">Mergi automat mai departe după</string>
+    <string name="wiktionary_help">Dicționare făcute din Wikționar, pentru fiecare limbă pe care o poți studia. Se actualizează singure.</string>
+    <string name="definitions_in">Definiții în</string>
+    <string name="wiktionary_unavailable">Lista dicționarelor Wikționar nu a putut fi încărcată. Verifică conexiunea.</string>
+    <string name="dictionary_order_help">Căutările arată dicționarele tale în această ordine; mută-le cu săgețile.</string>
+    <string name="move_up">Mută în sus</string>
+    <string name="move_down">Mută în jos</string>
+    <string name="onboarding_wiktionary_body">Cu un dicționar poți atinge orice cuvânt dintr-o propoziție ca să-l cauți și să-l marchezi drept cunoscut sau ignorat. Wikționarul are unul pentru fiecare limbă: alege limba definițiilor. Se actualizează singur.</string>
 </resources>

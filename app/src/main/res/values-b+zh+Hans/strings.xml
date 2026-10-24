@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">想解放双手，就设置几遍之后自动“完全听懂”或自动跳过。</string>
     <string name="onboarding_tip_headset">使用耳机时：点按播放或暂停，双击跳过。通知中也有同样的按钮。</string>
     <string name="auto_advance_after">播放几遍后自动继续</string>
+    <string name="wiktionary_help">用维基词典制作的词典，涵盖你能学习的所有语言。会自动更新。</string>
+    <string name="definitions_in">释义语言</string>
+    <string name="wiktionary_unavailable">无法加载维基词典词典列表。请检查网络连接。</string>
+    <string name="dictionary_order_help">查词时按此顺序显示你的词典；用箭头调整顺序。</string>
+    <string name="move_up">上移</string>
+    <string name="move_down">下移</string>
+    <string name="onboarding_wiktionary_body">有了词典，你可以点句子里的任何词来查询，并标为已知或忽略。维基词典为每种语言都提供词典：选择释义的语言。它会自动更新。</string>
 </resources>

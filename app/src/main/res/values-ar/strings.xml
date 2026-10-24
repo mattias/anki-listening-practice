@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">للاستماع دون استخدام اليدين، اضبط واضح تمامًا أو التخطي تلقائيًا بعد بضع مرات تشغيل.</string>
     <string name="onboarding_tip_headset">مع سماعات الرأس: انقر للتشغيل أو الإيقاف المؤقت، وانقر مرتين للتخطي. يحتوي الإشعار على الأزرار نفسها.</string>
     <string name="auto_advance_after">المتابعة تلقائيًا بعد</string>
+    <string name="wiktionary_help">قواميس مأخوذة من ويكاموس، لكل لغة يمكنك تعلّمها. تُحدَّث تلقائيًا.</string>
+    <string name="definitions_in">التعريفات باللغة</string>
+    <string name="wiktionary_unavailable">تعذّر تحميل قائمة قواميس ويكاموس. تحقّق من اتصالك.</string>
+    <string name="dictionary_order_help">يعرض البحث قواميسك بهذا الترتيب؛ حرّكها بالأسهم.</string>
+    <string name="move_up">نقل لأعلى</string>
+    <string name="move_down">نقل لأسفل</string>
+    <string name="onboarding_wiktionary_body">مع القاموس يمكنك النقر على أي كلمة في الجملة للبحث عنها وتحديدها معروفة أو متجاهَلة. في ويكاموس قاموس لكل لغة: اختر لغة التعريفات. وهو يحدّث نفسه.</string>
 </resources>

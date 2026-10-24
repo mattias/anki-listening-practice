@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">برای شنیدن بدون دست، پس از چند پخش، کاملاً واضح یا رد شدن خودکار را تنظیم کنید.</string>
     <string name="onboarding_tip_headset">با هدفون: برای پخش یا مکث بزنید، برای رد شدن دو بار بزنید. اعلان هم همین دکمه‌ها را دارد.</string>
     <string name="auto_advance_after">ادامهٔ خودکار پس از</string>
+    <string name="wiktionary_help">واژه‌نامه‌هایی ساخته‌شده از ویکی‌واژه، برای هر زبانی که می‌توانید یاد بگیرید. خودشان به‌روز می‌شوند.</string>
+    <string name="definitions_in">زبان تعریف‌ها</string>
+    <string name="wiktionary_unavailable">فهرست واژه‌نامه‌های ویکی‌واژه بارگیری نشد. اتصال خود را بررسی کنید.</string>
+    <string name="dictionary_order_help">جست‌وجو واژه‌نامه‌های شما را به این ترتیب نشان می‌دهد؛ با پیکان‌ها جابه‌جایشان کنید.</string>
+    <string name="move_up">انتقال به بالا</string>
+    <string name="move_down">انتقال به پایین</string>
+    <string name="onboarding_wiktionary_body">با واژه‌نامه می‌توانید روی هر واژه‌ای در جمله بزنید تا آن را جست‌وجو کنید و آشنا یا نادیده علامت بزنید. ویکی‌واژه برای هر زبانی واژه‌نامه دارد: زبان تعریف‌ها را انتخاب کنید. خودش به‌روز می‌شود.</string>
 </resources>

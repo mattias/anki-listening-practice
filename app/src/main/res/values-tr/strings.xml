@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Eller serbest dinlemek için birkaç oynatmadan sonra otomatik Apaçık veya Atla ayarla.</string>
     <string name="onboarding_tip_headset">Kulaklıkla: oynatmak veya duraklatmak için dokun, atlamak için iki kez dokun. Bildirimde aynı düğmeler var.</string>
     <string name="auto_advance_after">Şu kadar oynatmadan sonra otomatik devam</string>
+    <string name="wiktionary_help">Vikisözlük\'ten yapılmış sözlükler, öğrenebileceğin her dil için. Kendilerini günceller.</string>
+    <string name="definitions_in">Tanımların dili</string>
+    <string name="wiktionary_unavailable">Vikisözlük sözlükleri listesi yüklenemedi. Bağlantını kontrol et.</string>
+    <string name="dictionary_order_help">Aramalar sözlüklerini bu sırayla gösterir; oklarla taşı.</string>
+    <string name="move_up">Yukarı taşı</string>
+    <string name="move_down">Aşağı taşı</string>
+    <string name="onboarding_wiktionary_body">Bir sözlükle bir cümledeki herhangi bir kelimeye dokunup arayabilir, bilinen ya da yok sayılan olarak işaretleyebilirsin. Vikisözlük\'te her dil için bir sözlük var: tanımların dilini seç. Kendini günceller.</string>
 </resources>

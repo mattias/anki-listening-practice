@@ -213,4 +213,11 @@
     <string name="onboarding_tip_undo">The back arrow takes you to the sentence before and undoes what you did to it.</string>
     <string name="onboarding_tip_auto">For hands-free listening, set auto advance to Crystal Clear or Skip after a few plays.</string>
     <string name="onboarding_tip_headset">With headphones: tap to play or pause, double-tap to skip. The notification has the same buttons.</string>
+    <string name="wiktionary_help">Dictionaries made from Wiktionary, for every language you can study. They update themselves.</string>
+    <string name="definitions_in">Definitions in</string>
+    <string name="wiktionary_unavailable">Couldn\'t load the list of Wiktionary dictionaries. Check your connection.</string>
+    <string name="dictionary_order_help">Lookups show your dictionaries in this order; move them with the arrows.</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="onboarding_wiktionary_body">With a dictionary you can tap any word in a sentence to look it up, and mark it known or ignored. Wiktionary has one for every language: choose the language of the definitions. It updates itself.</string>
 </resources>

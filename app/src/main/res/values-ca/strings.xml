@@ -202,4 +202,11 @@
     <string name="onboarding_tip_auto">Per escoltar sense mans, configura Ben clar o Salta automàtic després d\'unes quantes reproduccions.</string>
     <string name="onboarding_tip_headset">Amb auriculars: toca per reproduir o pausar, toca dues vegades per saltar. La notificació té els mateixos botons.</string>
     <string name="auto_advance_after">Avança automàticament després de</string>
+    <string name="wiktionary_help">Diccionaris fets a partir del Viccionari, per a cada llengua que pots estudiar. S\'actualitzen sols.</string>
+    <string name="definitions_in">Definicions en</string>
+    <string name="wiktionary_unavailable">No s\'ha pogut carregar la llista de diccionaris del Viccionari. Comprova la connexió.</string>
+    <string name="dictionary_order_help">Les cerques mostren els teus diccionaris en aquest ordre; mou-los amb les fletxes.</string>
+    <string name="move_up">Puja</string>
+    <string name="move_down">Baixa</string>
+    <string name="onboarding_wiktionary_body">Amb un diccionari pots tocar qualsevol paraula d\'una frase per cercar-la i marcar-la com a coneguda o ignorada. El Viccionari en té un per a cada llengua: tria la llengua de les definicions. S\'actualitza sol.</string>
 </resources>

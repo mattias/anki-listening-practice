@@ -15,8 +15,6 @@ data class FieldMapping(
     val audio: String,
     /** The card's target word; every card's word counts as known. */
     val word: String,
-    /** Holds the card's language code (e.g. "sv"); cards of other languages are skipped. */
-    val language: String = "",
 )
 
 /**
@@ -67,7 +65,6 @@ enum class Preset(val label: String, val everyLanguage: Boolean = false) {
             translation = "SentenceTranslation",
             audio = "SentenceAudio",
             word = "Expression",
-            language = "Language",
         )
     }
 

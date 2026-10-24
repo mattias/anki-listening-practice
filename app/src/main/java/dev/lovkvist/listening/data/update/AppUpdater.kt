@@ -7,6 +7,8 @@ import android.provider.Settings
 import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.lovkvist.listening.BuildConfig
+import dev.lovkvist.listening.R
+import dev.lovkvist.listening.l10n.Strings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +39,7 @@ sealed interface UpdateState {
 @Singleton
 class AppUpdater @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val strings: Strings,
 ) {
     private val _state = MutableStateFlow<UpdateState>(UpdateState.Idle)
     val state: StateFlow<UpdateState> = _state.asStateFlow()
@@ -55,7 +58,7 @@ class AppUpdater @Inject constructor(
             withContext(Dispatchers.IO) { dir.deleteRecursively() }
             if (release != null && isNewer(release.version, currentVersion)) UpdateState.Available(release) else UpdateState.UpToDate
         } catch (e: Exception) {
-            UpdateState.Failed("Couldn't check for updates: ${e.message ?: e}")
+            UpdateState.Failed(strings(R.string.update_check_failed, e.message ?: e.toString()))
         }
         _state.value = if (quiet && result !is UpdateState.Available) UpdateState.Idle else result
     }
@@ -81,7 +84,7 @@ class AppUpdater @Inject constructor(
                 .setDataAndType(uri, "application/vnd.android.package-archive")
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
         } catch (e: Exception) {
-            _state.value = UpdateState.Failed("Update download failed: ${e.message ?: e}")
+            _state.value = UpdateState.Failed(strings(R.string.update_download_failed, e.message ?: e.toString()))
             null
         }
     }
@@ -111,7 +114,7 @@ class AppUpdater @Inject constructor(
         val hash = digest.digest().joinToString("") { "%02x".format(it) }
         if (release.sha256 != null && !hash.equals(release.sha256, ignoreCase = true)) {
             file.delete()
-            throw IOException("the downloaded file is damaged (checksum mismatch)")
+            throw IOException(strings(R.string.update_damaged))
         }
         return file
     }

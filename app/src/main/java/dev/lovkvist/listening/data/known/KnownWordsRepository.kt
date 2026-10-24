@@ -3,6 +3,8 @@ package dev.lovkvist.listening.data.known
 import android.content.Context
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.R
+import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +26,7 @@ import javax.inject.Singleton
 @Singleton
 class KnownWordsRepository @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val strings: Strings,
 ) {
     private val mutex = Mutex()
     private val cache = HashMap<Language, Set<String>>()
@@ -35,7 +38,7 @@ class KnownWordsRepository @Inject constructor(
     suspend fun import(uri: Uri, language: Language): Int = withContext(Dispatchers.IO) {
         val words = context.contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use { r ->
             parse(r.readLines())
-        } ?: error("Could not open the selected file")
+        } ?: error(strings(R.string.could_not_open_file))
         file(language).writeText(words.joinToString("\n"), Charsets.UTF_8)
         mutex.withLock { cache[language] = words }
         _counts.update { it + (language to words.size) }

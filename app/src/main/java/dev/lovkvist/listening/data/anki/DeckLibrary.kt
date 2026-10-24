@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import android.provider.OpenableColumns
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.data.settings.SettingsRepository
+import dev.lovkvist.listening.l10n.Strings
+import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +31,8 @@ data class ImportedDeck(
     /** Unused media (images, word audio, fonts...) already deleted; see [DeckLibrary.prune]. */
     val pruned: Boolean = false,
     val freedBytes: Long = 0,
+    /** Practiced while this language is selected; decks are imported for the selected language. */
+    val language: Language = Language.JAPANESE,
 )
 
 class AnkiReadException(message: String) : Exception(message)
@@ -41,6 +46,7 @@ class AnkiReadException(message: String) : Exception(message)
 class DeckLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
     private val settings: SettingsRepository,
+    private val strings: Strings,
 ) {
     private val root = File(context.filesDir, "decks").apply { mkdirs() }
 
@@ -51,19 +57,19 @@ class DeckLibrary @Inject constructor(
     private val _importProgress = MutableStateFlow<Int?>(null)
     val importProgress: StateFlow<Int?> = _importProgress.asStateFlow()
 
-    suspend fun import(uri: Uri): ImportedDeck = withContext(Dispatchers.IO) {
+    suspend fun import(uri: Uri, language: Language): ImportedDeck = withContext(Dispatchers.IO) {
         val id = System.currentTimeMillis().toString()
         val dir = File(root, id)
         _importProgress.value = 0
         try {
             val result = context.contentResolver.openInputStream(uri)?.use { input ->
                 ApkgUnpacker().unpack(input, dir) { _importProgress.value = it }
-            } ?: throw IOException("Could not open the selected file")
+            } ?: throw IOException(strings(R.string.could_not_open_file))
 
             val noteCount = openCollection(result.collection) { db ->
                 db.rawQuery("SELECT COUNT(*) FROM notes", null).use { c -> if (c.moveToFirst()) c.getInt(0) else 0 }
             }
-            val unpruned = ImportedDeck(id, displayName(uri), id.toLong(), noteCount, result.mediaCount)
+            val unpruned = ImportedDeck(id, displayName(uri), id.toLong(), noteCount, result.mediaCount, language = language)
             val deck = prune(dir, unpruned)
             _decks.value = loadDecks()
             deck
@@ -81,23 +87,21 @@ class DeckLibrary @Inject constructor(
     }
 
     /**
-     * The target word of every imported card of [language] (the preset's word field, e.g.
+     * The target word of every card in the decks of [language] (the preset's word field, e.g.
      * Expression), with HTML and furigana removed. Used as extra known words.
      */
     suspend fun readWords(mapping: FieldMapping, language: Language): Set<String> = withContext(Dispatchers.IO) {
         if (mapping.word.isBlank()) return@withContext emptySet()
         val words = HashSet<String>()
-        for (deck in _decks.value) {
+        for (deck in _decks.value.filter { it.language == language }) {
             openCollection(File(File(root, deck.id), ApkgUnpacker.COLLECTION_FILE)) { db ->
                 for (type in loadNoteTypes(db)) {
                     if (!type.name.contains(mapping.noteTypeMatch.trim(), ignoreCase = true)) continue
                     val idx = type.indexOf(mapping.word)
                     if (idx < 0) continue
-                    val languageIdx = type.indexOf(mapping.language)
                     db.rawQuery("SELECT flds FROM notes WHERE mid = ?", arrayOf(type.id.toString())).use { c ->
                         while (c.moveToNext()) {
                             val values = c.getString(0).split('\u001f')
-                            if (!isLanguage(values.getOrNull(languageIdx), language)) continue
                             val field = values.getOrNull(idx) ?: continue
                             plainText(field, language).trim().takeIf { it.isNotEmpty() }?.let(words::add)
                         }
@@ -109,13 +113,15 @@ class DeckLibrary @Inject constructor(
     }
 
     suspend fun readSentences(mapping: FieldMapping, language: Language): List<Sentence> = withContext(Dispatchers.IO) {
-        if (_decks.value.isEmpty()) throw AnkiReadException("Import an Anki deck (.apkg) or collection (.colpkg) in Settings")
+        if (_decks.value.none { it.language == language }) {
+            throw AnkiReadException(strings(R.string.no_deck, language.displayName()))
+        }
         // Imports made before pruning existed get cleaned up once.
         if (_decks.value.any { !it.pruned }) {
             _decks.value.filterNot { it.pruned }.forEach { prune(File(root, it.id), it) }
             _decks.value = loadDecks()
         }
-        val decks = _decks.value
+        val decks = _decks.value.filter { it.language == language }
         val sentences = decks.flatMap { deck ->
             val dir = File(root, deck.id)
             openCollection(File(dir, ApkgUnpacker.COLLECTION_FILE)) { db ->
@@ -125,10 +131,7 @@ class DeckLibrary @Inject constructor(
             }
         }
         if (sentences.isEmpty()) {
-            throw AnkiReadException(
-                "No ${language.englishName} notes with sentence audio found for note type " +
-                    "\"${mapping.noteTypeMatch}\". Check the language and preset, and that the export included media.",
-            )
+            throw AnkiReadException(strings(R.string.no_notes, mapping.noteTypeMatch))
         }
         // The same note can appear in several imports; keep one.
         sentences.distinctBy { it.id }
@@ -192,6 +195,7 @@ class DeckLibrary @Inject constructor(
                 .put("mediaCount", deck.mediaCount)
                 .put("pruned", deck.pruned)
                 .put("freedBytes", deck.freedBytes)
+                .put("language", deck.language.code)
                 .toString(),
         )
     }
@@ -210,10 +214,42 @@ class DeckLibrary @Inject constructor(
                         mediaCount = j.optInt("mediaCount"),
                         pruned = j.optBoolean("pruned"),
                         freedBytes = j.optLong("freedBytes"),
-                    )
+                    ).let { deck ->
+                        val code = j.optString("language")
+                        if (code.isNotEmpty()) {
+                            deck.copy(language = Language.fromCode(code))
+                        } else {
+                            // Imported before decks had a language: decide once and remember it.
+                            deck.copy(language = guessLanguage(dir)).also { writeInfo(dir, it) }
+                        }
+                    }
                 }.getOrNull()
             }
             .sortedBy { it.importedAt }
+
+    /**
+     * The language most of a deck's cards name in a field called Language (Anki Miner Note's),
+     * or Japanese, the only language before there were others.
+     */
+    private fun guessLanguage(dir: File): Language {
+        val counts = HashMap<Language, Int>()
+        runCatching {
+            openCollection(File(dir, ApkgUnpacker.COLLECTION_FILE)) { db ->
+                for (type in loadNoteTypes(db)) {
+                    val idx = type.indexOf("Language")
+                    if (idx < 0) continue
+                    db.rawQuery("SELECT flds FROM notes WHERE mid = ?", arrayOf(type.id.toString())).use { c ->
+                        while (c.moveToNext()) {
+                            val tag = AnkiText.plain(c.getString(0).split('\u001f').getOrNull(idx).orEmpty())
+                            if (tag.isBlank()) continue
+                            Language.entries.firstOrNull { it.matchesTag(tag) }?.let { counts.merge(it, 1, Int::plus) }
+                        }
+                    }
+                }
+            }
+        }
+        return counts.maxByOrNull { it.value }?.key ?: Language.JAPANESE
+    }
 
     private fun displayName(uri: Uri): String =
         context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
@@ -244,15 +280,6 @@ class DeckLibrary @Inject constructor(
     /** Field text without HTML, and without bracket readings in languages that use them. */
     private fun plainText(field: String, language: Language): String =
         AnkiText.plain(field).let { if (language.reading != null) AnkiText.stripFurigana(it) else it }
-
-    /**
-     * Whether a note belongs to [language] by its language field (Anki Miner Note's Language).
-     * Notes without one, or with it empty, belong to every language.
-     */
-    private fun isLanguage(value: String?, language: Language): Boolean {
-        val tag = value?.let(AnkiText::plain).orEmpty()
-        return tag.isBlank() || language.matchesTag(tag)
-    }
 
     private fun loadNoteTypes(db: SQLiteDatabase): List<NoteType> =
         if (hasTable(db, "notetypes")) loadModernNoteTypes(db) else loadLegacyNoteTypes(db)
@@ -308,15 +335,12 @@ class DeckLibrary @Inject constructor(
         if (sentenceIdx < 0 || audioIdx < 0) return emptyList()
         val furiganaIdx = noteType.indexOf(mapping.furigana)
         val translationIdx = noteType.indexOf(mapping.translation)
-        val languageIdx = noteType.indexOf(mapping.language)
 
         val out = mutableListOf<Sentence>()
         db.rawQuery("SELECT id, flds FROM notes WHERE mid = ?", arrayOf(noteType.id.toString())).use { c ->
             while (c.moveToNext()) {
                 val values = c.getString(1).split('\u001f')
                 fun field(i: Int) = values.getOrNull(i).orEmpty()
-                if (!isLanguage(values.getOrNull(languageIdx), language)) continue
-
                 val audioName = AnkiText.soundFile(field(audioIdx)) ?: continue
                 val audio = File(mediaDir, audioName)
                 val text = plainText(field(sentenceIdx), language)

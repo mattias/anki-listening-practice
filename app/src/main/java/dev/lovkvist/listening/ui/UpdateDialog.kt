@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.update.UpdateState
 
 /** Shows an available update, its download progress, or the result of a manual check. */
@@ -30,25 +32,24 @@ fun UpdateDialog(vm: UpdateViewModel) {
 
         UpdateState.UpToDate -> AlertDialog(
             onDismissRequest = vm::dismiss,
-            confirmButton = { TextButton(onClick = vm::dismiss) { Text("OK") } },
-            text = { Text("You have the latest version (${vm.currentVersion}).") },
+            confirmButton = { TextButton(onClick = vm::dismiss) { Text(stringResource(R.string.ok)) } },
+            text = { Text(stringResource(R.string.latest_version, vm.currentVersion)) },
         )
 
         is UpdateState.Failed -> AlertDialog(
             onDismissRequest = vm::dismiss,
-            confirmButton = { TextButton(onClick = vm::dismiss) { Text("OK") } },
+            confirmButton = { TextButton(onClick = vm::dismiss) { Text(stringResource(R.string.ok)) } },
             text = { Text(s.message) },
         )
 
         is UpdateState.Available -> AlertDialog(
             onDismissRequest = vm::dismiss,
-            title = { Text("Version ${s.release.version} is available") },
+            title = { Text(stringResource(R.string.version_available, s.release.version)) },
             text = {
                 Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) {
                     Text(
-                        "You have ${vm.currentVersion}. Updating keeps your imports and progress." +
-                            if (vm.canInstall()) "" else "\n\nAndroid will first ask you to allow this app to install updates; " +
-                                "allow it, come back and tap Update again.",
+                        stringResource(R.string.you_have_version, vm.currentVersion) +
+                            if (vm.canInstall()) "" else "\n\n" + stringResource(R.string.install_permission_note),
                     )
                     if (s.release.notes.isNotBlank()) {
                         Text(
@@ -67,15 +68,15 @@ fun UpdateDialog(vm: UpdateViewModel) {
                     } else {
                         context.startActivity(vm.installPermissionIntent())
                     }
-                }) { Text("Update") }
+                }) { Text(stringResource(R.string.update)) }
             },
-            dismissButton = { TextButton(onClick = vm::dismiss) { Text("Later") } },
+            dismissButton = { TextButton(onClick = vm::dismiss) { Text(stringResource(R.string.later)) } },
         )
 
         is UpdateState.Downloading -> AlertDialog(
             onDismissRequest = {},
             confirmButton = {},
-            title = { Text("Downloading ${s.release.version}…") },
+            title = { Text(stringResource(R.string.downloading_version, s.release.version)) },
             text = {
                 val progress = s.progress
                 if (progress != null) {

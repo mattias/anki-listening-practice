@@ -116,6 +116,29 @@ object Subtitles {
         }
     }
 
+    /**
+     * Translations for [cues] taken from subtitles in another language, one per cue: each
+     * translation line goes to the cue it overlaps most in time, and a cue's lines are joined
+     * ([unspaced] is the translation's language). A cue that no line overlaps gets "".
+     */
+    fun align(cues: List<SubtitleCue>, translation: List<SubtitleCue>, unspaced: Boolean): List<String> {
+        val parts = List(cues.size) { mutableListOf<String>() }
+        for (t in translation) {
+            var best = -1
+            var bestOverlap = 0L
+            for ((i, c) in cues.withIndex()) {
+                if (c.startMs >= t.endMs) break // cues are sorted by start
+                val overlap = minOf(c.endMs, t.endMs) - maxOf(c.startMs, t.startMs)
+                if (overlap > bestOverlap) {
+                    best = i
+                    bestOverlap = overlap
+                }
+            }
+            if (best >= 0) parts[best] += joinLines(t.text, unspaced)
+        }
+        return parts.map { it.joinToString(if (unspaced) "" else " ") }
+    }
+
     private fun isLatin(c: Char?): Boolean =
         c != null && (c.isDigit() || Character.UnicodeScript.of(c.code) == Character.UnicodeScript.LATIN)
 

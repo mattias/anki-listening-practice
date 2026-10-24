@@ -35,14 +35,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.Sentence
+import dev.lovkvist.listening.playback.PracticeController
+import dev.lovkvist.listening.playback.PracticeState
 import dev.lovkvist.listening.text.Language
 
 private val delayOptions = listOf(0L, 500L, 1000L, 2000L, 3000L, 5000L)
@@ -50,23 +54,23 @@ private val autoClearOptions = listOf(0, 3, 5, 10, 20)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
-    val state by vm.state.collectAsStateWithLifecycle()
-    val playing by vm.player.isPlaying.collectAsStateWithLifecycle()
-    val repeats by vm.player.repeats.collectAsStateWithLifecycle()
-    val speed by vm.speed.collectAsStateWithLifecycle()
-    val delayMs by vm.delayMs.collectAsStateWithLifecycle()
-    val sources by vm.sources.collectAsStateWithLifecycle()
-    val source by vm.source.collectAsStateWithLifecycle()
-    val language by vm.language.collectAsStateWithLifecycle()
-    val autoClearAfter by vm.autoClearAfter.collectAsStateWithLifecycle()
+fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
+    val state by practice.state.collectAsStateWithLifecycle()
+    val playing by practice.player.isPlaying.collectAsStateWithLifecycle()
+    val repeats by practice.player.repeats.collectAsStateWithLifecycle()
+    val speed by practice.speed.collectAsStateWithLifecycle()
+    val delayMs by practice.delayMs.collectAsStateWithLifecycle()
+    val sources by practice.sources.collectAsStateWithLifecycle()
+    val source by practice.source.collectAsStateWithLifecycle()
+    val language by practice.language.collectAsStateWithLifecycle()
+    val autoClearAfter by practice.autoClearAfter.collectAsStateWithLifecycle()
     var confirmBlacklist by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { SourcePicker(sources, source, vm::selectSource) },
-                actions = { TextButton(onClick = onOpenSettings) { Text("Settings") } },
+                title = { SourcePicker(sources, source, practice::selectSource) },
+                actions = { TextButton(onClick = onOpenSettings) { Text(stringResource(R.string.settings)) } },
             )
         },
     ) { padding ->
@@ -80,21 +84,21 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
                 PracticeState.Loading -> Box {
                     CircularProgressIndicator()
                     Spacer(Modifier.height(12.dp))
-                    Text("Reading collection and matching known words…")
+                    Text(stringResource(R.string.loading_collection))
                 }
 
                 is PracticeState.Message -> Box {
                     Text(s.text, textAlign = TextAlign.Center)
                     Spacer(Modifier.height(12.dp))
-                    Button(onClick = vm::rebuild) { Text("Retry") }
+                    Button(onClick = practice::rebuild) { Text(stringResource(R.string.retry)) }
                 }
 
                 is PracticeState.Ready -> {
                     Text(
                         if (autoClearAfter > 0) {
-                            "Play ${minOf(repeats + 1, autoClearAfter)} of $autoClearAfter, then Crystal Clear"
+                            stringResource(R.string.play_n_of_m, minOf(repeats + 1, autoClearAfter), autoClearAfter)
                         } else {
-                            "Repeats: $repeats"
+                            stringResource(R.string.repeats, repeats)
                         },
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -108,12 +112,12 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
-                        LargeFloatingActionButton(onClick = vm::togglePlay) {
+                        LargeFloatingActionButton(onClick = practice::togglePlay) {
                             Text(if (playing) "❚❚" else "▶", fontSize = 32.sp)
                         }
                         Spacer(Modifier.height(24.dp))
-                        OutlinedButton(onClick = vm::toggleText) {
-                            Text(if (s.showText) "Hide Text" else "Show Text")
+                        OutlinedButton(onClick = practice::toggleText) {
+                            Text(stringResource(if (s.showText) R.string.hide_text else R.string.show_text))
                         }
                         if (s.showText) {
                             Spacer(Modifier.height(16.dp))
@@ -125,14 +129,14 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
                         speed = speed,
                         delayMs = delayMs,
                         autoClearAfter = autoClearAfter,
-                        onSpeed = { vm.setSpeed(it) },
-                        onDelay = { vm.setDelay(it) },
-                        onAutoClear = { vm.setAutoClearAfter(it) },
+                        onSpeed = { practice.setSpeed(it) },
+                        onDelay = { practice.setDelay(it) },
+                        onAutoClear = { practice.setAutoClearAfter(it) },
                     )
                     Spacer(Modifier.height(12.dp))
                     ActionButtons(
-                        onClear = vm::crystalClear,
-                        onSkip = vm::skip,
+                        onClear = practice::crystalClear,
+                        onSkip = practice::skip,
                         onBlacklist = { confirmBlacklist = true },
                     )
                 }
@@ -143,15 +147,15 @@ fun PracticeScreen(vm: PracticeViewModel, onOpenSettings: () -> Unit) {
     if (confirmBlacklist) {
         AlertDialog(
             onDismissRequest = { confirmBlacklist = false },
-            title = { Text("Blacklist this sentence?") },
-            text = { Text("It won't be played again. You can restore it in Settings → Progress.") },
+            title = { Text(stringResource(R.string.blacklist_confirm_title)) },
+            text = { Text(stringResource(R.string.blacklist_confirm_body)) },
             confirmButton = {
                 TextButton(onClick = {
                     confirmBlacklist = false
-                    vm.blacklist()
-                }) { Text("Blacklist") }
+                    practice.blacklist()
+                }) { Text(stringResource(R.string.blacklist)) }
             },
-            dismissButton = { TextButton(onClick = { confirmBlacklist = false }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { confirmBlacklist = false }) { Text(stringResource(R.string.cancel)) } },
         )
     }
 }
@@ -164,14 +168,14 @@ private fun SourcePicker(
     onSelect: (PracticeSource) -> Unit,
 ) {
     var open by remember { mutableStateOf(false) }
-    val label = sources.firstOrNull { it.first == current }?.second ?: "Anki cards"
+    val label = sources.firstOrNull { it.first == current }?.second?.ifEmpty { null } ?: stringResource(R.string.anki_cards)
     TextButton(onClick = { open = true }) {
         Text("$label ▾", style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
     DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
         for ((source, name) in sources) {
             DropdownMenuItem(
-                text = { Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis) },
+                text = { Text(name.ifEmpty { stringResource(R.string.anki_cards) }, maxLines = 2, overflow = TextOverflow.Ellipsis) },
                 onClick = {
                     open = false
                     if (source != current) onSelect(source)
@@ -221,26 +225,26 @@ private fun PlaybackSettings(
     onDelay: (Long) -> Unit,
     onAutoClear: (Int) -> Unit,
 ) {
-    Text("Speed: ${"%.2f".format(speed)}x", style = MaterialTheme.typography.labelLarge)
+    Text(stringResource(R.string.speed, "%.2f".format(speed)), style = MaterialTheme.typography.labelLarge)
     Slider(value = speed, onValueChange = onSpeed, valueRange = 0.5f..1.5f, steps = 19)
-    Text("Pause between repeats", style = MaterialTheme.typography.labelLarge)
+    Text(stringResource(R.string.pause_between_repeats), style = MaterialTheme.typography.labelLarge)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         for (d in delayOptions) {
             FilterChip(
                 selected = d == delayMs,
                 onClick = { onDelay(d) },
-                label = { Text(if (d % 1000 == 0L) "${d / 1000}s" else "${d / 1000.0}s") },
+                label = { Text(stringResource(R.string.seconds_short, if (d % 1000 == 0L) "${d / 1000}" else "%.1f".format(d / 1000.0))) },
             )
         }
     }
     // Hands-free: after this many plays the sentence counts as Crystal Clear and the next one starts.
-    Text("Auto Crystal Clear after", style = MaterialTheme.typography.labelLarge)
+    Text(stringResource(R.string.auto_clear_after), style = MaterialTheme.typography.labelLarge)
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         for (n in autoClearOptions) {
             FilterChip(
                 selected = n == autoClearAfter,
                 onClick = { onAutoClear(n) },
-                label = { Text(if (n == 0) "Off" else "$n×") },
+                label = { Text(if (n == 0) stringResource(R.string.off) else "$n×") },
             )
         }
     }
@@ -253,7 +257,7 @@ private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: 
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp),
-    ) { Text("Crystal Clear", fontSize = 20.sp) }
+    ) { Text(stringResource(R.string.crystal_clear), fontSize = 20.sp) }
     Spacer(Modifier.height(8.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         FilledTonalButton(
@@ -261,7 +265,7 @@ private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: 
             modifier = Modifier
                 .weight(1f)
                 .height(56.dp),
-        ) { Text("Skip", fontSize = 18.sp) }
+        ) { Text(stringResource(R.string.skip), fontSize = 18.sp) }
         Button(
             onClick = onBlacklist,
             modifier = Modifier
@@ -271,7 +275,7 @@ private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: 
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError,
             ),
-        ) { Text("Blacklist", fontSize = 18.sp) }
+        ) { Text(stringResource(R.string.blacklist), fontSize = 18.sp) }
     }
     Spacer(Modifier.size(8.dp))
 }

@@ -1,9 +1,12 @@
 package dev.lovkvist.listening.text
 
+import dev.lovkvist.listening.l10n.displayName
+import dev.lovkvist.listening.l10n.label
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.Locale
 
 class WordTokenizerTest {
     private fun known(language: Language, vararg words: String): Pair<WordTokenizer, Set<String>> {
@@ -119,7 +122,15 @@ class WordTokenizerTest {
     fun taiwaneseMatchesItsTagAndCode() {
         assertTrue(Language.TAIWANESE.matchesTag("nan-TW"))
         assertEquals(Language.TAIWANESE, Language.fromCode("nan"))
-        assertEquals("台語 (Taiwanese)", Language.TAIWANESE.label)
+        assertEquals("台語 (Taiwanese)", Language.TAIWANESE.label(Locale.ENGLISH))
+    }
+
+    @Test
+    fun languageNamesFollowTheAppLanguage() {
+        assertEquals("Chinese (Mandarin)", Language.CHINESE.displayName(Locale.ENGLISH))
+        assertEquals("Japanska", Language.JAPANESE.displayName(Locale.forLanguageTag("sv")))
+        assertEquals("Svenska", Language.SWEDISH.label(Locale.forLanguageTag("sv")))
+        assertEquals("日本語 (Japanska)", Language.JAPANESE.label(Locale.forLanguageTag("sv")))
     }
 
     @Test

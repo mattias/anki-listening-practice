@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.Sentence
+import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.text.JapaneseTokenizer
 import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +36,8 @@ data class MediaEntry(
     val sourceUrl: String? = null,
     /** The language of the subtitles; items are practiced while that language is selected. */
     val language: Language = Language.JAPANESE,
+    /** Language of the subtitles the lines' translations come from, if any. */
+    val translation: Language? = null,
 )
 
 /**
@@ -45,6 +49,7 @@ data class MediaEntry(
 class MediaLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
     private val tokenizer: JapaneseTokenizer,
+    private val strings: Strings,
 ) {
     private val root = File(context.filesDir, "media").apply { mkdirs() }
 
@@ -55,18 +60,31 @@ class MediaLibrary @Inject constructor(
     suspend fun importLocal(media: Uri, subtitles: Uri, language: Language): MediaEntry = withContext(Dispatchers.IO) {
         val subName = displayName(subtitles)
         val cues = Subtitles.parse(subName, readText(context.contentResolver.openInputStream(subtitles)?.use { it.readBytes() }
-            ?: throw IOException("Could not open $subName"), language))
+            ?: throw IOException(strings(R.string.could_not_open_file)), language))
         // Keep access to the media after restarts; subtitles are copied into chunks.json.
         context.contentResolver.takePersistableUriPermission(media, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language)
     }
 
-    /** Registers a downloaded audio file (already inside [dir]) with its subtitle file. */
-    suspend fun importDownloaded(dir: File, audio: File, subtitles: File, title: String, url: String, language: Language): MediaEntry =
-        withContext(Dispatchers.IO) {
-            val cues = Subtitles.parse(subtitles.name, readText(subtitles.readBytes(), language))
-            save(dir, title, Uri.fromFile(audio), cues, sourceUrl = url, language)
+    /**
+     * Registers a downloaded audio file (already inside [dir]) with its subtitle file, and
+     * optionally subtitles in another language to use as the lines' translations.
+     */
+    suspend fun importDownloaded(
+        dir: File,
+        audio: File,
+        subtitles: File,
+        title: String,
+        url: String,
+        language: Language,
+        translation: Pair<Language, File>?,
+    ): MediaEntry = withContext(Dispatchers.IO) {
+        val cues = Subtitles.parse(subtitles.name, readText(subtitles.readBytes(), language))
+        val translations = translation?.let { (l, file) ->
+            runCatching { Subtitles.align(cues, Subtitles.parse(file.name, readText(file.readBytes(), l)), l.unspaced) }.getOrNull()
         }
+        save(dir, title, Uri.fromFile(audio), cues, sourceUrl = url, language, translations, translations?.let { translation?.first })
+    }
 
     /** A fresh folder for a new item; also used as the download target. */
     fun newDir(): File = File(root, System.currentTimeMillis().toString()).apply { mkdirs() }
@@ -84,7 +102,7 @@ class MediaLibrary @Inject constructor(
 
     /** All chunks of [id] in playback order; Japanese gets furigana generated from its readings. */
     suspend fun sentences(id: String): List<Sentence> = withContext(Dispatchers.IO) {
-        val entry = _items.value.firstOrNull { it.id == id } ?: throw IOException("That video is no longer imported")
+        val entry = _items.value.firstOrNull { it.id == id } ?: throw IOException(strings(R.string.video_gone))
         val chunks = JSONArray(File(File(root, id), CHUNKS_FILE).readText())
         val base = id.toLong() * MAX_CHUNKS
         (0 until chunks.length()).map { i ->
@@ -95,7 +113,7 @@ class MediaLibrary @Inject constructor(
                 id = -(base + i),
                 text = Subtitles.joinLines(text, entry.language.unspaced),
                 furigana = if (entry.language == Language.JAPANESE) tokenizer.furigana(text) else "",
-                translation = "",
+                translation = c.optString("tr"),
                 audio = entry.media,
                 clip = maxOf(0, c.getLong("s") - PAD_BEFORE_MS)..(c.getLong("e") + PAD_AFTER_MS),
             )
@@ -109,12 +127,19 @@ class MediaLibrary @Inject constructor(
         cues: List<SubtitleCue>,
         sourceUrl: String?,
         language: Language,
+        /** One per cue, or null. */
+        translations: List<String>? = null,
+        translationLanguage: Language? = null,
     ): MediaEntry {
         if (cues.size >= MAX_CHUNKS) throw IOException("Too many subtitle lines (${cues.size})")
         val chunks = JSONArray()
-        cues.forEach { chunks.put(JSONObject().put("s", it.startMs).put("e", it.endMs).put("t", it.text)) }
+        cues.forEachIndexed { i, cue ->
+            val chunk = JSONObject().put("s", cue.startMs).put("e", cue.endMs).put("t", cue.text)
+            translations?.getOrNull(i)?.takeIf { it.isNotEmpty() }?.let { chunk.put("tr", it) }
+            chunks.put(chunk)
+        }
         File(dir, CHUNKS_FILE).writeText(chunks.toString())
-        val entry = MediaEntry(dir.name, name, dir.name.toLong(), cues.size, media, sourceUrl, language)
+        val entry = MediaEntry(dir.name, name, dir.name.toLong(), cues.size, media, sourceUrl, language, translationLanguage)
         File(dir, INFO_FILE).writeText(
             JSONObject()
                 .put("name", entry.name)
@@ -123,6 +148,7 @@ class MediaLibrary @Inject constructor(
                 .put("media", entry.media.toString())
                 .put("sourceUrl", entry.sourceUrl)
                 .put("language", entry.language.code)
+                .put("translation", entry.translation?.code)
                 .toString(),
         )
         _items.value = loadItems()
@@ -143,6 +169,7 @@ class MediaLibrary @Inject constructor(
                     sourceUrl = j.optString("sourceUrl").takeIf { it.isNotEmpty() && it != "null" },
                     // Items from before other languages existed are Japanese.
                     language = Language.fromCode(j.optString("language").ifEmpty { null }),
+                    translation = j.optString("translation").takeIf { it.isNotEmpty() && it != "null" }?.let(Language::fromCode),
                 )
             }.getOrNull()
         }.sortedByDescending { it.importedAt }

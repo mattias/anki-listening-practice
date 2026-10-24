@@ -41,14 +41,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.media.MediaEntry
 import dev.lovkvist.listening.data.update.UpdateState
+import dev.lovkvist.listening.l10n.AppLanguage
+import dev.lovkvist.listening.l10n.displayName
+import dev.lovkvist.listening.l10n.label
 import dev.lovkvist.listening.text.Language
 import dev.lovkvist.listening.text.Reading
 import java.text.DateFormat
@@ -73,8 +78,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
-                navigationIcon = { TextButton(onClick = onBack) { Text("Back") } },
+                title = { Text(stringResource(R.string.settings)) },
+                navigationIcon = { TextButton(onClick = onBack) { Text(stringResource(R.string.back)) } },
             )
         },
     ) { padding ->
@@ -87,38 +92,44 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Section("Language")
+            Section(stringResource(R.string.app_language))
+            AppLanguagePicker()
+
+            Section(stringResource(R.string.study_language))
             LanguagePicker(s.language, vm::selectLanguage)
             Text(
-                "Cards, videos and known words are kept per language. Anki Miner Note cards are " +
-                    "matched by their Language field.",
+                stringResource(R.string.kept_per_language),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Section("Anki decks")
-            Decks(vm)
+            Section(stringResource(R.string.anki_decks))
+            Decks(vm, s.language)
 
-            Section("Videos & audio")
-            MediaItems(vm, s.language)
+            Section(stringResource(R.string.videos_audio))
+            MediaItems(vm, s.language, s.translation)
 
-            Section("Known words")
-            val list = when {
-                s.language == Language.JAPANESE -> " from Jiten or Anki Miner"
-                s.language.inAnkiMiner -> " from Anki Miner"
-                else -> ""
-            }
+            Section(stringResource(R.string.known_words))
             Text(
                 when (val n = knownCounts[s.language]) {
-                    null -> "Loading…"
-                    0 -> "No ${s.language.englishName} words imported yet. Import a word list$list, one word per line."
-                    else -> "$n ${s.language.englishName} words from your word list."
+                    null -> stringResource(R.string.loading)
+                    0 -> stringResource(
+                        when {
+                            s.language == Language.JAPANESE -> R.string.known_none_jiten
+                            s.language.inAnkiMiner -> R.string.known_none_miner
+                            else -> R.string.known_none
+                        },
+                    )
+                    else -> stringResource(R.string.known_count, n)
                 },
             )
-            Text("$cardWordCount words from your cards' ${s.mapping.word.ifBlank { "word" }} field.")
-            Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text("Import known_words.txt") }
+            Text(
+                if (s.mapping.word.isBlank()) stringResource(R.string.no_word_field)
+                else stringResource(R.string.card_words, cardWordCount, s.mapping.word),
+            )
+            Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text(stringResource(R.string.import_known_words)) }
 
-            Section("Note type preset")
+            Section(stringResource(R.string.note_type_preset))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 for (p in Preset.availableFor(s.language)) {
                     FilterChip(selected = p == s.preset, onClick = { vm.selectPreset(s.language, p) }, label = { Text(p.label) })
@@ -126,7 +137,7 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
             }
             if (s.language != Language.JAPANESE) {
                 Text(
-                    "Kiku, Lapis and Senren are Japanese note types. Other languages use Anki Miner Note.",
+                    stringResource(R.string.japanese_presets_note),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -139,18 +150,18 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                 onReset = { vm.resetMapping(s.preset, s.language) },
             )
 
-            Section("Progress")
-            Text("${sentences(cooldownCount)} cooling down after Crystal Clear.")
+            Section(stringResource(R.string.progress))
+            Text(stringResource(R.string.cooling_down, cooldownCount))
             OutlinedButton(onClick = { confirm = Reset.COOLDOWNS }, enabled = cooldownCount > 0) {
-                Text("Reset Crystal Clear cool-downs")
+                Text(stringResource(R.string.reset_cooldowns))
             }
-            Text("${sentences(blacklistCount)} blacklisted.")
+            Text(stringResource(R.string.blacklisted_count, blacklistCount))
             Blacklist(vm)
             OutlinedButton(onClick = { confirm = Reset.BLACKLIST }, enabled = blacklistCount > 0) {
-                Text("Clear blacklist")
+                Text(stringResource(R.string.clear_blacklist))
             }
 
-            Section("App updates")
+            Section(stringResource(R.string.app_updates))
             Updates(updateVm)
             Spacer(Modifier.height(24.dp))
         }
@@ -159,8 +170,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
     confirm?.let { reset ->
         AlertDialog(
             onDismissRequest = { confirm = null },
-            title = { Text(reset.title) },
-            text = { Text(reset.body) },
+            title = { Text(stringResource(reset.title)) },
+            text = { Text(stringResource(reset.body)) },
             confirmButton = {
                 TextButton(onClick = {
                     when (reset) {
@@ -168,60 +179,75 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                         Reset.BLACKLIST -> vm.clearBlacklist()
                     }
                     confirm = null
-                }) { Text("Reset") }
+                }) { Text(stringResource(R.string.reset)) }
             },
-            dismissButton = { TextButton(onClick = { confirm = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { confirm = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
 
     message?.let {
         AlertDialog(
             onDismissRequest = vm::dismissMessage,
-            confirmButton = { TextButton(onClick = vm::dismissMessage) { Text("OK") } },
+            confirmButton = { TextButton(onClick = vm::dismissMessage) { Text(stringResource(R.string.ok)) } },
             text = { Text(it) },
         )
     }
 }
 
-private enum class Reset(val title: String, val body: String) {
-    COOLDOWNS(
-        "Reset cool-downs?",
-        "Every sentence you marked Crystal Clear comes back into practice now instead of after 10 days.",
-    ),
-    BLACKLIST(
-        "Clear blacklist?",
-        "Every blacklisted sentence comes back into practice.",
-    ),
+private enum class Reset(val title: Int, val body: Int) {
+    COOLDOWNS(R.string.reset_cooldowns_title, R.string.reset_cooldowns_body),
+    BLACKLIST(R.string.clear_blacklist_title, R.string.clear_blacklist_body),
 }
 
 @Composable
 private fun Updates(vm: UpdateViewModel) {
     val state by vm.state.collectAsStateWithLifecycle()
     val checkOnStart by vm.checkOnStart.collectAsStateWithLifecycle()
-    Text("Version ${vm.currentVersion}. New versions are downloaded from GitHub Releases.")
+    Text(stringResource(R.string.version_info, vm.currentVersion))
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("Check for updates when the app starts", Modifier.weight(1f))
+        Text(stringResource(R.string.check_on_start), Modifier.weight(1f))
         Switch(checked = checkOnStart, onCheckedChange = vm::setCheckOnStart)
     }
     if (state is UpdateState.Checking) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             CircularProgressIndicator(Modifier.size(24.dp))
-            Text("Checking…")
+            Text(stringResource(R.string.checking))
         }
     } else {
-        OutlinedButton(onClick = { vm.check() }) { Text("Check for updates") }
+        OutlinedButton(onClick = { vm.check() }) { Text(stringResource(R.string.check_for_updates)) }
     }
 }
 
-/** A menu of every language, labeled in the language itself. */
+/** The app's own language: the phone's, or one of the translations, each named in itself. */
+@Composable
+private fun AppLanguagePicker() {
+    var open by remember { mutableStateOf(false) }
+    val current = AppLanguage.current()
+    val systemDefault = stringResource(R.string.system_default)
+    val name = AppLanguage.available.firstOrNull { it.first == current }?.second ?: systemDefault
+    OutlinedButton(onClick = { open = true }) { Text("$name ▾") }
+    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        for ((tag, label) in listOf(null to systemDefault) + AppLanguage.available) {
+            DropdownMenuItem(
+                text = { Text(label) },
+                onClick = {
+                    open = false
+                    if (tag != current) AppLanguage.set(tag)
+                },
+            )
+        }
+    }
+}
+
+/** A menu of every study language, labeled in itself and in the app's language. */
 @Composable
 private fun LanguagePicker(current: Language, onSelect: (Language) -> Unit) {
     var open by remember { mutableStateOf(false) }
-    OutlinedButton(onClick = { open = true }) { Text("${current.label} ▾") }
+    OutlinedButton(onClick = { open = true }) { Text("${current.label()} ▾") }
     DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
-        for (l in Language.entries.sortedBy { it.englishName }) {
+        for (l in Language.entries.sortedBy { it.displayName() }) {
             DropdownMenuItem(
-                text = { Text(l.label) },
+                text = { Text(l.label()) },
                 onClick = {
                     open = false
                     if (l != current) onSelect(l)
@@ -231,7 +257,30 @@ private fun LanguagePicker(current: Language, onSelect: (Language) -> Unit) {
     }
 }
 
-private fun sentences(n: Int) = if (n == 1) "1 sentence" else "$n sentences"
+/** The language of YouTube subtitles used as translations, or Off. */
+@Composable
+private fun TranslationPicker(current: Language?, onSelect: (Language?) -> Unit) {
+    var open by remember { mutableStateOf(false) }
+    OutlinedButton(onClick = { open = true }) { Text("${current?.displayName() ?: stringResource(R.string.off)} ▾") }
+    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.off)) },
+            onClick = {
+                open = false
+                onSelect(null)
+            },
+        )
+        for (l in Language.entries.sortedBy { it.displayName() }) {
+            DropdownMenuItem(
+                text = { Text(l.displayName()) },
+                onClick = {
+                    open = false
+                    onSelect(l)
+                },
+            )
+        }
+    }
+}
 
 /** Blacklisted sentences, each with a button to bring it back into practice. */
 @Composable
@@ -242,7 +291,7 @@ private fun Blacklist(vm: SettingsViewModel) {
             Column(Modifier.weight(1f)) {
                 Text(
                     // Sentences blacklisted before 0.4.0 weren't saved with their text.
-                    item.text.ifBlank { "Sentence blacklisted before version 0.4.0" },
+                    item.text.ifBlank { stringResource(R.string.blacklisted_before_040) },
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
@@ -257,7 +306,7 @@ private fun Blacklist(vm: SettingsViewModel) {
                     )
                 }
             }
-            TextButton(onClick = { vm.restore(item.noteId) }) { Text("Restore") }
+            TextButton(onClick = { vm.restore(item.noteId) }) { Text(stringResource(R.string.restore)) }
         }
     }
 }
@@ -269,8 +318,9 @@ private fun Section(title: String) {
 }
 
 @Composable
-private fun Decks(vm: SettingsViewModel) {
-    val decks by vm.decks.collectAsStateWithLifecycle()
+private fun Decks(vm: SettingsViewModel, language: Language) {
+    val allDecks by vm.decks.collectAsStateWithLifecycle()
+    val decks = allDecks.filter { it.language == language }
     val progress by vm.importProgress.collectAsStateWithLifecycle()
     var confirmRemove by remember { mutableStateOf<ImportedDeck?>(null) }
 
@@ -281,8 +331,7 @@ private fun Decks(vm: SettingsViewModel) {
     }
 
     Text(
-        "In AnkiDroid, export a deck (.apkg) or your collection (.colpkg) with \"Include media\" " +
-            "checked, then import it here. Only sentence audio is kept. Re-import after adding cards.",
+        stringResource(R.string.decks_help),
         style = MaterialTheme.typography.bodyMedium,
     )
     for (deck in decks) {
@@ -290,43 +339,47 @@ private fun Decks(vm: SettingsViewModel) {
             Column(Modifier.weight(1f)) {
                 Text(deck.name, style = MaterialTheme.typography.bodyLarge)
                 Text(
-                    "${deck.noteCount} notes · ${deck.mediaCount} audio · ${formatBytes(deck.freedBytes)} saved · " +
+                    listOf(
+                        stringResource(R.string.deck_notes, deck.noteCount),
+                        stringResource(R.string.deck_audio, deck.mediaCount),
+                        stringResource(R.string.deck_saved, formatBytes(deck.freedBytes)),
                         DateFormat.getDateInstance().format(Date(deck.importedAt)),
+                    ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            TextButton(onClick = { confirmRemove = deck }) { Text("Remove") }
+            TextButton(onClick = { confirmRemove = deck }) { Text(stringResource(R.string.remove)) }
         }
     }
     val importing = progress
     if (importing != null) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             CircularProgressIndicator(Modifier.size(24.dp))
-            Text("Importing… $importing files")
+            Text(stringResource(R.string.importing_files, importing))
         }
     } else {
-        Button(onClick = { pickDeck.launch(arrayOf("*/*")) }) { Text("Import .apkg / .colpkg") }
+        Button(onClick = { pickDeck.launch(arrayOf("*/*")) }) { Text(stringResource(R.string.import_deck)) }
     }
 
     confirmRemove?.let { deck ->
         AlertDialog(
             onDismissRequest = { confirmRemove = null },
-            title = { Text("Remove ${deck.name}?") },
-            text = { Text("Its notes and audio are deleted from this app. Your AnkiDroid collection isn't affected.") },
+            title = { Text(stringResource(R.string.remove_title, deck.name)) },
+            text = { Text(stringResource(R.string.remove_deck_body)) },
             confirmButton = {
                 TextButton(onClick = {
                     vm.removeDeck(deck.id)
                     confirmRemove = null
-                }) { Text("Remove") }
+                }) { Text(stringResource(R.string.remove)) }
             },
-            dismissButton = { TextButton(onClick = { confirmRemove = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { confirmRemove = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
 }
 
 @Composable
-private fun MediaItems(vm: SettingsViewModel, language: Language) {
+private fun MediaItems(vm: SettingsViewModel, language: Language, translation: Language?) {
     val allItems by vm.mediaItems.collectAsStateWithLifecycle()
     val items = allItems.filter { it.language == language }
     val busy by vm.mediaBusy.collectAsStateWithLifecycle()
@@ -347,8 +400,7 @@ private fun MediaItems(vm: SettingsViewModel, language: Language) {
     }
 
     Text(
-        "Pick a video or audio file, then its ${language.englishName} subtitles (.srt, .vtt or .ass). Each subtitle " +
-            "line becomes one sentence, in order. Choose it from the menu at the top of the practice screen.",
+        stringResource(R.string.media_help),
         style = MaterialTheme.typography.bodyMedium,
     )
     for (item in items) {
@@ -356,12 +408,16 @@ private fun MediaItems(vm: SettingsViewModel, language: Language) {
             Column(Modifier.weight(1f)) {
                 Text(item.name, style = MaterialTheme.typography.bodyLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
-                    "${item.chunkCount} subtitle lines · " + DateFormat.getDateInstance().format(Date(item.importedAt)),
+                    listOfNotNull(
+                        stringResource(R.string.subtitle_lines, item.chunkCount),
+                        item.translation?.let { stringResource(R.string.translations_in, it.displayName()) },
+                        DateFormat.getDateInstance().format(Date(item.importedAt)),
+                    ).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            TextButton(onClick = { confirmRemove = item }) { Text("Remove") }
+            TextButton(onClick = { confirmRemove = item }) { Text(stringResource(R.string.remove)) }
         }
     }
     if (busy != null) {
@@ -370,12 +426,12 @@ private fun MediaItems(vm: SettingsViewModel, language: Language) {
             Text(busy.orEmpty())
         }
     } else {
-        Button(onClick = { pickMedia.launch(arrayOf("video/*", "audio/*")) }) { Text("Add video/audio + subtitles") }
+        Button(onClick = { pickMedia.launch(arrayOf("video/*", "audio/*")) }) { Text(stringResource(R.string.add_media)) }
         var url by rememberSaveable { mutableStateOf("") }
         OutlinedTextField(
             value = url,
             onValueChange = { url = it },
-            label = { Text("YouTube link with ${language.englishName} subtitles") },
+            label = { Text(stringResource(R.string.youtube_link)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -385,26 +441,34 @@ private fun MediaItems(vm: SettingsViewModel, language: Language) {
                 url = ""
             },
             enabled = url.isNotBlank(),
-        ) { Text("Download from YouTube") }
+        ) { Text(stringResource(R.string.download_youtube)) }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.translations_from), style = MaterialTheme.typography.bodyMedium)
+            TranslationPicker(translation, vm::setTranslation)
+        }
+        Text(
+            stringResource(if (translation == null) R.string.translation_off_help else R.string.translation_help),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 
     confirmRemove?.let { item ->
         AlertDialog(
             onDismissRequest = { confirmRemove = null },
-            title = { Text("Remove ${item.name}?") },
+            title = { Text(stringResource(R.string.remove_title, item.name)) },
             text = {
                 Text(
-                    if (item.sourceUrl != null) "The downloaded audio and subtitles are deleted."
-                    else "Only the app's subtitle copy is deleted; your video file stays where it is.",
+                    stringResource(if (item.sourceUrl != null) R.string.remove_download_body else R.string.remove_local_body),
                 )
             },
             confirmButton = {
                 TextButton(onClick = {
                     vm.removeMedia(item.id)
                     confirmRemove = null
-                }) { Text("Remove") }
+                }) { Text(stringResource(R.string.remove)) }
             },
-            dismissButton = { TextButton(onClick = { confirmRemove = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { confirmRemove = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
 }
@@ -423,31 +487,29 @@ private fun MappingEditor(
     var translation by remember(preset, language, mapping) { mutableStateOf(mapping.translation) }
     var audio by remember(preset, language, mapping) { mutableStateOf(mapping.audio) }
     var word by remember(preset, language, mapping) { mutableStateOf(mapping.word) }
-    var languageField by remember(preset, language, mapping) { mutableStateOf(mapping.language) }
 
-    Field("Note type name contains", noteType) { noteType = it }
-    Field("Sentence field", sentence) { sentence = it }
+    Field(stringResource(R.string.field_note_type), noteType) { noteType = it }
+    Field(stringResource(R.string.field_sentence), sentence) { sentence = it }
     // Only languages with readings above the text have a reading field.
     when (val reading = language.reading) {
         null -> {}
-        Reading.FURIGANA -> Field("Furigana field", furigana) { furigana = it }
-        else -> Field("${reading.label} field (optional)", furigana) { furigana = it }
+        Reading.FURIGANA -> Field(stringResource(R.string.field_furigana), furigana) { furigana = it }
+        else -> Field(stringResource(R.string.field_reading, reading.label), furigana) { furigana = it }
     }
-    Field("Translation field (optional)", translation) { translation = it }
-    Field("Sentence audio field", audio) { audio = it }
-    Field("Word field (counts as known, optional)", word) { word = it }
-    Field("Language field (skips cards of other languages, optional)", languageField) { languageField = it }
+    Field(stringResource(R.string.field_translation), translation) { translation = it }
+    Field(stringResource(R.string.field_audio), audio) { audio = it }
+    Field(stringResource(R.string.field_word), word) { word = it }
 
     Text(
-        "Imports keep only the audio from each preset's audio field. If you change the audio field, re-import your decks.",
+        stringResource(R.string.audio_field_note),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 
-    val edited = FieldMapping(noteType, sentence, furigana, translation, audio, word, languageField)
+    val edited = FieldMapping(noteType, sentence, furigana, translation, audio, word)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = { onSave(edited) }, enabled = edited != mapping) { Text("Save mapping") }
-        OutlinedButton(onClick = onReset, enabled = mapping != preset.defaults(language)) { Text("Reset to defaults") }
+        Button(onClick = { onSave(edited) }, enabled = edited != mapping) { Text(stringResource(R.string.save_mapping)) }
+        OutlinedButton(onClick = onReset, enabled = mapping != preset.defaults(language)) { Text(stringResource(R.string.reset_defaults)) }
     }
 }
 

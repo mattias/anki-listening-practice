@@ -34,6 +34,8 @@ data class Settings(
     val source: PracticeSource,
     /** Look for a new release on GitHub when the app starts. */
     val checkUpdates: Boolean,
+    /** Subtitles downloaded with YouTube videos as the translation (English if missing); null = none. */
+    val translation: Language?,
 )
 
 @Singleton
@@ -46,6 +48,7 @@ class SettingsRepository @Inject constructor(
         val delayMs = longPreferencesKey("delay_ms")
         val autoClearAfter = intPreferencesKey("auto_clear_after")
         val checkUpdates = booleanPreferencesKey("check_updates")
+        val translationLanguage = stringPreferencesKey("translation_language")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -59,7 +62,6 @@ class SettingsRepository @Inject constructor(
         fun translation(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_translation")
         fun audio(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_audio")
         fun word(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_word")
-        fun languageField(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_language")
 
         // Videos are per language, so the chosen source is too. Japanese keeps the old key.
         fun source(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "source" else "source_${l.code}")
@@ -77,6 +79,10 @@ class SettingsRepository @Inject constructor(
             autoClearAfter = prefs[Keys.autoClearAfter] ?: 0,
             source = PracticeSource.fromKey(prefs[Keys.source(language)]),
             checkUpdates = prefs[Keys.checkUpdates] ?: true,
+            translation = when (val code = prefs[Keys.translationLanguage]) {
+                OFF -> null
+                else -> Language.entries.firstOrNull { it.code == code } ?: Language.ENGLISH
+            },
         )
     }
 
@@ -112,7 +118,6 @@ class SettingsRepository @Inject constructor(
             translation = prefs[Keys.translation(p, l)] ?: d.translation,
             audio = prefs[Keys.audio(p, l)] ?: d.audio,
             word = prefs[Keys.word(p, l)] ?: d.word,
-            language = prefs[Keys.languageField(p, l)] ?: d.language,
         )
     }
 
@@ -128,7 +133,6 @@ class SettingsRepository @Inject constructor(
         it[Keys.translation(p, l)] = m.translation
         it[Keys.audio(p, l)] = m.audio
         it[Keys.word(p, l)] = m.word
-        it[Keys.languageField(p, l)] = m.language
     }
 
     suspend fun resetMapping(p: Preset, l: Language) = context.dataStore.edit {
@@ -138,12 +142,17 @@ class SettingsRepository @Inject constructor(
         it.remove(Keys.translation(p, l))
         it.remove(Keys.audio(p, l))
         it.remove(Keys.word(p, l))
-        it.remove(Keys.languageField(p, l))
     }
 
     suspend fun setCheckUpdates(enabled: Boolean) = context.dataStore.edit { it[Keys.checkUpdates] = enabled }
 
+    suspend fun setTranslation(l: Language?) = context.dataStore.edit { it[Keys.translationLanguage] = l?.code ?: OFF }
+
     suspend fun setSpeed(speed: Float) = context.dataStore.edit { it[Keys.speed] = speed }
 
     suspend fun setDelayMs(delayMs: Long) = context.dataStore.edit { it[Keys.delayMs] = delayMs }
+
+    private companion object {
+        const val OFF = "off"
+    }
 }

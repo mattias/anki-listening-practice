@@ -1,3 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Listening Practice</string>
+    <string name="app_name" translatable="false">Listening Practice</string>
+
+    <!-- Shared -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
+    <string name="reset">Reset</string>
+    <string name="off">Off</string>
+    <string name="crystal_clear">Crystal Clear</string>
+    <string name="blacklist">Blacklist</string>
+    <string name="anki_cards">Anki cards</string>
+    <string name="import_failed">Import failed: %1$s</string>
+    <string name="could_not_open_file">Could not open the selected file</string>
+
+    <!-- Practice screen -->
+    <string name="settings">Settings</string>
+    <string name="loading_collection">Reading collection and matching known words…</string>
+    <string name="retry">Retry</string>
+    <string name="play_n_of_m">Play %1$d of %2$d, then Crystal Clear</string>
+    <string name="repeats">Repeats: %1$d</string>
+    <string name="show_text">Show Text</string>
+    <string name="hide_text">Hide Text</string>
+    <string name="speed">Speed: %1$sx</string>
+    <string name="pause_between_repeats">Pause between repeats</string>
+    <string name="seconds_short">%1$ss</string>
+    <string name="auto_clear_after">Auto Crystal Clear after</string>
+    <string name="skip">Skip</string>
+    <string name="blacklist_confirm_title">Blacklist this sentence?</string>
+    <string name="blacklist_confirm_body">It won\'t be played again. You can restore it in Settings → Progress.</string>
+    <string name="no_more_in_video">No more sentences you know in this video. Pick another source, or reset cool-downs in Settings to go through it again.</string>
+    <string name="no_eligible">No eligible sentences. Import your known words, check the note type preset in Settings, or wait for cool-downs to expire.</string>
+    <string name="notification_subtitle">Listening practice · %1$s</string>
+
+    <!-- Settings -->
+    <string name="back">Back</string>
+    <string name="app_language">App language</string>
+    <string name="system_default">System default</string>
+    <string name="study_language">Language you study</string>
+    <string name="kept_per_language">Anki decks, videos and known words are kept per language.</string>
+
+    <string name="anki_decks">Anki decks</string>
+    <string name="decks_help">In AnkiDroid, export a deck (.apkg) or your collection (.colpkg) with \"Include media\" checked, then import it here. Its cards count as the language you study, so import each language\'s deck while that language is selected. Only sentence audio is kept. Re-import after adding cards.</string>
+    <string name="deck_notes">Notes: %1$d</string>
+    <string name="deck_audio">Audio: %1$d</string>
+    <string name="deck_saved">Saved: %1$s</string>
+    <string name="importing_files">Importing… files: %1$d</string>
+    <string name="import_deck">Import .apkg / .colpkg</string>
+    <string name="remove_title">Remove %1$s?</string>
+    <string name="remove_deck_body">Its notes and audio are deleted from this app. Your AnkiDroid collection isn\'t affected.</string>
+    <string name="deck_imported">Imported %1$s.\nNotes: %2$d\nSentence audio files: %3$d\nUnused media removed (images, word audio, etc.): %4$s</string>
+    <string name="no_deck">Import an Anki deck (.apkg) or collection (.colpkg) for the language you study (%1$s) in Settings.</string>
+    <string name="no_notes">No notes with sentence audio found for note type \"%1$s\". Check the preset, and that the export included media.</string>
+
+    <string name="videos_audio">Videos &amp; audio</string>
+    <string name="media_help">Pick a video or audio file, then its subtitles in the language you study (.srt, .vtt or .ass). Each subtitle line becomes one sentence, in order. Choose it from the menu at the top of the practice screen.</string>
+    <string name="subtitle_lines">Subtitle lines: %1$d</string>
+    <string name="translations_in">Translations: %1$s</string>
+    <string name="add_media">Add video/audio + subtitles</string>
+    <string name="youtube_link">YouTube link with subtitles</string>
+    <string name="download_youtube">Download from YouTube</string>
+    <string name="translations_from">Translations from</string>
+    <string name="translation_off_help">Downloads only the subtitles in the language you study.</string>
+    <string name="translation_help">Also downloads subtitles in this language (or in English, if a video has none), YouTube\'s machine translations included, and shows them as each line\'s translation.</string>
+    <string name="remove_download_body">The downloaded audio and subtitles are deleted.</string>
+    <string name="remove_local_body">Only the app\'s subtitle copy is deleted; your video file stays where it is.</string>
+    <string name="reading_subtitles">Reading subtitles…</string>
+    <string name="starting">Starting…</string>
+    <string name="media_added">Added %1$s (subtitle lines: %2$d). Pick it from the menu at the top of the practice screen.</string>
+    <string name="media_added_translated">Added %1$s (subtitle lines: %2$d, translations: %3$s). Pick it from the menu at the top of the practice screen.</string>
+    <string name="youtube_failed">YouTube download failed: %1$s</string>
+    <string name="video_gone">That video is no longer imported</string>
+    <string name="yt_preparing">Preparing yt-dlp…</string>
+    <string name="yt_updating">Updating yt-dlp…</string>
+    <string name="yt_looking">Looking for subtitles…</string>
+    <string name="yt_no_subtitles">\"%1$s\" has no subtitles in the language you study (%2$s).</string>
+    <string name="yt_downloading">Downloading audio and subtitles…</string>
+    <string name="yt_progress">Downloading… %1$d%%</string>
+    <string name="yt_translation">Downloading subtitles for the translation…</string>
+
+    <string name="known_words">Known words</string>
+    <string name="loading">Loading…</string>
+    <string name="known_none_jiten">No word list imported for this language yet. Import one from Jiten or Anki Miner, one word per line.</string>
+    <string name="known_none_miner">No word list imported for this language yet. Import one from Anki Miner, one word per line.</string>
+    <string name="known_none">No word list imported for this language yet. Import one with one word per line.</string>
+    <string name="known_count">Words in your word list: %1$d</string>
+    <string name="card_words">Words from your cards\' %2$s field: %1$d</string>
+    <string name="no_word_field">No word field is set, so your cards\' words don\'t count as known.</string>
+    <string name="import_known_words">Import known_words.txt</string>
+    <string name="known_imported">Imported known words: %1$d</string>
+
+    <string name="note_type_preset">Note type preset</string>
+    <string name="japanese_presets_note">Kiku, Lapis and Senren are Japanese note types. Other languages use Anki Miner Note.</string>
+    <string name="field_note_type">Note type name contains</string>
+    <string name="field_sentence">Sentence field</string>
+    <string name="field_furigana">Furigana field</string>
+    <string name="field_reading">%1$s field (optional)</string>
+    <string name="field_translation">Translation field (optional)</string>
+    <string name="field_audio">Sentence audio field</string>
+    <string name="field_word">Word field (counts as known, optional)</string>
+    <string name="audio_field_note">Imports keep only the audio from each preset\'s audio field. If you change the audio field, re-import your decks.</string>
+    <string name="save_mapping">Save mapping</string>
+    <string name="reset_defaults">Reset to defaults</string>
+    <string name="mapping_saved">Saved the %1$s field mapping</string>
+
+    <string name="progress">Progress</string>
+    <string name="cooling_down">Sentences cooling down after Crystal Clear: %1$d</string>
+    <string name="reset_cooldowns">Reset Crystal Clear cool-downs</string>
+    <string name="blacklisted_count">Blacklisted sentences: %1$d</string>
+    <string name="blacklisted_before_040">Sentence blacklisted before version 0.4.0</string>
+    <string name="restore">Restore</string>
+    <string name="clear_blacklist">Clear blacklist</string>
+    <string name="reset_cooldowns_title">Reset cool-downs?</string>
+    <string name="reset_cooldowns_body">Every sentence you marked Crystal Clear comes back into practice now instead of after 10 days.</string>
+    <string name="cooldowns_reset_done">Cool-downs reset. All Crystal Clear sentences are back in practice.</string>
+    <string name="clear_blacklist_title">Clear blacklist?</string>
+    <string name="clear_blacklist_body">Every blacklisted sentence comes back into practice.</string>
+    <string name="blacklist_cleared">Blacklist cleared</string>
+
+    <!-- Updates -->
+    <string name="app_updates">App updates</string>
+    <string name="version_info">Version %1$s. New versions are downloaded from GitHub Releases.</string>
+    <string name="check_on_start">Check for updates when the app starts</string>
+    <string name="checking">Checking…</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="latest_version">You have the latest version (%1$s).</string>
+    <string name="version_available">Version %1$s is available</string>
+    <string name="you_have_version">You have %1$s. Updating keeps your imports and progress.</string>
+    <string name="install_permission_note">Android will first ask you to allow this app to install updates; allow it, come back and tap Update again.</string>
+    <string name="update">Update</string>
+    <string name="later">Later</string>
+    <string name="downloading_version">Downloading %1$s…</string>
+    <string name="update_check_failed">Couldn\'t check for updates: %1$s</string>
+    <string name="update_download_failed">Update download failed: %1$s</string>
+    <string name="update_damaged">the downloaded file is damaged (checksum mismatch)</string>
 </resources>

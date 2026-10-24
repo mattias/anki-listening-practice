@@ -24,10 +24,9 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   Japanese, Korean, Chinese (Mandarin), Cantonese, English, Catalan, German, Portuguese, French,
   Spanish, Italian, Dutch, Norwegian, Romanian, Greek, Finnish, Hungarian, Croatian, Swedish,
   Polish, Lithuanian, Danish, Turkish, Indonesian, Russian, Arabic, Thai, Persian, Slovenian,
-  Ukrainian, Vietnamese and Hebrew — plus Tagalog and Taiwanese (Taigi, 台語). Known words,
-  videos, the note type preset and the practice source are kept per language. Anki Miner doesn't
-  mine Tagalog or Taiwanese, so for those use word lists, videos and YouTube, or cards whose
-  Language field is empty or `tl` / `nan`.
+  Ukrainian, Vietnamese and Hebrew — plus Tagalog and Taiwanese (Taigi, 台語). Anki decks, known
+  words, videos, the note type preset and the practice source are kept per language: a deck
+  belongs to the language selected when you import it.
 - **Taiwanese** — Han characters, Tâi-lô/POJ romanization (hyphenated syllables like *Tâi-gí*)
   or a mix. Han text is split into words like Chinese, and an optional Tâi-lô field shows the
   reading above the characters, like pinyin. Text is drawn with Taiwanese glyph forms.
@@ -36,7 +35,9 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   the file. For Japanese, furigana is generated automatically.
 - **YouTube** — paste a link; the app checks for subtitles in your language (manual first, then
   auto-generated), downloads just the audio and subtitles with
-  [yt-dlp](https://github.com/yt-dlp/yt-dlp), and adds it like a local file.
+  [yt-dlp](https://github.com/yt-dlp/yt-dlp), and adds it like a local file. Subtitles in a second
+  language (English by default, with English as the fallback; YouTube's machine translations
+  count) become each line's translation.
 - **Only fully known sentences** — sentences are split into words and kept only if every word is
   known: in your word list (from [Jiten](https://jiten.moe) or Anki Miner) or the target word
   (e.g. *Expression*) of one of your cards.
@@ -55,10 +56,20 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
     Settings → Progress, where each one can be restored.
 - **Hands-free** — *Auto Crystal Clear after* 3, 5, 10 or 20 plays: each sentence repeats that
   many times, counts as Crystal Clear and the next one starts, so you can listen on the go.
+- **Headset and notification controls** — play/pause from your headset button; double-tap it
+  (or press *next*) to skip, *previous* plays the sentence again. While audio plays, a media
+  notification has play/pause, replay, skip and Crystal Clear, and practice keeps going with the
+  screen off.
+- **Pauses for calls** — audio pauses while the phone rings or you're in a call (also app calls)
+  and resumes afterwards; it also pauses when headphones are unplugged.
 - **Note type presets** for [Anki Miner Note](https://github.com/0xzerolight/anki_miner_note)
   (every language) and the Japanese note types [Kiku](https://github.com/youyoumu/kiku),
   [Lapis](https://github.com/donkuri/lapis) and [Senren](https://github.com/BrenoAqua/Senren),
   with editable field mappings for anything else.
+- **Your language** — the app itself is in English and 32 other languages (the study languages,
+  with Traditional Chinese for Cantonese and Taiwanese). It follows the phone's language; change
+  it under **Settings → App language** (or Android 13+'s per-app language setting). The
+  translations are machine-made; corrections are welcome.
 - **Small footprint** — after import only the sentence audio is kept; images, word audio and
   other media are deleted. Your AnkiDroid collection is never modified.
 
@@ -78,7 +89,7 @@ several years).
    or from Anki Miner's *Manage Known Words* for any language (its `.csv` export works too).
 3. In the app, open **Settings** and:
    - choose the **language** you study,
-   - tap **Import .apkg / .colpkg** and pick your export,
+   - tap **Import .apkg / .colpkg** and pick your export (its cards count as that language),
    - tap **Import known_words.txt** and pick your word list,
    - choose the preset matching your note type.
 4. Go back and start listening.
@@ -93,28 +104,33 @@ media file and then its subtitle file, or paste a **YouTube link** and tap **Dow
 YouTube**. Then choose the video from the menu at the top of the practice screen. Sentences come
 in the order they're spoken; ones with unknown words are skipped.
 
+YouTube downloads also fetch subtitles in the language under **Translations from** (English by
+default; if a video has none in that language, English; *Off* skips them) and show them as the
+translation of each line. Lines are matched by time, so a translation can cover a little more or
+less than its line.
+
 Picked files stay where they are, so don't move or delete them. YouTube downloads are stored in
 the app. Downloading from YouTube is against YouTube's terms of service; use it for your own
 study only.
 
 ### Field presets
 
-| Preset          | Languages | Note type contains | Sentence   | Furigana           | Translation           | Audio           | Word         | Language   |
-|-----------------|-----------|--------------------|------------|--------------------|-----------------------|-----------------|--------------|------------|
-| Kiku            | Japanese  | `Kiku`             | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` | —          |
-| Lapis           | Japanese  | `Lapis`            | `Sentence` | `SentenceFurigana` | —                     | `SentenceAudio` | `Expression` | —          |
-| Senren          | Japanese  | `Senren`           | `sentence` | `sentenceFurigana` | `sentenceTranslation` | `sentenceAudio` | `word`       | —          |
-| Anki Miner Note | All       | `Anki Miner Note`  | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` | `Language` |
+| Preset          | Languages | Note type contains | Sentence   | Furigana           | Translation           | Audio           | Word         |
+|-----------------|-----------|--------------------|------------|--------------------|-----------------------|-----------------|--------------|
+| Kiku            | Japanese  | `Kiku`             | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` |
+| Lapis           | Japanese  | `Lapis`            | `Sentence` | `SentenceFurigana` | —                     | `SentenceAudio` | `Expression` |
+| Senren          | Japanese  | `Senren`           | `sentence` | `sentenceFurigana` | `sentenceTranslation` | `sentenceAudio` | `word`       |
+| Anki Miner Note | All       | `Anki Miner Note`  | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` |
 
 Kiku, Lapis and Senren are offered only while Japanese is selected; in every other language the
 preset is Anki Miner Note. The furigana field exists only for Japanese; for Chinese and Cantonese
 it becomes an optional pinyin or jyutping field (empty by default, since Anki Miner puts those on
 the word, not the sentence), and other languages have none.
 
-Anki Miner Note holds cards of every language in one note type, so the app reads its `Language`
-field (`ja`, `sv`, `zh-Hans`, ...) and practices only cards of the selected language. Cards with
-an empty language field count for every language. Anki Miner tags Cantonese cards `zh-Hant`, so
-traditional-script Mandarin cards also show up under Cantonese, and Cantonese cards under Chinese.
+Every card in a deck counts as the deck's language, whatever its fields say. Anki Miner Note
+holds cards of every language in one note type, so export each language's deck separately and
+import it with that language selected. Decks imported before version 0.5.0 get the language most
+of their cards name in a `Language` field, or Japanese.
 
 Field names match case-insensitively. Imports keep only audio referenced by each preset's
 audio field, so if you point a preset at a different audio field, re-import your decks.
@@ -175,8 +191,9 @@ app/src/main/java/dev/lovkvist/listening/
 ├── data/local/      Room database for cool-downs and blacklist
 ├── data/settings/   DataStore settings
 ├── data/            SentenceRepository: filtering and picking the next sentence
+├── l10n/            App language picker, translated strings outside the UI, localized language names
 ├── text/            Languages, Japanese tokenizer (Kuromoji) and word tokenizer for the rest
-├── playback/        Looping player with a pause between repeats
+├── playback/        Looping player, practice session, media session service (notification, headset)
 └── ui/              Compose screens and view models
 ```
 

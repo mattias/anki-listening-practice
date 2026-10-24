@@ -77,6 +77,25 @@ class SubtitlesTest {
     }
 
     @Test
+    fun translationLinesGoToTheCueTheyOverlapMost() {
+        val cues = listOf(
+            SubtitleCue(1000, 3000, "猫が好き"),
+            SubtitleCue(3000, 6000, "犬も好き"),
+            SubtitleCue(9000, 10000, "はい"),
+        )
+        val english = listOf(
+            SubtitleCue(900, 2900, "I like\ncats"),
+            SubtitleCue(2800, 4500, "and I like"), // mostly in the second cue
+            SubtitleCue(4500, 6100, "dogs too"),
+            SubtitleCue(7000, 8000, "(music)"), // overlaps nothing
+        )
+        assertEquals(
+            listOf("I like cats", "and I like dogs too", ""),
+            Subtitles.align(cues, english, unspaced = false),
+        )
+    }
+
+    @Test
     fun identicalBackToBackCuesMerge() {
         val srt = "1\n00:00:01,000 --> 00:00:02,000\nあ\n\n2\n00:00:02,000 --> 00:00:03,000\nあ\n"
         assertEquals(listOf(SubtitleCue(1000, 3000, "あ")), Subtitles.parse("a.srt", srt))

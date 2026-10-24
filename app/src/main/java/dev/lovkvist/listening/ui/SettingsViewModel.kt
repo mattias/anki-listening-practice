@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.SentenceRepository
 import dev.lovkvist.listening.data.anki.DeckLibrary
@@ -18,6 +19,8 @@ import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.media.YouTubeImporter
 import dev.lovkvist.listening.data.settings.Settings
 import dev.lovkvist.listening.data.settings.SettingsRepository
+import dev.lovkvist.listening.l10n.Strings
+import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,6 +39,7 @@ class SettingsViewModel @Inject constructor(
     private val library: DeckLibrary,
     private val media: MediaLibrary,
     private val youTube: YouTubeImporter,
+    private val strings: Strings,
 ) : ViewModel() {
 
     val settings: StateFlow<Settings?> =
@@ -76,7 +80,7 @@ class SettingsViewModel @Inject constructor(
         dao.clearCooldowns()
         _cooldownCount.value = 0
         sentences.invalidate(collection = false, known = false)
-        _message.value = "Cool-downs reset. All Crystal Clear sentences are back in practice."
+        _message.value = strings(R.string.cooldowns_reset_done)
     }
 
     fun importKnownWords(uri: Uri) = viewModelScope.launch {
@@ -84,9 +88,9 @@ class SettingsViewModel @Inject constructor(
             val language = settingsRepo.current().language
             val n = knownWords.import(uri, language)
             sentences.invalidate(collection = false, known = true)
-            "Imported $n known ${language.englishName} words"
+            strings(R.string.known_imported, n)
         } catch (e: Exception) {
-            "Import failed: ${e.message}"
+            strings(R.string.import_failed, e.message ?: e.toString())
         }
     }
 
@@ -106,7 +110,7 @@ class SettingsViewModel @Inject constructor(
         settingsRepo.setMapping(p, l, m)
         sentences.invalidate()
         refreshCounts()
-        _message.value = "Saved ${p.label} field mapping"
+        _message.value = strings(R.string.mapping_saved, p.label)
     }
 
     fun resetMapping(p: Preset, l: Language) = viewModelScope.launch {
@@ -121,12 +125,11 @@ class SettingsViewModel @Inject constructor(
 
     fun importDeck(uri: Uri) = viewModelScope.launch {
         _message.value = try {
-            val deck = library.import(uri)
+            val deck = library.import(uri, settingsRepo.current().language)
             sentences.invalidate(collection = true, known = false)
-            "Imported ${deck.name}: ${deck.noteCount} notes, ${deck.mediaCount} sentence audio files. " +
-                "Removed ${formatBytes(deck.freedBytes)} of unused media (images, word audio, etc.)."
+            strings(R.string.deck_imported, deck.name, deck.noteCount, deck.mediaCount, formatBytes(deck.freedBytes))
         } catch (e: Exception) {
-            "Import failed: ${e.message ?: e}"
+            strings(R.string.import_failed, e.message ?: e.toString())
         }
     }
 
@@ -143,28 +146,32 @@ class SettingsViewModel @Inject constructor(
     val mediaBusy: StateFlow<String?> = _mediaBusy.asStateFlow()
 
     fun importMedia(file: Uri, subtitles: Uri) = viewModelScope.launch {
-        _mediaBusy.value = "Reading subtitles…"
+        _mediaBusy.value = strings(R.string.reading_subtitles)
         _message.value = try {
             val item = media.importLocal(file, subtitles, settingsRepo.current().language)
-            "Added ${item.name}: ${item.chunkCount} subtitle lines. Pick it from the menu at the top of the practice screen."
+            strings(R.string.media_added, item.name, item.chunkCount)
         } catch (e: Exception) {
-            "Import failed: ${e.message ?: e}"
+            strings(R.string.import_failed, e.message ?: e.toString())
         } finally {
             _mediaBusy.value = null
         }
     }
 
     fun importYouTube(url: String) = viewModelScope.launch {
-        _mediaBusy.value = "Starting…"
+        _mediaBusy.value = strings(R.string.starting)
         _message.value = try {
-            val item = youTube.import(url.trim(), settingsRepo.current().language) { _mediaBusy.value = it }
-            "Added ${item.name}: ${item.chunkCount} subtitle lines. Pick it from the menu at the top of the practice screen."
+            val s = settingsRepo.current()
+            val item = youTube.import(url.trim(), s.language, s.translation) { _mediaBusy.value = it }
+            item.translation?.let { strings(R.string.media_added_translated, item.name, item.chunkCount, it.displayName()) }
+                ?: strings(R.string.media_added, item.name, item.chunkCount)
         } catch (e: Exception) {
-            "YouTube download failed: ${e.message ?: e}"
+            strings(R.string.youtube_failed, e.message ?: e.toString())
         } finally {
             _mediaBusy.value = null
         }
     }
+
+    fun setTranslation(l: Language?) = viewModelScope.launch { settingsRepo.setTranslation(l) }
 
     fun removeMedia(id: String) = viewModelScope.launch {
         media.remove(id)
@@ -182,7 +189,7 @@ class SettingsViewModel @Inject constructor(
         _blacklistCount.value = 0
         _blacklisted.value = emptyList()
         sentences.invalidate(collection = false, known = false)
-        _message.value = "Blacklist cleared"
+        _message.value = strings(R.string.blacklist_cleared)
     }
 
     fun dismissMessage() {

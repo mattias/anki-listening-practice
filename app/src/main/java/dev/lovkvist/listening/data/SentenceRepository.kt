@@ -1,11 +1,13 @@
 package dev.lovkvist.listening.data
 
+import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.anki.DeckLibrary
 import dev.lovkvist.listening.data.known.KnownWordsRepository
 import dev.lovkvist.listening.data.local.SentenceState
 import dev.lovkvist.listening.data.local.SentenceStateDao
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
+import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.text.Language
 import dev.lovkvist.listening.text.Tokenizers
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ class SentenceRepository @Inject constructor(
     private val tokenizers: Tokenizers,
     private val dao: SentenceStateDao,
     private val settings: SettingsRepository,
+    private val strings: Strings,
 ) {
     private val mutex = Mutex()
 
@@ -38,7 +41,7 @@ class SentenceRepository @Inject constructor(
     private var poolSource: PracticeSource? = null
     private var poolLanguage: Language? = null
 
-    /** Target words of all imported cards (e.g. Expression); they count as known everywhere. */
+    /** Target words of the language's cards (e.g. Expression); they count as known. */
     private var cardWords: Set<String>? = null
 
     /** Memoized "every word is known" results, keyed by sentence id. Cleared when known words change. */
@@ -116,7 +119,7 @@ class SentenceRepository @Inject constructor(
     suspend fun blacklist(sentence: Sentence) {
         val current = dao.get(sentence.id) ?: SentenceState(sentence.id)
         val sourceName = when (val s = settings.current().source) {
-            PracticeSource.Anki -> "Anki cards"
+            PracticeSource.Anki -> strings(R.string.anki_cards)
             is PracticeSource.Media -> media.items.value.firstOrNull { it.id == s.id }?.name.orEmpty()
         }
         dao.upsert(current.copy(blacklisted = true, text = sentence.text, source = sourceName))

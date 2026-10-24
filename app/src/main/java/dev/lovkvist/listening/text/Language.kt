@@ -9,10 +9,8 @@ enum class Reading(val label: String) {
 }
 
 /**
- * The study languages: Anki Miner's set and codes, so its Anki Miner Note `Language` field
- * ("ja", "sv", "zh-Hans", ...) tells the app which cards belong to which, plus Tagalog and
- * Taiwanese, which Anki Miner doesn't mine (their cards can still be practiced with an empty
- * Language field or their own code).
+ * The study languages: Anki Miner's set and codes, plus Tagalog and Taiwanese, which Anki Miner
+ * doesn't mine.
  */
 enum class Language(
     val code: String,
@@ -24,7 +22,10 @@ enum class Language(
     val legacyCharset: String,
     /** Sentence readings shown above the text; null if the language doesn't use any. */
     val reading: Reading? = null,
-    /** Values of Anki Miner Note's Language field that mean this language (prefix match on "-"). */
+    /**
+     * Values of Anki Miner Note's Language field that mean this language (prefix match on "-"),
+     * used to tell the language of decks imported before decks had one.
+     */
     val noteTags: List<String> = listOf(code),
     /** Written without spaces between words, so words are found by dictionary segmentation. */
     val unspaced: Boolean = false,
@@ -90,9 +91,6 @@ enum class Language(
         textLocale = "zh-TW",
     ),
     ;
-
-    /** "Svenska (Swedish)", or just the name when both are the same. */
-    val label: String get() = if (nativeName == englishName) englishName else "$nativeName ($englishName)"
 
     /** True if a note's Language field value (e.g. "zh-Hans") is this language. */
     fun matchesTag(tag: String): Boolean {

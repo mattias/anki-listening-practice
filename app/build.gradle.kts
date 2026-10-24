@@ -16,8 +16,8 @@ android {
         applicationId = "dev.lovkvist.listening"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "0.4.0"
+        versionCode = 7
+        versionName = "0.5.0"
         // The bundled Python runtime is large per ABI; virtually all current phones are arm64.
         ndk { abiFilters += listOf("arm64-v8a") }
     }
@@ -62,10 +62,16 @@ android {
         // youtubedl-android runs Python and QuickJS from extracted native libraries.
         jniLibs.useLegacyPackaging = true
     }
+    androidResources {
+        // Lists the translated UI languages for Android 13+'s per-app language setting.
+        generateLocaleConfig = true
+    }
 }
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    // Per-app UI language (AppCompatDelegate.setApplicationLocales), also before Android 13
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -80,6 +86,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.media3.exoplayer)
+    implementation(libs.media3.session)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +37,9 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +70,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -81,6 +86,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.Sentence
+import dev.lovkvist.listening.data.SentenceWords
+import dev.lovkvist.listening.data.TappableWord
+import dev.lovkvist.listening.data.WordState
+import dev.lovkvist.listening.data.dict.DictionaryEntry
+import dev.lovkvist.listening.data.dict.LookupResult
 import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.l10n.label
 import dev.lovkvist.listening.playback.PracticeController
@@ -108,6 +118,9 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     val stats by practice.stats.collectAsStateWithLifecycle()
     var confirmBlacklist by remember { mutableStateOf(false) }
     var showPlayback by remember { mutableStateOf(false) }
+    var tapped by remember { mutableStateOf<TappableWord?>(null) }
+    val autoAdvanceSkip by practice.autoAdvanceSkip.collectAsStateWithLifecycle()
+    val canUndo by practice.canUndo.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
         Column(
@@ -147,7 +160,11 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                         Spacer(Modifier.height(8.dp))
                         Text(
                             if (autoClearAfter > 0) {
-                                stringResource(R.string.play_n_of_m, minOf(repeats + 1, autoClearAfter), autoClearAfter)
+                                stringResource(
+                                    if (autoAdvanceSkip) R.string.play_n_of_m_skip else R.string.play_n_of_m,
+                                    minOf(repeats + 1, autoClearAfter),
+                                    autoClearAfter,
+                                )
                             } else {
                                 stringResource(R.string.repeats, repeats)
                             },
@@ -157,7 +174,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         // A new sentence gets a fresh card, so it never flips past the old one's text.
                         key(s.current.id) {
-                            SentenceCard(s.current, s.unknown, language, s.showText, practice::toggleText)
+                            SentenceCard(s.current, s.words, language, s.showText, practice::toggleText) { tapped = it }
                         }
                         Spacer(Modifier.height(16.dp))
                     }
@@ -168,6 +185,8 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                         onClear = practice::crystalClear,
                         onSkip = practice::skip,
                         onBlacklist = { confirmBlacklist = true },
+                        canUndo = canUndo,
+                        onUndo = practice::undo,
                     )
                 }
             }
@@ -190,10 +209,14 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                     onSpeed = { practice.setSpeed(it) },
                     onDelay = { practice.setDelay(it) },
                     onAutoClear = { practice.setAutoClearAfter(it) },
+                    autoAdvanceSkip = autoAdvanceSkip,
+                    onAutoAdvanceSkip = practice::setAutoAdvanceSkip,
                 )
             }
         }
     }
+
+    tapped?.let { word -> WordSheet(word, practice) { tapped = null } }
 
     if (confirmBlacklist) {
         AlertDialog(
@@ -360,7 +383,14 @@ private fun PlayRing(playing: Boolean, repeats: Int, autoClearAfter: Int, progre
 
 /** The sentence, face down until tapped; it flips over to show the text. */
 @Composable
-private fun SentenceCard(sentence: Sentence, unknown: List<IntRange>, language: Language, shown: Boolean, onToggle: () -> Unit) {
+private fun SentenceCard(
+    sentence: Sentence,
+    words: SentenceWords,
+    language: Language,
+    shown: Boolean,
+    onToggle: () -> Unit,
+    onWord: (TappableWord) -> Unit,
+) {
     val rotation by animateFloatAsState(if (shown) 180f else 0f, tween(450), label = "flip")
     Card(
         onClick = onToggle,
@@ -383,7 +413,7 @@ private fun SentenceCard(sentence: Sentence, unknown: List<IntRange>, language: 
             verticalArrangement = Arrangement.Center,
         ) {
             if (rotation > 90f) {
-                SentenceText(sentence, unknown, language)
+                SentenceText(sentence, words, language, onWord, onToggle)
                 Spacer(Modifier.height(12.dp))
                 Hint(R.drawable.ic_visibility_off, stringResource(R.string.hide_text))
             } else {
@@ -424,7 +454,10 @@ private fun Centered(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-private fun SentenceText(sentence: Sentence, unknown: List<IntRange>, language: Language) {
+private fun SentenceText(sentence: Sentence, words: SentenceWords, language: Language, onWord: (TappableWord) -> Unit, onOther: () -> Unit) {
+    // A tap on a word opens it; anywhere else in the text hides the text, like the rest of the card.
+    val onTap = { pos: Int -> words.words.firstOrNull { pos in it.span.range }?.let(onWord) ?: onOther() }
+    val unknown = words.unknown
     // Tagging the text with its language makes Android draw the right Han glyph variants.
     val style = MaterialTheme.typography.headlineSmall.copy(
         fontFamily = FontFamily.Serif,
@@ -432,7 +465,7 @@ private fun SentenceText(sentence: Sentence, unknown: List<IntRange>, language: 
     )
     if (language == Language.JAPANESE || sentence.furigana.isNotBlank()) {
         // Without a furigana field the sentence still goes through RubyText, so it lays out the same.
-        RubyText(furigana = sentence.furigana.ifBlank { sentence.text }, style = style, highlights = unknown)
+        RubyText(furigana = sentence.furigana.ifBlank { sentence.text }, style = style, highlights = unknown, onTap = onTap)
     } else {
         // Plain text keeps words whole when wrapping, and Arabic letters joined.
         // Unknown words (with n+1 and up) are marked like in RubyText.
@@ -441,7 +474,16 @@ private fun SentenceText(sentence: Sentence, unknown: List<IntRange>, language: 
             append(sentence.text)
             for (r in unknown) if (r.last < sentence.text.length) addStyle(marked, r.first, r.last + 1)
         }
-        Text(text, style = style, textAlign = TextAlign.Center)
+        var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
+        Text(
+            text,
+            style = style,
+            textAlign = TextAlign.Center,
+            onTextLayout = { layout = it },
+            modifier = Modifier.pointerInput(words) {
+                detectTapGestures { pos -> layout?.let { onTap(it.getOffsetForPosition(pos)) } }
+            },
+        )
     }
     if (sentence.translation.isNotBlank()) {
         Spacer(Modifier.height(12.dp))
@@ -495,6 +537,8 @@ private fun PlaybackSettings(
     onSpeed: (Float) -> Unit,
     onDelay: (Long) -> Unit,
     onAutoClear: (Int) -> Unit,
+    autoAdvanceSkip: Boolean,
+    onAutoAdvanceSkip: (Boolean) -> Unit,
 ) {
     Text(stringResource(R.string.speed, "%.2f".format(speed)), style = MaterialTheme.typography.labelLarge)
     Slider(value = speed, onValueChange = onSpeed, valueRange = 0.5f..1.5f, steps = 19)
@@ -508,8 +552,8 @@ private fun PlaybackSettings(
             )
         }
     }
-    // Hands-free: after this many plays the sentence counts as Crystal Clear and the next one starts.
-    Text(stringResource(R.string.auto_clear_after), style = MaterialTheme.typography.labelLarge)
+    // Hands-free: after this many plays the sentence counts as Crystal Clear (or is skipped) and the next one starts.
+    Text(stringResource(R.string.auto_advance_after), style = MaterialTheme.typography.labelLarge)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         for (n in autoClearOptions) {
             FilterChip(
@@ -519,10 +563,15 @@ private fun PlaybackSettings(
             )
         }
     }
+    Text(stringResource(R.string.auto_then), style = MaterialTheme.typography.labelLarge)
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FilterChip(selected = !autoAdvanceSkip, onClick = { onAutoAdvanceSkip(false) }, label = { Text(stringResource(R.string.crystal_clear)) })
+        FilterChip(selected = autoAdvanceSkip, onClick = { onAutoAdvanceSkip(true) }, label = { Text(stringResource(R.string.skip)) })
+    }
 }
 
 @Composable
-private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: () -> Unit) {
+private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: () -> Unit, canUndo: Boolean, onUndo: () -> Unit) {
     val pulse = remember { Animatable(1f) }
     val scope = rememberCoroutineScope()
     Button(
@@ -547,7 +596,11 @@ private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: 
         Text(stringResource(R.string.crystal_clear), fontSize = 20.sp)
     }
     Spacer(Modifier.height(8.dp))
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        // Back to the sentence before, taking back what was done to it.
+        FilledTonalIconButton(onClick = onUndo, enabled = canUndo, modifier = Modifier.size(52.dp), shape = RoundedCornerShape(16.dp)) {
+            Icon(painterResource(R.drawable.ic_undo), contentDescription = stringResource(R.string.undo))
+        }
         FilledTonalButton(
             onClick = onSkip,
             modifier = Modifier
@@ -574,4 +627,133 @@ private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: 
         }
     }
     Spacer(Modifier.height(12.dp))
+}
+
+/**
+ * A tapped word: how it counts, buttons to mark it known or ignored, and what the installed
+ * dictionaries say about it (frequency, definitions, its kanji).
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun WordSheet(word: TappableWord, practice: PracticeController, onDismiss: () -> Unit) {
+    val installed by practice.installedDictionaries.collectAsStateWithLifecycle()
+    val language by practice.language.collectAsStateWithLifecycle()
+    var result by remember(word) { mutableStateOf<LookupResult?>(null) }
+    LaunchedEffect(word) { result = runCatching { practice.lookup(word.span) }.getOrDefault(LookupResult()) }
+    val tagColor = MaterialTheme.colorScheme.tertiary
+
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(
+            Modifier
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            val textStyle = MaterialTheme.typography.headlineMedium.copy(
+                fontFamily = FontFamily.Serif,
+                localeList = LocaleList(language.textLocale),
+            )
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(word.span.key, style = textStyle)
+                val reading = word.span.reading
+                // Only words with kanji need their reading spelled out.
+                if (reading != null && reading != word.span.key && word.span.key.any { it.code in 0x3400..0x9FFF }) {
+                    Spacer(Modifier.width(10.dp))
+                    Text(reading, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            Text(
+                stringResource(
+                    when (word.state) {
+                        WordState.KNOWN -> R.string.word_known
+                        WordState.MINE -> R.string.word_mine
+                        WordState.IGNORED -> R.string.word_ignored
+                        WordState.UNKNOWN -> R.string.word_unknown
+                    },
+                ),
+                style = MaterialTheme.typography.labelLarge,
+                color = if (word.state == WordState.UNKNOWN) tagColor else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (word.state != WordState.KNOWN) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    FilterChip(
+                        selected = word.state == WordState.MINE,
+                        onClick = {
+                            practice.markWord(word.span.key, if (word.state == WordState.MINE) null else false)
+                            onDismiss()
+                        },
+                        label = { Text(stringResource(R.string.mark_known)) },
+                        leadingIcon = { Icon(painterResource(R.drawable.ic_check), contentDescription = null, Modifier.size(18.dp)) },
+                    )
+                    FilterChip(
+                        selected = word.state == WordState.IGNORED,
+                        onClick = {
+                            practice.markWord(word.span.key, if (word.state == WordState.IGNORED) null else true)
+                            onDismiss()
+                        },
+                        label = { Text(stringResource(R.string.mark_ignored)) },
+                        leadingIcon = { Icon(painterResource(R.drawable.ic_visibility_off), contentDescription = null, Modifier.size(18.dp)) },
+                    )
+                }
+            }
+
+            val r = result
+            when {
+                installed.none { it.language == language } -> Text(
+                    stringResource(R.string.no_dictionaries),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                r == null -> CircularProgressIndicator(Modifier.size(24.dp))
+                r.terms.isEmpty() && r.kanji.isEmpty() -> Text(
+                    stringResource(R.string.no_entries),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                else -> {
+                    if (r.frequencies.isNotEmpty()) {
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            for (f in r.frequencies) {
+                                Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.secondaryContainer) {
+                                    Text(
+                                        "${f.dictionary}  ${f.value}",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    for (entry in r.terms) DictionaryEntryView(entry, language, tagColor)
+                    if (r.kanji.isNotEmpty()) {
+                        HorizontalDivider()
+                        Text(stringResource(R.string.kanji), style = MaterialTheme.typography.titleMedium)
+                        for (entry in r.kanji) DictionaryEntryView(entry, language, tagColor)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DictionaryEntryView(entry: DictionaryEntry, language: Language, tagColor: androidx.compose.ui.graphics.Color) {
+    Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainer, modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    if (entry.reading.isNotEmpty() && entry.reading != entry.expression) "${entry.expression}【${entry.reading}】" else entry.expression,
+                    style = MaterialTheme.typography.titleMedium.copy(localeList = LocaleList(language.textLocale)),
+                    modifier = Modifier.weight(1f),
+                )
+                Text(entry.dictionary, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+            }
+            if (entry.tags.isNotEmpty()) {
+                Text(entry.tags.joinToString(" · "), style = MaterialTheme.typography.labelSmall, color = tagColor)
+            }
+            val glossary = remember(entry.glossary, tagColor) { glossaryText(entry.glossary, tagColor) }
+            Text(glossary, style = MaterialTheme.typography.bodyMedium.copy(localeList = LocaleList(language.textLocale)))
+        }
+    }
 }

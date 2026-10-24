@@ -1,6 +1,20 @@
 package dev.lovkvist.listening.ui
 
+import android.content.Context
 import android.net.Uri
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.lovkvist.listening.data.dict.DictionaryRepository
+import dev.lovkvist.listening.data.dict.InstallProgress
+import dev.lovkvist.listening.data.dict.InstalledDictionary
+import dev.lovkvist.listening.data.dict.RecommendedDictionary
+import dev.lovkvist.listening.data.known.MyWords
+import dev.lovkvist.listening.data.local.WordStatus
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +47,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val settingsRepo: SettingsRepository,
     private val knownWords: KnownWordsRepository,
     private val sentences: SentenceRepository,
@@ -41,6 +56,8 @@ class SettingsViewModel @Inject constructor(
     private val media: MediaLibrary,
     private val youTube: YouTubeImporter,
     private val strings: Strings,
+    private val dictionaries: DictionaryRepository,
+    private val myWords: MyWords,
 ) : ViewModel() {
 
     val settings: StateFlow<Settings?> =
@@ -201,6 +218,59 @@ class SettingsViewModel @Inject constructor(
         sentences.invalidate(collection = false, known = false)
         _message.value = strings(R.string.blacklist_cleared)
     }
+
+    val installedDictionaries: StateFlow<List<InstalledDictionary>> = dictionaries.installed
+    val dictionaryProgress: StateFlow<Map<String, InstallProgress>> = dictionaries.progress
+
+    fun installDictionaries(list: List<RecommendedDictionary>) = dictionaries.installRecommended(list)
+
+    fun importDictionary(uri: Uri, name: String) = viewModelScope.launch {
+        dictionaries.importUri(uri, name, settingsRepo.current().language)
+    }
+
+    fun removeDictionary(id: Long) = dictionaries.remove(id)
+
+    fun setDictionaryEnabled(id: Long, enabled: Boolean) = dictionaries.setEnabled(id, enabled)
+
+    fun setDictionaryAutoUpdate(id: Long, auto: Boolean) = dictionaries.setAutoUpdate(id, auto)
+
+    fun dismissDictionaryError(key: String) = dictionaries.dismissError(key)
+
+    private val _checkingUpdates = MutableStateFlow(false)
+    val checkingUpdates: StateFlow<Boolean> = _checkingUpdates.asStateFlow()
+
+    fun checkDictionaryUpdates() = viewModelScope.launch {
+        _checkingUpdates.value = true
+        val n = dictionaries.checkForUpdates(all = true)
+        _checkingUpdates.value = false
+        _message.value = strings(R.string.dictionaries_updated, n)
+    }
+
+    /** Words marked in sentences, for the language studied. */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val myWordList: StateFlow<List<WordStatus>> = settingsRepo.settings.map { it.language }.distinctUntilChanged()
+        .flatMapLatest { myWords.observe(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** Marks a word known or ignored, or (null) removes it from your words. */
+    fun setMyWord(word: String, ignored: Boolean?) = viewModelScope.launch { sentences.setWord(word, ignored) }
+
+    /** Writes every known word, one per line, for Jiten, Migaku or Anki Miner. */
+    fun exportKnownWords(uri: Uri) = viewModelScope.launch {
+        _message.value = try {
+            val words = sentences.exportableKnownWords()
+            withContext(Dispatchers.IO) {
+                context.contentResolver.openOutputStream(uri, "wt")?.bufferedWriter(Charsets.UTF_8)?.use { w ->
+                    words.forEach { w.write(it); w.write("\n") }
+                } ?: error(strings(R.string.could_not_open_file))
+            }
+            strings(R.string.exported_known_words, words.size)
+        } catch (e: Exception) {
+            strings(R.string.export_failed, e.message ?: e.toString())
+        }
+    }
+
+    fun setOnboardingDone() = viewModelScope.launch { settingsRepo.setOnboardingDone(true) }
 
     fun dismissMessage() {
         _message.value = null

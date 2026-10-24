@@ -36,6 +36,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.lovkvist.listening.playback.PlaybackService
 import dev.lovkvist.listening.playback.PracticeController
 import dev.lovkvist.listening.data.settings.SettingsRepository
+import dev.lovkvist.listening.data.anki.DeckLibrary
+import dev.lovkvist.listening.data.media.MediaLibrary
+import dev.lovkvist.listening.ui.OnboardingScreen
 import dev.lovkvist.listening.ui.PracticeScreen
 import dev.lovkvist.listening.ui.SettingsScreen
 import dev.lovkvist.listening.ui.SettingsViewModel
@@ -50,6 +53,8 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     @Inject lateinit var practice: PracticeController
     @Inject lateinit var settingsRepo: SettingsRepository
+    @Inject lateinit var decks: DeckLibrary
+    @Inject lateinit var media: MediaLibrary
 
     /** Keeps the playback service and its media session up while the app is visible. */
     private var controller: ListenableFuture<MediaController>? = null
@@ -59,6 +64,10 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         // Read once up front, so the first frame already has the chosen theme.
         val initialSettings = runBlocking { settingsRepo.current() }
+        // People who used the app before setup existed already have what it would set up.
+        val usedBefore = decks.decks.value.isNotEmpty() || media.items.value.isNotEmpty()
+        if (!initialSettings.onboardingDone && usedBefore) runBlocking { settingsRepo.setOnboardingDone(true) }
+        val needsSetup = !initialSettings.onboardingDone && !usedBefore
         setContent {
             val settings by settingsRepo.settings.collectAsStateWithLifecycle(initialSettings)
             val palette = Palette.byId(settings.theme)
@@ -92,15 +101,23 @@ class MainActivity : AppCompatActivity() {
                 UpdateDialog(updateVm)
                 AskForNotificationsOnFirstPlay()
                 var inSettings by rememberSaveable { mutableStateOf(false) }
+                var inSetup by rememberSaveable { mutableStateOf(needsSetup) }
 
-                if (inSettings) {
+                if (inSetup) {
+                    val settingsVm: SettingsViewModel = hiltViewModel()
+                    OnboardingScreen(settingsVm) {
+                        inSetup = false
+                        inSettings = false
+                        practice.retryIfStuck()
+                    }
+                } else if (inSettings) {
                     val back = {
                         inSettings = false
                         practice.retryIfStuck()
                     }
                     BackHandler(onBack = back)
                     val settingsVm: SettingsViewModel = hiltViewModel()
-                    SettingsScreen(settingsVm, updateVm, onBack = back)
+                    SettingsScreen(settingsVm, updateVm, onBack = back, onSetupGuide = { inSetup = true })
                 } else {
                     PracticeScreen(practice, onOpenSettings = {
                         practice.player.pause()

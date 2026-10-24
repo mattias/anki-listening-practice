@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.lovkvist.listening.data.local.PracticeDatabase
 import dev.lovkvist.listening.data.local.PracticeDayDao
+import dev.lovkvist.listening.data.local.WordStatusDao
 import dev.lovkvist.listening.data.local.SentenceStateDao
 import javax.inject.Singleton
 
@@ -19,7 +20,7 @@ object AppModule {
     @Singleton
     fun database(@ApplicationContext context: Context): PracticeDatabase =
         Room.databaseBuilder(context, PracticeDatabase::class.java, "practice.db")
-            .addMigrations(PracticeDatabase.MIGRATION_1_2, PracticeDatabase.MIGRATION_2_3)
+            .addMigrations(PracticeDatabase.MIGRATION_1_2, PracticeDatabase.MIGRATION_2_3, PracticeDatabase.MIGRATION_3_4)
             .build()
 
     @Provides
@@ -27,4 +28,7 @@ object AppModule {
 
     @Provides
     fun practiceDayDao(db: PracticeDatabase): PracticeDayDao = db.practiceDayDao()
+
+    @Provides
+    fun wordStatusDao(db: PracticeDatabase): WordStatusDao = db.wordStatusDao()
 }

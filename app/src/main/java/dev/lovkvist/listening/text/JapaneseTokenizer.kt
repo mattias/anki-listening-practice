@@ -9,7 +9,14 @@ import javax.inject.Singleton
  * A content word in a sentence: its dictionary form plus the forms we accept as "known", and
  * where it is in the sentence.
  */
-data class Word(val baseForm: String, val candidates: Set<String>, val range: IntRange = IntRange.EMPTY)
+data class Word(
+    val baseForm: String,
+    val candidates: Set<String>,
+    val range: IntRange = IntRange.EMPTY,
+    val surface: String = baseForm,
+    /** Hiragana reading of the surface form, if Kuromoji knows it. */
+    val reading: String? = null,
+)
 
 @Singleton
 class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
@@ -22,7 +29,7 @@ class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
             .map { t ->
                 val base = t.baseForm.takeUnless { it.isNullOrBlank() || it == "*" } ?: t.surface
                 val reading = t.reading.takeUnless { it.isNullOrBlank() || it == "*" }?.let(::toHiragana)
-                Word(base, setOfNotNull(base, t.surface, reading), t.position until t.position + t.surface.length)
+                Word(base, setOfNotNull(base, t.surface, reading), t.position until t.position + t.surface.length, t.surface, reading)
             }
 
     /** Known lists are matched as written: kanji and kana spellings are told apart by [words]. */
@@ -37,6 +44,16 @@ class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
         val words = words(sentence)
         if (words.isEmpty()) return null
         return words.filter { w -> w.candidates.none { it in known } }.distinctBy { it.baseForm }.size
+    }
+
+    override fun wordSpans(sentence: String): List<WordSpan> =
+        words(sentence).map { w -> WordSpan(w.range, w.baseForm, listOf(w.baseForm, w.surface).distinct(), readingOf(w.baseForm)) }
+
+    /** The hiragana reading of a dictionary form (なる for なっ's word), or null if unknown. */
+    fun readingOf(word: String): String? {
+        val tokens = tokenizer.tokenize(word)
+        if (tokens.any { it.reading.isNullOrBlank() || it.reading == "*" }) return null
+        return toHiragana(tokens.joinToString("") { it.reading })
     }
 
     override fun unknownRanges(sentence: String, known: Set<String>): List<IntRange> =

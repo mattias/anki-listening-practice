@@ -44,6 +44,16 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   Want more sentences? Under **Settings → Known words** you can allow up to 1–5 unknown words
   per sentence (n+1 to n+5); the default is n+0. The unknown words are then marked in the
   sentence when you show the text, so you can see which word was new.
+- **Tap a word** — with the text showing, tap any word to look it up in your dictionaries and
+  mark it *Known* or *Ignore*. Known words count as known from then on; ignored ones (names,
+  sounds) only stop counting as unknown and aren't exported. They're listed under
+  **Settings → My words**, where you can search, switch between known and ignored, or remove them.
+- **Yomitan dictionaries, Hachidori-style** — under **Settings → Dictionaries**, install with one
+  tap the five dictionaries [Hachidori](https://github.com/bee-san/hachidori) sets up by default
+  for Japanese, or import any Yomitan `.zip`. Dictionaries that publish updates are checked daily
+  and updated by themselves (per dictionary, can be turned off).
+- **Export known words** — **Settings → Known words → Export** writes your word list, your cards'
+  words and the words you marked known to a `.txt` file, one per line, for Jiten or Migaku.
 - **Looping audio** — adjustable speed (0.5x–1.5x) and pause between repeats (0–5 s), set from
   the chips under the sentence. A ring around the play button shows how far the sentence (or,
   with auto Crystal Clear, all its plays) has come.
@@ -60,8 +70,11 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   - *Skip*: go to the next sentence; this one comes back later.
   - *Blacklist*: never show it again (after a confirmation). Blacklisted sentences are listed in
     Settings → Progress, where each one can be restored.
-- **Hands-free** — *Auto Crystal Clear after* 3, 5, 10 or 20 plays: each sentence repeats that
-  many times, counts as Crystal Clear and the next one starts, so you can listen on the go.
+- **Undo** — the back arrow next to the actions returns to the sentence you just heard and takes
+  back what you did to it (Crystal Clear, Skip or Blacklist, and the day's stats), several steps back.
+- **Hands-free** — move on automatically after 3, 5, 10 or 20 plays: each sentence repeats that
+  many times, then counts as Crystal Clear (or is skipped, if you choose *Skip*) and the next one
+  starts, so you can listen on the go.
 - **Headset and notification controls** — play/pause from your headset button; double-tap it
   (or press *next*) to skip, *previous* plays the sentence again. While audio plays, a media
   notification has play/pause, replay, skip and Crystal Clear, and practice keeps going with the
@@ -93,6 +106,10 @@ time. Requires Android 8.0 or newer on a 64-bit ARM phone (practically every pho
 several years).
 
 ## Getting started
+
+The first time you open the app, a setup guide walks you through the steps below: app language,
+the language you study, dictionaries, known words and your Anki deck. You can open it again
+under **Settings → Setup guide**.
 
 1. **Export from AnkiDroid**: export your mining deck as `.apkg` (or your whole collection as
    `.colpkg`) with *Include media* checked.
@@ -148,8 +165,8 @@ audio field, so if you point a preset at a different audio field, re-import your
 
 ### How "known" is decided
 
-Known words are your word list for the selected language plus the word field of every imported
-card in that language. Punctuation is ignored; particles are not, so they need to be in the list
+Known words are your word list for the selected language, the word field of every imported card
+in that language, and the words you marked known. Punctuation is ignored; particles are not, so they need to be in the list
 too.
 
 With n+1 to n+5 set, a sentence may also have up to that many different unknown words (a word
@@ -163,6 +180,21 @@ that appears twice counts once).
   inflected forms (*gehe*, *went*) must be in the list themselves. Unspaced text also counts as
   known if it splits entirely into listed words, French-style elisions (*l'homme*) if both parts
   are listed, and Korean words followed only by particles (*학교에서*) if the word is listed.
+
+### Dictionaries
+
+The recommended Japanese dictionaries are the ones Hachidori installs by default, downloaded
+from their authors:
+
+- [Jitendex](https://jitendex.org) — Japanese–English
+- [JMnedict](https://github.com/yomidevs/jmdict-yomitan) — names
+- [Bee's Ultimate Kanji Dictionary](https://github.com/bee-san/bees-ultimate-kanji-dictionary)
+- [Jiten](https://jiten.moe) frequency list
+- [Bee's Ultimate Grammar Dictionary](https://github.com/bee-san/bees-ultimate-grammar-dictionary)
+
+Each is under its own license. Any other [Yomitan](https://github.com/yomidevs/yomitan)
+dictionary can be imported as a `.zip`, in any language. The dictionaries are stored in the app;
+removing one frees the space.
 
 ### Updates
 
@@ -192,6 +224,7 @@ To build a signed release (`./gradlew assembleRelease`), create a git-ignored
 ## Tech stack
 
 Kotlin, Jetpack Compose (Material 3), Hilt, Coroutines/Flow, Media3 ExoPlayer, Room, DataStore,
+WorkManager, Gson,
 Kuromoji (IPADIC), zstd-jni and [youtubedl-android](https://github.com/yausername/youtubedl-android)
 (yt-dlp with Python and QuickJS).
 
@@ -201,8 +234,9 @@ Kuromoji (IPADIC), zstd-jni and [youtubedl-android](https://github.com/yausernam
 app/src/main/java/dev/lovkvist/listening/
 ├── data/anki/       Anki package import (ApkgUnpacker), deck storage (DeckLibrary), presets, text cleanup
 ├── data/media/      Subtitle parsing, video/audio library, YouTube import
-├── data/known/      Known-words list
-├── data/local/      Room database for cool-downs and blacklist
+├── data/known/      Known-words list and the words you marked
+├── data/dict/       Yomitan dictionaries: reader, storage, lookup, downloads and daily updates
+├── data/local/      Room database for cool-downs, blacklist, daily stats and marked words
 ├── data/settings/   DataStore settings
 ├── data/            SentenceRepository: filtering and picking the next sentence
 ├── l10n/            App language picker, translated strings outside the UI, localized language names

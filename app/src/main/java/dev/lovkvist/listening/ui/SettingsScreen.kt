@@ -72,7 +72,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.lovkvist.listening.R
+import android.provider.OpenableColumns
 import dev.lovkvist.listening.data.anki.FieldMapping
+import dev.lovkvist.listening.data.dict.InstallProgress
+import dev.lovkvist.listening.data.dict.InstalledDictionary
+import dev.lovkvist.listening.data.dict.RecommendedDictionary
+import dev.lovkvist.listening.data.local.WordStatus
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.media.MediaEntry
@@ -92,6 +97,8 @@ private enum class Page(val title: Int) {
     DECKS(R.string.anki_decks),
     MEDIA(R.string.videos_audio),
     KNOWN(R.string.known_words),
+    MY_WORDS(R.string.my_words),
+    DICTIONARIES(R.string.dictionaries),
     PRESET(R.string.note_type_preset),
     PROGRESS(R.string.progress),
     UPDATES(R.string.app_updates),
@@ -99,7 +106,7 @@ private enum class Page(val title: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () -> Unit) {
+fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () -> Unit, onSetupGuide: () -> Unit) {
     val settings by vm.settings.collectAsStateWithLifecycle()
     val knownCounts by vm.knownCounts.collectAsStateWithLifecycle()
     val blacklistCount by vm.blacklistCount.collectAsStateWithLifecycle()
@@ -108,6 +115,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
     val cardWordCount by vm.cardWordCount.collectAsStateWithLifecycle()
     val decks by vm.decks.collectAsStateWithLifecycle()
     val mediaItems by vm.mediaItems.collectAsStateWithLifecycle()
+    val dictionaries by vm.installedDictionaries.collectAsStateWithLifecycle()
+    val myWordList by vm.myWordList.collectAsStateWithLifecycle()
     var confirm by remember { mutableStateOf<Reset?>(null) }
     var page by rememberSaveable { mutableStateOf(Page.MAIN) }
     LaunchedEffect(Unit) { vm.refreshCounts() }
@@ -116,6 +125,9 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
 
     val pickKnownWords = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let(vm::importKnownWords)
+    }
+    val exportKnownWords = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+        uri?.let(vm::exportKnownWords)
     }
 
     Scaffold(
@@ -214,6 +226,12 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                             page = Page.KNOWN
                         }
                         RowDivider()
+                        NavRow(R.drawable.ic_check, stringResource(R.string.my_words), myWordList.size.toString()) { page = Page.MY_WORDS }
+                        RowDivider()
+                        NavRow(R.drawable.ic_menu_book, stringResource(R.string.dictionaries), dictionaries.count { it.language == s.language }.toString()) {
+                            page = Page.DICTIONARIES
+                        }
+                        RowDivider()
                         NavRow(R.drawable.ic_tune, stringResource(R.string.note_type_preset), s.preset.label) { page = Page.PRESET }
                     }
 
@@ -225,6 +243,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                         NavRow(R.drawable.ic_system_update, stringResource(R.string.app_updates), updateVm.currentVersion) {
                             page = Page.UPDATES
                         }
+                        RowDivider()
+                        NavRow(R.drawable.ic_headphones, stringResource(R.string.setup_guide), "", onSetupGuide)
                     }
                 }
 
@@ -250,7 +270,17 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                         if (s.mapping.word.isBlank()) stringResource(R.string.no_word_field)
                         else stringResource(R.string.card_words, cardWordCount, s.mapping.word),
                     )
-                    Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text(stringResource(R.string.import_known_words)) }
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text(stringResource(R.string.import_known_words)) }
+                        OutlinedButton(onClick = { exportKnownWords.launch("known_words_${s.language.code}.txt") }) {
+                            Text(stringResource(R.string.export_known_words))
+                        }
+                    }
+                    Text(
+                        stringResource(R.string.export_help),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                     HorizontalDivider()
                     Text(stringResource(R.string.unknown_words), style = MaterialTheme.typography.titleMedium)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -301,6 +331,10 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                 }
 
                 Page.UPDATES -> Updates(updateVm)
+
+                Page.MY_WORDS -> MyWordsPage(vm, myWordList)
+
+                Page.DICTIONARIES -> DictionariesPage(vm, s.language, dictionaries)
             }
             Spacer(Modifier.height(24.dp))
         }
@@ -749,3 +783,152 @@ private fun Field(label: String, value: String, onChange: (String) -> Unit) {
     )
 }
 
+
+/** Words marked in sentences: search them, switch between known and ignored, or remove them. */
+@Composable
+private fun MyWordsPage(vm: SettingsViewModel, words: List<WordStatus>) {
+    var query by rememberSaveable { mutableStateOf("") }
+    Text(stringResource(R.string.my_words_help), style = MaterialTheme.typography.bodyMedium)
+    OutlinedTextField(
+        value = query,
+        onValueChange = { query = it },
+        label = { Text(stringResource(R.string.search)) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    val shown = words.filter { query.isBlank() || it.word.contains(query.trim(), ignoreCase = true) }
+    if (words.isEmpty()) {
+        Text(stringResource(R.string.my_words_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    for (w in shown.take(300)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(w.word, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+            FilterChip(
+                selected = !w.ignored,
+                onClick = { if (w.ignored) vm.setMyWord(w.word, false) },
+                label = { Text(stringResource(R.string.mark_known)) },
+            )
+            Spacer(Modifier.width(6.dp))
+            FilterChip(
+                selected = w.ignored,
+                onClick = { if (!w.ignored) vm.setMyWord(w.word, true) },
+                label = { Text(stringResource(R.string.mark_ignored)) },
+            )
+            IconButton(onClick = { vm.setMyWord(w.word, null) }) {
+                Icon(painterResource(R.drawable.ic_close), contentDescription = stringResource(R.string.remove))
+            }
+        }
+    }
+}
+
+/** The recommended set for the language, installed dictionaries, and their updates. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun DictionariesPage(vm: SettingsViewModel, language: Language, installed: List<InstalledDictionary>) {
+    val progress by vm.dictionaryProgress.collectAsStateWithLifecycle()
+    val checking by vm.checkingUpdates.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                ?.use { c -> if (c.moveToFirst()) c.getString(0) else null } ?: "dictionary.zip"
+            vm.importDictionary(uri, name)
+        }
+    }
+    val mine = installed.filter { it.language == language }
+    Text(stringResource(R.string.dictionaries_help), style = MaterialTheme.typography.bodyMedium)
+
+    val recommended = RecommendedDictionary.forLanguage(language)
+    if (recommended.isNotEmpty()) {
+        Text(stringResource(R.string.recommended), style = MaterialTheme.typography.titleMedium)
+        val missing = recommended.filter { r -> mine.none { it.sourceId == r.sourceId } && r.sourceId !in progress }
+        for (r in recommended) {
+            val p = progress[r.sourceId]
+            val done = mine.any { it.sourceId == r.sourceId }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(r.name, style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        "${r.description} · ${stringResource(R.string.size_mb, r.sizeMb)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    if (p != null) InstallStatus(p) { vm.dismissDictionaryError(r.sourceId) }
+                }
+                when {
+                    p != null && p.error == null -> CircularProgressIndicator(Modifier.size(24.dp))
+                    done -> Icon(
+                        painterResource(R.drawable.ic_check),
+                        contentDescription = stringResource(R.string.installed),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    else -> TextButton(onClick = { vm.installDictionaries(listOf(r)) }) { Text(stringResource(R.string.install)) }
+                }
+            }
+        }
+        if (missing.size > 1) {
+            Button(onClick = { vm.installDictionaries(missing) }) { Text(stringResource(R.string.install_all)) }
+        }
+        HorizontalDivider()
+    }
+
+    Text(stringResource(R.string.your_dictionaries), style = MaterialTheme.typography.titleMedium)
+    for ((key, p) in progress.filterKeys { k -> recommended.none { it.sourceId == k } }) {
+        Column {
+            Text(p.name, style = MaterialTheme.typography.bodyLarge)
+            InstallStatus(p) { vm.dismissDictionaryError(key) }
+        }
+    }
+    for (d in mine) {
+        Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainer, modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(12.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(d.title, style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            stringResource(R.string.dictionary_entries, d.entries),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(checked = d.enabled, onCheckedChange = { vm.setDictionaryEnabled(d.id, it) })
+                }
+                if (d.updatable) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.auto_update), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                        Switch(checked = d.autoUpdate, onCheckedChange = { vm.setDictionaryAutoUpdate(d.id, it) })
+                    }
+                }
+                TextButton(onClick = { vm.removeDictionary(d.id) }) { Text(stringResource(R.string.remove)) }
+            }
+        }
+    }
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(onClick = { pick.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) }) {
+            Text(stringResource(R.string.import_dictionary))
+        }
+        if (mine.any { it.updatable }) {
+            OutlinedButton(onClick = { vm.checkDictionaryUpdates() }, enabled = !checking) {
+                Text(stringResource(if (checking) R.string.checking else R.string.check_dictionary_updates))
+            }
+        }
+    }
+}
+
+@Composable
+private fun InstallStatus(p: InstallProgress, onDismiss: () -> Unit) {
+    val text = when {
+        p.error != null -> stringResource(R.string.dictionary_failed, p.error)
+        p.entries > 0 -> stringResource(R.string.importing_entries, p.entries)
+        else -> stringResource(R.string.downloading_mb, formatBytes(p.bytes))
+    }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text,
+            style = MaterialTheme.typography.bodySmall,
+            color = if (p.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+            modifier = Modifier.weight(1f, fill = false),
+        )
+        if (p.error != null) TextButton(onClick = onDismiss) { Text(stringResource(R.string.ok)) }
+    }
+}

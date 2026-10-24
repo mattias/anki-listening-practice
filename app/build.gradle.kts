@@ -16,8 +16,8 @@ android {
         applicationId = "dev.lovkvist.listening"
         minSdk = 26
         targetSdk = 35
-        versionCode = 10
-        versionName = "0.6.2"
+        versionCode = 11
+        versionName = "0.7.0"
         // The bundled Python runtime is large per ABI; virtually all current phones are arm64.
         ndk { abiFilters += listOf("arm64-v8a") }
     }
@@ -105,6 +105,10 @@ dependencies {
 
     // yt-dlp with its own Python runtime and QuickJS, for YouTube audio and subtitles
     implementation(libs.youtubedl.android)
+
+    // Yomitan dictionaries: streaming JSON (term banks reach tens of MB) and scheduled update checks
+    implementation(libs.gson)
+    implementation(libs.work.runtime)
 
     testImplementation(libs.junit)
     // Desktop build of zstd-jni and a real org.json, since android.jar only has stubs on the JVM

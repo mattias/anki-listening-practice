@@ -25,7 +25,7 @@
     <string name="speed">Speed: %1$sx</string>
     <string name="pause_between_repeats">Pause between repeats</string>
     <string name="seconds_short">%1$ss</string>
-    <string name="auto_clear_after">Auto Crystal Clear after</string>
+    <string name="auto_advance_after">Move on automatically after</string>
     <string name="skip">Skip</string>
     <string name="blacklist_confirm_title">Blacklist this sentence?</string>
     <string name="blacklist_confirm_body">It won\'t be played again. You can restore it in Settings → Progress.</string>
@@ -38,6 +38,18 @@
     <string name="playback">Playback</string>
     <string name="auto_off">Auto off</string>
     <string name="auto_n">Auto %1$d×</string>
+    <string name="play_n_of_m_skip">Play %1$d of %2$d, then skip</string>
+    <string name="auto_then">Then</string>
+    <string name="undo">Back to the sentence before</string>
+    <string name="word_known">Known: in your word list or cards</string>
+    <string name="word_mine">Known: marked by you</string>
+    <string name="word_ignored">Ignored: doesn\'t count as unknown</string>
+    <string name="word_unknown">Unknown</string>
+    <string name="mark_known">Known</string>
+    <string name="mark_ignored">Ignore</string>
+    <string name="no_dictionaries">No dictionaries for this language. Add them in Settings → Dictionaries.</string>
+    <string name="no_entries">Not found in your dictionaries.</string>
+    <string name="kanji">Kanji</string>
 
     <!-- Settings -->
     <string name="back">Back</string>
@@ -151,4 +163,54 @@
     <string name="update_check_failed">Couldn\'t check for updates: %1$s</string>
     <string name="update_download_failed">Update download failed: %1$s</string>
     <string name="update_damaged">the downloaded file is damaged (checksum mismatch)</string>
+
+    <!-- My words and export -->
+    <string name="my_words">My words</string>
+    <string name="my_words_help">Words you marked in sentences. Known ones count as known and are exported with your word list; ignored ones (names, sounds) only stop counting as unknown.</string>
+    <string name="my_words_empty">No words yet. Show a sentence\'s text and tap a word to mark it.</string>
+    <string name="search">Search</string>
+    <string name="export_known_words">Export known words</string>
+    <string name="export_help">The export has your word list, your cards\' words and the words you marked known, one per line, ready for Jiten or Migaku.</string>
+    <string name="exported_known_words">Exported known words: %1$d</string>
+    <string name="export_failed">Export failed: %1$s</string>
+
+    <!-- Dictionaries -->
+    <string name="dictionaries">Dictionaries</string>
+    <string name="dictionaries_help">Yomitan dictionaries for looking up words: show a sentence\'s text and tap a word.</string>
+    <string name="recommended">Recommended</string>
+    <string name="size_mb">%1$d MB</string>
+    <string name="install">Install</string>
+    <string name="install_all">Install all</string>
+    <string name="installed">Installed</string>
+    <string name="your_dictionaries">Your dictionaries</string>
+    <string name="dictionary_entries">Entries: %1$d</string>
+    <string name="auto_update">Update automatically</string>
+    <string name="import_dictionary">Import Yomitan dictionary (.zip)</string>
+    <string name="check_dictionary_updates">Check for updates</string>
+    <string name="dictionaries_updated">Dictionaries updated: %1$d</string>
+    <string name="downloading_mb">Downloading… %1$s</string>
+    <string name="importing_entries">Importing… entries: %1$d</string>
+    <string name="dictionary_failed">Failed: %1$s</string>
+
+    <!-- Onboarding -->
+    <string name="setup_guide">Setup guide</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_start">Start listening</string>
+    <string name="onboarding_welcome">Welcome to Listening Practice</string>
+    <string name="onboarding_welcome_body">Train your ear with sentences made of words you already know: from your Anki cards, your videos and YouTube. Each sentence loops until you understand it, and the text stays hidden until you want it.</string>
+    <string name="onboarding_study_title">What are you learning?</string>
+    <string name="onboarding_study_body">Decks, videos, word lists and dictionaries are kept per language, so you can switch any time.</string>
+    <string name="onboarding_dictionaries_body">With dictionaries you can tap any word in a sentence to look it up, and mark it known or ignored. These are the dictionaries Hachidori installs by default; they update themselves.</string>
+    <string name="onboarding_dictionaries_background">Installing goes on in the background, so you can continue right away.</string>
+    <string name="onboarding_no_recommended">There are no ready-made dictionaries for %1$s yet. You can import any Yomitan dictionary later under Settings → Dictionaries.</string>
+    <string name="onboarding_words_title">Your words and cards</string>
+    <string name="onboarding_words_body">The app plays only sentences made of words you know. Import your known words (from Jiten, Anki Miner or Migaku) and your Anki deck; you can also do it later in Settings.</string>
+    <string name="onboarding_videos_body">Videos with subtitles and YouTube links are added under Settings → Videos and audio.</string>
+    <string name="onboarding_tips_title">Good to know</string>
+    <string name="onboarding_tip_play">Press play and listen. The sentence repeats until you tap Crystal Clear, or by itself after the number of plays you choose.</string>
+    <string name="onboarding_tip_words">Tap the card to show the text, then tap a word to look it up and mark it known or ignored.</string>
+    <string name="onboarding_tip_undo">The back arrow takes you to the sentence before and undoes what you did to it.</string>
+    <string name="onboarding_tip_auto">For hands-free listening, set auto advance to Crystal Clear or Skip after a few plays.</string>
+    <string name="onboarding_tip_headset">With headphones: tap to play or pause, double-tap to skip. The notification has the same buttons.</string>
 </resources>

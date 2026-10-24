@@ -9,6 +9,11 @@ import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.data.SentenceRepository
+import dev.lovkvist.listening.data.SentenceWords
+import dev.lovkvist.listening.data.dict.DictionaryRepository
+import dev.lovkvist.listening.data.dict.LookupResult
+import dev.lovkvist.listening.data.local.SentenceState
+import dev.lovkvist.listening.text.WordSpan
 import dev.lovkvist.listening.data.anki.AnkiText
 import dev.lovkvist.listening.data.local.PracticeDayDao
 import dev.lovkvist.listening.data.media.MediaLibrary
@@ -54,8 +59,8 @@ sealed interface PracticeState {
     data class Ready(
         val current: Sentence,
         val showText: Boolean,
-        /** Unknown words in the shown text ([displayedText]), with n+1 and up. */
-        val unknown: List<IntRange> = emptyList(),
+        /** The words of the shown text ([displayedText]): for tapping, and the unknown ones to mark. */
+        val words: SentenceWords = SentenceWords(),
     ) : PracticeState
 }
 
@@ -71,6 +76,7 @@ class PracticeController @Inject constructor(
     private val settings: SettingsRepository,
     private val strings: Strings,
     private val days: PracticeDayDao,
+    private val dictionaries: DictionaryRepository,
     media: MediaLibrary,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -102,6 +108,19 @@ class PracticeController @Inject constructor(
     private val _autoClearAfter = MutableStateFlow(0)
     /** Plays before a sentence is marked Crystal Clear automatically; 0 = off. */
     val autoClearAfter: StateFlow<Int> = _autoClearAfter.asStateFlow()
+
+    private val _autoAdvanceSkip = MutableStateFlow(false)
+    /** After [autoClearAfter] plays: skip the sentence instead of marking it Crystal Clear. */
+    val autoAdvanceSkip: StateFlow<Boolean> = _autoAdvanceSkip.asStateFlow()
+
+    /** What was done to a sentence, so [undo] can take it back. */
+    private data class Step(val sentence: Sentence, val clear: Boolean, val before: SentenceState?, val day: String)
+
+    /** Sentences left behind, newest last. */
+    private val history = ArrayDeque<Step>()
+
+    private val _canUndo = MutableStateFlow(false)
+    val canUndo: StateFlow<Boolean> = _canUndo.asStateFlow()
 
     /**
      * Everything that can be practiced: Anki cards plus each video/audio in the current language.
@@ -150,12 +169,13 @@ class PracticeController @Inject constructor(
     private val lock = Mutex()
 
     init {
-        player.onPlayLimit = { crystalClear() }
+        player.onPlayLimit = { if (_autoAdvanceSkip.value) skip() else crystalClear() }
         scope.launch {
             val s = settings.current()
             setSpeed(s.speed, persist = false)
             setDelay(s.delayMs, persist = false)
             setAutoClearAfter(s.autoClearAfter, persist = false)
+            _autoAdvanceSkip.value = s.autoAdvanceSkip
         }
         scope.launch {
             // Initial load, and again whenever the collection, mapping or known words change.
@@ -169,6 +189,9 @@ class PracticeController @Inject constructor(
             lock.withLock {
                 val wasPlaying = player.isPlaying.value
                 player.stop()
+                // Another source or new data: the old sentences can't be stepped back to.
+                history.clear()
+                _canUndo.value = false
                 _state.value = PracticeState.Loading
                 show(fetch(afterId = null), autoPlay = wasPlaying)
             }
@@ -203,6 +226,43 @@ class PracticeController @Inject constructor(
         if (persist) scope.launch { settings.setDelayMs(ms) }
     }
 
+    fun setAutoAdvanceSkip(skip: Boolean) {
+        _autoAdvanceSkip.value = skip
+        scope.launch { settings.setAutoAdvanceSkip(skip) }
+    }
+
+    /**
+     * Goes back to the sentence before, and takes back what was done to it: its Crystal Clear
+     * rest or its blacklisting, and its count in today's stats. Can be repeated.
+     */
+    fun undo() {
+        scope.launch {
+            lock.withLock {
+                val step = history.removeLastOrNull() ?: return@withLock
+                _canUndo.value = history.isNotEmpty()
+                val wasPlaying = player.isPlaying.value
+                repository.restore(step.sentence.id, step.before)
+                days.subtract(step.day, if (step.clear) 1 else 0)
+                show(step.sentence, autoPlay = wasPlaying)
+            }
+        }
+    }
+
+    /** Marks a word of the shown sentence known, ignored, or (null) neither, and updates the marks. */
+    fun markWord(word: String, ignored: Boolean?) {
+        scope.launch {
+            repository.setWord(word, ignored)
+            val ready = _state.value as? PracticeState.Ready ?: return@launch
+            updateWords(ready.current)
+        }
+    }
+
+    /** Installed dictionaries, to tell whether the studied language has any. */
+    val installedDictionaries = dictionaries.installed
+
+    /** Dictionary entries for a tapped word, in the language studied. */
+    suspend fun lookup(span: WordSpan): LookupResult = dictionaries.lookup(language.value, span.lookup, span.reading)
+
     fun setAutoClearAfter(plays: Int, persist: Boolean = true) {
         _autoClearAfter.value = plays
         player.playLimit = plays
@@ -216,8 +276,12 @@ class PracticeController @Inject constructor(
                 val current = (_state.value as? PracticeState.Ready)?.current ?: return@withLock
                 // A new sentence continues in the same state: playing on, or staying paused.
                 val wasPlaying = player.isPlaying.value
+                val before = repository.stateOf(current.id)
                 action(current)
                 val today = LocalDate.now().toString()
+                history.addLast(Step(current, clear, before, today))
+                while (history.size > MAX_UNDO) history.removeFirst()
+                _canUndo.value = true
                 days.ensure(today)
                 days.add(today, if (clear) 1 else 0)
                 show(fetch(afterId = current.id), autoPlay = wasPlaying)
@@ -252,10 +316,15 @@ class PracticeController @Inject constructor(
             .setArtist(strings(R.string.notification_subtitle, language.value.displayName()))
             .build()
         player.load(sentence.audio, sentence.clip, autoPlay)
-        // With n+0 every word is known, so there's nothing to mark.
-        if (settings.current().maxUnknownWords > 0) {
-            val unknown = runCatching { repository.unknownRanges(displayedText(sentence, language.value)) }.getOrDefault(emptyList())
-            _state.update { if (it is PracticeState.Ready && it.current.id == sentence.id) it.copy(unknown = unknown) else it }
-        }
+        updateWords(sentence)
+    }
+
+    private suspend fun updateWords(sentence: Sentence) {
+        val words = runCatching { repository.wordsIn(displayedText(sentence, language.value)) }.getOrDefault(SentenceWords())
+        _state.update { if (it is PracticeState.Ready && it.current.id == sentence.id) it.copy(words = words) else it }
+    }
+
+    private companion object {
+        const val MAX_UNDO = 50
     }
 }

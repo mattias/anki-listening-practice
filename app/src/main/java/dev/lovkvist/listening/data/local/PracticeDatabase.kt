@@ -37,6 +37,9 @@ interface SentenceStateDao {
     @Upsert
     suspend fun upsert(state: SentenceState)
 
+    @Query("DELETE FROM sentence_state WHERE noteId = :id")
+    suspend fun delete(id: Long)
+
     @Query("SELECT * FROM sentence_state WHERE blacklisted = 1 ORDER BY source, text")
     suspend fun blacklisted(): List<SentenceState>
 
@@ -72,15 +75,48 @@ interface PracticeDayDao {
     @Query("UPDATE practice_day SET heard = heard + 1, clear = clear + :clear WHERE day = :day")
     suspend fun add(day: String, clear: Int)
 
+    @Query("UPDATE practice_day SET heard = MAX(heard - 1, 0), clear = MAX(clear - :clear, 0) WHERE day = :day")
+    suspend fun subtract(day: String, clear: Int)
+
     /** Newest first; enough days for any realistic streak. */
     @Query("SELECT * FROM practice_day WHERE heard > 0 ORDER BY day DESC LIMIT 1000")
     fun recent(): Flow<List<PracticeDay>>
 }
 
-@Database(entities = [SentenceState::class, PracticeDay::class], version = 3, exportSchema = false)
+/**
+ * A word you marked yourself from a sentence: known (counts as known and is exported with your
+ * known words) or ignored (no longer counts as unknown, e.g. names, but isn't exported).
+ */
+@Entity(tableName = "word_status", primaryKeys = ["language", "word"])
+data class WordStatus(
+    /** [dev.lovkvist.listening.text.Language.code]. */
+    val language: String,
+    /** The word as it's matched: normalized, and for Japanese the dictionary form. */
+    val word: String,
+    val ignored: Boolean,
+    val updatedAt: Long = System.currentTimeMillis(),
+)
+
+@Dao
+interface WordStatusDao {
+    @Query("SELECT * FROM word_status WHERE language = :language ORDER BY updatedAt DESC")
+    fun observe(language: String): Flow<List<WordStatus>>
+
+    @Query("SELECT * FROM word_status WHERE language = :language")
+    suspend fun all(language: String): List<WordStatus>
+
+    @Upsert
+    suspend fun upsert(status: WordStatus)
+
+    @Query("DELETE FROM word_status WHERE language = :language AND word = :word")
+    suspend fun delete(language: String, word: String)
+}
+
+@Database(entities = [SentenceState::class, PracticeDay::class, WordStatus::class], version = 4, exportSchema = false)
 abstract class PracticeDatabase : RoomDatabase() {
     abstract fun sentenceStateDao(): SentenceStateDao
     abstract fun practiceDayDao(): PracticeDayDao
+    abstract fun wordStatusDao(): WordStatusDao
 
     companion object {
         /** 0.4.0: blacklisted sentences keep their text and source so they can be listed. */
@@ -88,6 +124,16 @@ abstract class PracticeDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE sentence_state ADD COLUMN text TEXT NOT NULL DEFAULT ''")
                 db.execSQL("ALTER TABLE sentence_state ADD COLUMN source TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        /** 0.7.0: words marked known or ignored in the app. */
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS word_status (language TEXT NOT NULL, word TEXT NOT NULL, " +
+                        "ignored INTEGER NOT NULL, updatedAt INTEGER NOT NULL, PRIMARY KEY(language, word))",
+                )
             }
         }
 

@@ -3,13 +3,16 @@ package dev.lovkvist.listening.data
 import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.anki.DeckLibrary
 import dev.lovkvist.listening.data.known.KnownWordsRepository
+import dev.lovkvist.listening.data.known.MyWords
 import dev.lovkvist.listening.data.local.SentenceState
 import dev.lovkvist.listening.data.local.SentenceStateDao
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.text.Language
+import dev.lovkvist.listening.text.SentenceTokenizer
 import dev.lovkvist.listening.text.Tokenizers
+import dev.lovkvist.listening.text.WordSpan
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,11 +24,28 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/** How a word in a shown sentence counts. */
+enum class WordState {
+    /** In your word list or a card's word field. */
+    KNOWN,
+    /** Marked known in the app. */
+    MINE,
+    /** Marked ignored in the app (names and such). */
+    IGNORED,
+    UNKNOWN,
+}
+
+data class TappableWord(val span: WordSpan, val state: WordState)
+
+/** A sentence's words, and where the unknown ones are. */
+data class SentenceWords(val words: List<TappableWord> = emptyList(), val unknown: List<IntRange> = emptyList())
+
 @Singleton
 class SentenceRepository @Inject constructor(
     private val decks: DeckLibrary,
     private val media: MediaLibrary,
     private val knownWords: KnownWordsRepository,
+    private val myWords: MyWords,
     private val tokenizers: Tokenizers,
     private val dao: SentenceStateDao,
     private val settings: SettingsRepository,
@@ -89,7 +109,7 @@ class SentenceRepository @Inject constructor(
             poolLanguage = language
         }
         val tokenizer = tokenizers.forLanguage(language)
-        val known = (knownWords.words(language) + loadCardWords(language)).mapTo(HashSet(), tokenizer::normalize)
+        val known = knownSet(language, tokenizer)
         if (known.isEmpty()) return@withLock null
         val blocked = dao.excludedIds(System.currentTimeMillis()).toHashSet()
         val maxUnknown = current.maxUnknownWords
@@ -113,13 +133,52 @@ class SentenceRepository @Inject constructor(
         }
     }
 
-    /** Where the words of [text] that aren't known are, to highlight them. */
-    suspend fun unknownRanges(text: String): List<IntRange> = mutex.withLock {
+    /**
+     * The words of [text] as shown, each with whether it's known and how, and where the unknown
+     * ones are (to highlight them).
+     */
+    suspend fun wordsIn(text: String): SentenceWords = mutex.withLock {
         val language = settings.current().language
         val tokenizer = tokenizers.forLanguage(language)
-        val known = (knownWords.words(language) + loadCardWords(language)).mapTo(HashSet(), tokenizer::normalize)
-        withContext(Dispatchers.Default) { tokenizer.unknownRanges(text, known) }
+        val known = knownSet(language, tokenizer)
+        val mine = myWords.all(language)
+        withContext(Dispatchers.Default) {
+            val unknown = tokenizer.unknownRanges(text, known)
+            val words = tokenizer.wordSpans(text).map { span ->
+                val status = when (mine[span.key]) {
+                    true -> WordState.IGNORED
+                    false -> WordState.MINE
+                    null -> if (unknown.any { it.first <= span.range.last && span.range.first <= it.last }) WordState.UNKNOWN else WordState.KNOWN
+                }
+                TappableWord(span, status)
+            }
+            SentenceWords(words, unknown)
+        }
     }
+
+    /** Marks [word] known (or ignored) for the current language, or forgets it with null. */
+    suspend fun setWord(word: String, ignored: Boolean?) {
+        val language = settings.current().language
+        if (ignored == null) myWords.remove(language, word) else myWords.set(language, word, ignored)
+        // Verdicts change, but practice goes on where it is: no new generation.
+        mutex.withLock { knownCache.clear() }
+    }
+
+    /** Every known word of the current language, for a file to import elsewhere (Jiten, Migaku). */
+    suspend fun exportableKnownWords(): List<String> = mutex.withLock {
+        val language = settings.current().language
+        (knownWords.words(language) + loadCardWords(language) + myWords.known(language)).distinct()
+    }
+
+    /** The stored state of a sentence, so an undo can put it back. */
+    suspend fun stateOf(id: Long): SentenceState? = dao.get(id)
+
+    /** Puts back what [stateOf] returned before an action (null: the sentence had no state). */
+    suspend fun restore(id: Long, state: SentenceState?) {
+        if (state == null) dao.delete(id) else dao.upsert(state)
+        mutex.withLock { knownCache.remove(id) }
+    }
+
 
     suspend fun markCrystalClear(id: Long) {
         val until = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(COOLDOWN_DAYS)
@@ -148,6 +207,10 @@ class SentenceRepository @Inject constructor(
         PracticeSource.Anki -> decks.readSentences(settings.current().mapping, language).shuffled()
         is PracticeSource.Media -> media.sentences(source.id)
     }
+
+    /** Your word list, the cards' words and the words you marked known or ignored. */
+    private suspend fun knownSet(language: Language, tokenizer: SentenceTokenizer): Set<String> =
+        (knownWords.words(language) + loadCardWords(language) + myWords.counted(language)).mapTo(HashSet(), tokenizer::normalize)
 
     private suspend fun loadCardWords(language: Language): Set<String> =
         cardWords ?: runCatching { decks.readWords(settings.current().mapping, language) }.getOrDefault(emptySet())

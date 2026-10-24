@@ -1,5 +1,6 @@
 package dev.lovkvist.listening.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -24,7 +25,7 @@ import dev.lovkvist.listening.data.anki.AnkiText
  * Compose has no ruby layout, so each annotated word is a small column, and plain text is
  * split per character so lines can still wrap anywhere, as Japanese text does.
  * [highlights] are character ranges in the base text (the text without readings) to mark,
- * reading included, e.g. unknown words.
+ * reading included, e.g. unknown words. [onTap] gets the position of a tapped character.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -35,6 +36,7 @@ fun RubyText(
     readingColor: Color = MaterialTheme.colorScheme.primary,
     highlights: List<IntRange> = emptyList(),
     highlightColor: Color = MaterialTheme.colorScheme.tertiary,
+    onTap: ((Int) -> Unit)? = null,
 ) {
     val groups = remember(furigana) { keepTogether(layoutUnits(furigana)) }
     val readingStyle = style.copy(fontSize = style.fontSize * READING_SCALE, color = readingColor)
@@ -51,7 +53,8 @@ fun RubyText(
                 for (unit in group) {
                     val end = unit.start + unit.segment.base.length - 1
                     val marked = highlights.any { it.first <= end && unit.start <= it.last }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val tap = if (onTap != null) Modifier.clickable { onTap(unit.start) } else Modifier
+                    Column(tap, horizontalAlignment = Alignment.CenterHorizontally) {
                         // Unannotated text still gets an empty reading line so baselines stay aligned.
                         Text(
                             unit.segment.reading.orEmpty(),
@@ -68,9 +71,9 @@ fun RubyText(
 }
 
 /** A piece of ruby text and where its base text starts in the whole base text. */
-private data class Unit(val segment: AnkiText.RubySegment, val start: Int)
+private data class RubyUnit(val segment: AnkiText.RubySegment, val start: Int)
 
-private fun layoutUnits(furigana: String): List<Unit> {
+private fun layoutUnits(furigana: String): List<RubyUnit> {
     var offset = 0
     return AnkiText.ruby(furigana).flatMap { seg ->
         if (seg.reading != null) {
@@ -79,15 +82,15 @@ private fun layoutUnits(furigana: String): List<Unit> {
             // Code points, not chars, so characters outside the BMP aren't split in half.
             seg.base.codePoints().toArray().map { AnkiText.RubySegment(String(Character.toChars(it)), null) }
         }
-    }.map { seg -> Unit(seg, offset).also { offset += seg.base.length } }
+    }.map { seg -> RubyUnit(seg, offset).also { offset += seg.base.length } }
 }
 
 /**
  * Groups units that must not be split by a line break: punctuation like 、。」 never starts a
  * line, and opening brackets like 「 never end one (Japanese kinsoku rules).
  */
-private fun keepTogether(units: List<Unit>): List<List<Unit>> {
-    val groups = mutableListOf<MutableList<Unit>>()
+private fun keepTogether(units: List<RubyUnit>): List<List<RubyUnit>> {
+    val groups = mutableListOf<MutableList<RubyUnit>>()
     var openBracket = false
     for (unit in units) {
         val seg = unit.segment

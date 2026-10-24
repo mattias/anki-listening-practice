@@ -39,6 +39,25 @@ class WordTokenizer(private val language: Language) : SentenceTokenizer {
         return words.filterNot { isKnown(it, known) }.distinct().size
     }
 
+    override fun wordSpans(sentence: String): List<WordSpan> {
+        val text = sentence.replace('’', '\'')
+        val breaker = BreakIterator.getWordInstance(locale)
+        breaker.setText(text)
+        val out = mutableListOf<WordSpan>()
+        var start = breaker.first()
+        var end = breaker.next()
+        while (end != BreakIterator.DONE) {
+            val word = text.substring(start, end)
+            if (word.any { it.isLetter() }) {
+                val key = normalize(word)
+                out += WordSpan(start until end, key, listOf(word.lowercase(locale), key).distinct())
+            }
+            start = end
+            end = breaker.next()
+        }
+        return out
+    }
+
     override fun unknownRanges(sentence: String, known: Set<String>): List<IntRange> {
         // Same length as the sentence, so positions carry over; each word is cleaned on its own.
         val text = sentence.replace('’', '\'')

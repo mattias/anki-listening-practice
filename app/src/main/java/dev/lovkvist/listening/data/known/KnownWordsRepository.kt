@@ -72,5 +72,6 @@ class KnownWordsRepository @Inject constructor(
 
     private fun normalize(line: String): String? =
         // Tolerate a BOM and trailing columns (e.g. "word\tfrequency").
-        line.removePrefix("﻿").substringBefore('\t').trim().takeIf { it.isNotEmpty() }
+        // Section headers such as Jiten's "=== MASTERED ===" aren't words.
+        line.removePrefix("﻿").substringBefore('\t').trim().takeIf { it.isNotEmpty() && !it.startsWith("===") }
 }

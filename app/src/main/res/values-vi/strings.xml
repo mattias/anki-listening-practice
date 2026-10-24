@@ -128,4 +128,20 @@
     <string name="update_check_failed">Không kiểm tra được cập nhật: %1$s</string>
     <string name="update_download_failed">Tải bản cập nhật thất bại: %1$s</string>
     <string name="update_damaged">tệp đã tải bị hỏng (tổng kiểm tra không khớp)</string>
+
+    <string name="stats_today">hôm nay</string>
+    <string name="stats_clear">rõ ràng</string>
+    <string name="stats_streak">ngày liên tiếp</string>
+    <string name="playback">Phát lại</string>
+    <string name="auto_off">Tự động tắt</string>
+    <string name="auto_n">Tự động %1$d×</string>
+    <string name="appearance">Giao diện</string>
+    <string name="theme">Chủ đề</string>
+    <string name="theme_credit">Màu chủ đề dựa theo daisyUI.</string>
+    <string name="dark_mode">Chế độ tối</string>
+    <string name="dark_system">Theo hệ thống</string>
+    <string name="dark_light">Sáng</string>
+    <string name="dark_dark">Tối</string>
+    <string name="library">Thư viện</string>
+    <string name="languages">Ngôn ngữ</string>
 </resources>

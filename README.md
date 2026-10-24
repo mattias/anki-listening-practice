@@ -41,8 +41,11 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
 - **Only fully known sentences** — sentences are split into words and kept only if every word is
   known: in your word list (from [Jiten](https://jiten.moe) or Anki Miner) or the target word
   (e.g. *Expression*) of one of your cards.
-- **Looping audio** — adjustable speed (0.5x–1.5x) and pause between repeats (0–5 s).
-- **Audio first** — text, furigana and translation stay hidden until you tap *Show Text*.
+- **Looping audio** — adjustable speed (0.5x–1.5x) and pause between repeats (0–5 s), set from
+  the chips under the sentence. A ring around the play button shows how far the sentence (or,
+  with auto Crystal Clear, all its plays) has come.
+- **Audio first** — the sentence card stays face down until you tap it; then it flips over to
+  show the text, furigana and translation.
   Furigana is drawn above the kanji, from either Anki's `漢字[かんじ]` syntax or HTML `<ruby>`.
   Chinese pinyin and Cantonese jyutping are drawn the same way if your note type has a sentence
   field with them.
@@ -66,6 +69,11 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   (every language) and the Japanese note types [Kiku](https://github.com/youyoumu/kiku),
   [Lapis](https://github.com/donkuri/lapis) and [Senren](https://github.com/BrenoAqua/Senren),
   with editable field mappings for anything else.
+- **Themes** — Material You (your wallpaper's colors, light or dark) or one of 19 palettes after
+  [daisyUI](https://daisyui.com)'s themes, like the ones Kiku offers: cupcake, nord, dracula,
+  synthwave, coffee and more. Pick one under **Settings → Appearance**.
+- **Daily stats** — sentences practiced today, how many were Crystal Clear, and your streak of
+  days in a row.
 - **Your language** — the app itself is in English and 32 other languages (the study languages,
   with Traditional Chinese for Cantonese and Taiwanese). It follows the phone's language; change
   it under **Settings → App language** (or Android 13+'s per-app language setting). The
@@ -202,3 +210,6 @@ app/src/main/java/dev/lovkvist/listening/
 [GPL-3.0](LICENSE): use, modify and redistribute freely, including commercially, as long as
 what you distribute is also GPL-3.0 with its source code available. The app is GPL because it
 bundles youtubedl-android, which is GPL-3.0. Version 0.1.0 was released under MIT.
+
+Icons are [Material Icons](https://github.com/google/material-design-icons) (Apache 2.0). Theme
+colors are modeled on [daisyUI](https://github.com/saadeghi/daisyui) (MIT).

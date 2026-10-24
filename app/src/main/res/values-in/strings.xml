@@ -128,4 +128,20 @@
     <string name="update_check_failed">Tidak dapat memeriksa pembaruan: %1$s</string>
     <string name="update_download_failed">Gagal mengunduh pembaruan: %1$s</string>
     <string name="update_damaged">file yang diunduh rusak (checksum tidak cocok)</string>
+
+    <string name="stats_today">hari ini</string>
+    <string name="stats_clear">jelas</string>
+    <string name="stats_streak">hari beruntun</string>
+    <string name="playback">Pemutaran</string>
+    <string name="auto_off">Otomatis mati</string>
+    <string name="auto_n">Otomatis %1$d×</string>
+    <string name="appearance">Tampilan</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Warna tema mengikuti daisyUI.</string>
+    <string name="dark_mode">Mode gelap</string>
+    <string name="dark_system">Ikuti sistem</string>
+    <string name="dark_light">Terang</string>
+    <string name="dark_dark">Gelap</string>
+    <string name="library">Pustaka</string>
+    <string name="languages">Bahasa</string>
 </resources>

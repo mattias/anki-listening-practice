@@ -128,4 +128,20 @@
     <string name="update_check_failed">無法檢查更新：%1$s</string>
     <string name="update_download_failed">更新下載失敗：%1$s</string>
     <string name="update_damaged">下載的檔案已損毀（檢查碼不符）</string>
+
+    <string name="stats_today">今天</string>
+    <string name="stats_clear">完全聽懂</string>
+    <string name="stats_streak">天連續</string>
+    <string name="playback">播放</string>
+    <string name="auto_off">自動 關</string>
+    <string name="auto_n">自動 %1$d 遍</string>
+    <string name="appearance">外觀</string>
+    <string name="theme">主題</string>
+    <string name="theme_credit">主題配色參考 daisyUI。</string>
+    <string name="dark_mode">深色模式</string>
+    <string name="dark_system">跟隨系統</string>
+    <string name="dark_light">淺色</string>
+    <string name="dark_dark">深色</string>
+    <string name="library">資料庫</string>
+    <string name="languages">語言</string>
 </resources>

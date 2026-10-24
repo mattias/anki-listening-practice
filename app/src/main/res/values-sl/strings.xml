@@ -128,4 +128,20 @@
     <string name="update_check_failed">Posodobitev ni bilo mogoče preveriti: %1$s</string>
     <string name="update_download_failed">Prenos posodobitve ni uspel: %1$s</string>
     <string name="update_damaged">prenesena datoteka je poškodovana (kontrolna vsota se ne ujema)</string>
+
+    <string name="stats_today">danes</string>
+    <string name="stats_clear">jasno</string>
+    <string name="stats_streak">dni zapored</string>
+    <string name="playback">Predvajanje</string>
+    <string name="auto_off">Samodejno izklop</string>
+    <string name="auto_n">Samodejno %1$d×</string>
+    <string name="appearance">Videz</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Barve tem po daisyUI.</string>
+    <string name="dark_mode">Temni način</string>
+    <string name="dark_system">Kot sistem</string>
+    <string name="dark_light">Svetlo</string>
+    <string name="dark_dark">Temno</string>
+    <string name="library">Knjižnica</string>
+    <string name="languages">Jeziki</string>
 </resources>

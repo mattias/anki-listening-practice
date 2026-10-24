@@ -15,6 +15,8 @@ import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.text.Language
+import dev.lovkvist.listening.ui.theme.DarkMode
+import dev.lovkvist.listening.ui.theme.Palette
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -36,6 +38,10 @@ data class Settings(
     val checkUpdates: Boolean,
     /** Subtitles downloaded with YouTube videos as the translation (English if missing); null = none. */
     val translation: Language?,
+    /** A palette id from [Palette.all], or [Palette.MATERIAL_YOU]. */
+    val theme: String,
+    /** Light or dark for Material You. */
+    val darkMode: DarkMode,
 )
 
 @Singleton
@@ -49,6 +55,8 @@ class SettingsRepository @Inject constructor(
         val autoClearAfter = intPreferencesKey("auto_clear_after")
         val checkUpdates = booleanPreferencesKey("check_updates")
         val translationLanguage = stringPreferencesKey("translation_language")
+        val theme = stringPreferencesKey("theme")
+        val darkMode = stringPreferencesKey("dark_mode")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -83,6 +91,8 @@ class SettingsRepository @Inject constructor(
                 OFF -> null
                 else -> Language.entries.firstOrNull { it.code == code } ?: Language.ENGLISH
             },
+            theme = prefs[Keys.theme]?.takeIf { Palette.byId(it) != null } ?: Palette.MATERIAL_YOU,
+            darkMode = prefs[Keys.darkMode]?.let { runCatching { DarkMode.valueOf(it) }.getOrNull() } ?: DarkMode.SYSTEM,
         )
     }
 
@@ -147,6 +157,10 @@ class SettingsRepository @Inject constructor(
     suspend fun setCheckUpdates(enabled: Boolean) = context.dataStore.edit { it[Keys.checkUpdates] = enabled }
 
     suspend fun setTranslation(l: Language?) = context.dataStore.edit { it[Keys.translationLanguage] = l?.code ?: OFF }
+
+    suspend fun setTheme(id: String) = context.dataStore.edit { it[Keys.theme] = id }
+
+    suspend fun setDarkMode(mode: DarkMode) = context.dataStore.edit { it[Keys.darkMode] = mode.name }
 
     suspend fun setSpeed(speed: Float) = context.dataStore.edit { it[Keys.speed] = speed }
 

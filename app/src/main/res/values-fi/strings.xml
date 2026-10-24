@@ -128,4 +128,20 @@
     <string name="update_check_failed">Päivitysten tarkistus epäonnistui: %1$s</string>
     <string name="update_download_failed">Päivityksen lataus epäonnistui: %1$s</string>
     <string name="update_damaged">ladattu tiedosto on vioittunut (tarkistussumma ei täsmää)</string>
+
+    <string name="stats_today">tänään</string>
+    <string name="stats_clear">selviä</string>
+    <string name="stats_streak">päivän putki</string>
+    <string name="playback">Toisto</string>
+    <string name="auto_off">Auto pois</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Ulkoasu</string>
+    <string name="theme">Teema</string>
+    <string name="theme_credit">Teemojen värit daisyUI:n mukaan.</string>
+    <string name="dark_mode">Tumma tila</string>
+    <string name="dark_system">Järjestelmän mukaan</string>
+    <string name="dark_light">Vaalea</string>
+    <string name="dark_dark">Tumma</string>
+    <string name="library">Kirjasto</string>
+    <string name="languages">Kielet</string>
 </resources>

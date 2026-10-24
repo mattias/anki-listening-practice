@@ -9,6 +9,7 @@ import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.data.SentenceRepository
+import dev.lovkvist.listening.data.local.PracticeDayDao
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
@@ -28,8 +29,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
+
+/** Today's counts and the run of days with practice, ending today or yesterday. */
+data class PracticeStats(val today: Int = 0, val clearToday: Int = 0, val streak: Int = 0)
 
 sealed interface PracticeState {
     data object Loading : PracticeState
@@ -51,6 +56,7 @@ class PracticeController @Inject constructor(
     private val repository: SentenceRepository,
     private val settings: SettingsRepository,
     private val strings: Strings,
+    private val days: PracticeDayDao,
     media: MediaLibrary,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -98,6 +104,27 @@ class PracticeController @Inject constructor(
     val source: StateFlow<PracticeSource> = settings.settings.map { it.source }
         .stateIn(scope, SharingStarted.Eagerly, PracticeSource.Anki)
 
+    val stats: StateFlow<PracticeStats> = days.recent().map { list ->
+        val today = LocalDate.now()
+        val practiced = list.mapTo(HashSet()) { it.day }
+        var day = if (today.toString() in practiced) today else today.minusDays(1)
+        var streak = 0
+        while (day.toString() in practiced) {
+            streak++
+            day = day.minusDays(1)
+        }
+        val t = list.firstOrNull { it.day == today.toString() }
+        PracticeStats(today = t?.heard ?: 0, clearToday = t?.clear ?: 0, streak = streak)
+    }.stateIn(scope, SharingStarted.Eagerly, PracticeStats())
+
+    /** Switches the language you study; each language keeps its own source and words. */
+    fun selectLanguage(language: Language) {
+        scope.launch {
+            settings.setLanguage(language)
+            repository.invalidate()
+        }
+    }
+
     fun selectSource(source: PracticeSource) {
         scope.launch {
             settings.setSource(source)
@@ -139,11 +166,11 @@ class PracticeController @Inject constructor(
         if (_state.value is PracticeState.Message) rebuild()
     }
 
-    fun crystalClear() = advance { repository.markCrystalClear(it.id) }
+    fun crystalClear() = advance(clear = true) { repository.markCrystalClear(it.id) }
 
-    fun blacklist() = advance { repository.blacklist(it) }
+    fun blacklist() = advance(clear = false) { repository.blacklist(it) }
 
-    fun skip() = advance { }
+    fun skip() = advance(clear = false) { }
 
     fun toggleText() = _state.update { if (it is PracticeState.Ready) it.copy(showText = !it.showText) else it }
 
@@ -169,13 +196,16 @@ class PracticeController @Inject constructor(
     }
 
     /** Records [action] for the current sentence and moves to the next one. */
-    private fun advance(action: suspend (Sentence) -> Unit) {
+    private fun advance(clear: Boolean, action: suspend (Sentence) -> Unit) {
         scope.launch {
             lock.withLock {
                 val current = (_state.value as? PracticeState.Ready)?.current ?: return@withLock
                 // A new sentence continues in the same state: playing on, or staying paused.
                 val wasPlaying = player.isPlaying.value
                 action(current)
+                val today = LocalDate.now().toString()
+                days.ensure(today)
+                days.add(today, if (clear) 1 else 0)
                 show(fetch(afterId = current.id), autoPlay = wasPlaying)
             }
         }

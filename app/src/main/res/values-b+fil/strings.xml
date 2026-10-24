@@ -128,4 +128,20 @@
     <string name="update_check_failed">Hindi matingnan kung may update: %1$s</string>
     <string name="update_download_failed">Nabigo ang pag-download ng update: %1$s</string>
     <string name="update_damaged">sira ang na-download na file (hindi tugma ang checksum)</string>
+
+    <string name="stats_today">ngayon</string>
+    <string name="stats_clear">malinaw</string>
+    <string name="stats_streak">araw na sunod-sunod</string>
+    <string name="playback">Pag-play</string>
+    <string name="auto_off">Auto off</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Itsura</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Mga kulay ng tema batay sa daisyUI.</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="dark_system">Sundan ang system</string>
+    <string name="dark_light">Maliwanag</string>
+    <string name="dark_dark">Madilim</string>
+    <string name="library">Library</string>
+    <string name="languages">Mga wika</string>
 </resources>

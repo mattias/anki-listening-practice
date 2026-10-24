@@ -128,4 +128,20 @@
     <string name="update_check_failed">No se pudo buscar actualizaciones: %1$s</string>
     <string name="update_download_failed">Error al descargar la actualización: %1$s</string>
     <string name="update_damaged">el archivo descargado está dañado (la suma de verificación no coincide)</string>
+
+    <string name="stats_today">hoy</string>
+    <string name="stats_clear">cristalinas</string>
+    <string name="stats_streak">días seguidos</string>
+    <string name="playback">Reproducción</string>
+    <string name="auto_off">Auto no</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Apariencia</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Colores de los temas basados en daisyUI.</string>
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="dark_system">Como el sistema</string>
+    <string name="dark_light">Claro</string>
+    <string name="dark_dark">Oscuro</string>
+    <string name="library">Biblioteca</string>
+    <string name="languages">Idiomas</string>
 </resources>

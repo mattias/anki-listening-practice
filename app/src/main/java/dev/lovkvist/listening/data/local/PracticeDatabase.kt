@@ -10,6 +10,7 @@ import androidx.room.RoomDatabase
 import androidx.room.Upsert
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.flow.Flow
 
 /** Practice state per sentence. Kept in our own DB; the Anki collection is never written. */
 @Entity(tableName = "sentence_state")
@@ -52,9 +53,34 @@ interface SentenceStateDao {
     suspend fun cooldownCount(now: Long): Int
 }
 
-@Database(entities = [SentenceState::class], version = 2, exportSchema = false)
+/** Sentences practiced per day, for the stats on the practice screen. */
+@Entity(tableName = "practice_day")
+data class PracticeDay(
+    /** ISO date in local time, e.g. "2026-10-24". */
+    @PrimaryKey val day: String,
+    /** Sentences finished: Crystal Clear, skipped or blacklisted. */
+    @ColumnInfo(defaultValue = "0") val heard: Int = 0,
+    /** Of those, marked Crystal Clear. */
+    @ColumnInfo(defaultValue = "0") val clear: Int = 0,
+)
+
+@Dao
+interface PracticeDayDao {
+    @Query("INSERT OR IGNORE INTO practice_day (day, heard, clear) VALUES (:day, 0, 0)")
+    suspend fun ensure(day: String)
+
+    @Query("UPDATE practice_day SET heard = heard + 1, clear = clear + :clear WHERE day = :day")
+    suspend fun add(day: String, clear: Int)
+
+    /** Newest first; enough days for any realistic streak. */
+    @Query("SELECT * FROM practice_day WHERE heard > 0 ORDER BY day DESC LIMIT 1000")
+    fun recent(): Flow<List<PracticeDay>>
+}
+
+@Database(entities = [SentenceState::class, PracticeDay::class], version = 3, exportSchema = false)
 abstract class PracticeDatabase : RoomDatabase() {
     abstract fun sentenceStateDao(): SentenceStateDao
+    abstract fun practiceDayDao(): PracticeDayDao
 
     companion object {
         /** 0.4.0: blacklisted sentences keep their text and source so they can be listed. */
@@ -62,6 +88,16 @@ abstract class PracticeDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE sentence_state ADD COLUMN text TEXT NOT NULL DEFAULT ''")
                 db.execSQL("ALTER TABLE sentence_state ADD COLUMN source TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        /** 0.6.0: daily practice counts. */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS practice_day " +
+                        "(day TEXT NOT NULL PRIMARY KEY, heard INTEGER NOT NULL DEFAULT 0, clear INTEGER NOT NULL DEFAULT 0)",
+                )
             }
         }
     }

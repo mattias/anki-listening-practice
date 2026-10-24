@@ -128,4 +128,20 @@
     <string name="update_check_failed">Δεν ήταν δυνατός ο έλεγχος για ενημερώσεις: %1$s</string>
     <string name="update_download_failed">Η λήψη της ενημέρωσης απέτυχε: %1$s</string>
     <string name="update_damaged">το αρχείο που κατέβηκε είναι κατεστραμμένο (το άθροισμα ελέγχου δεν ταιριάζει)</string>
+
+    <string name="stats_today">σήμερα</string>
+    <string name="stats_clear">πεντακάθαρες</string>
+    <string name="stats_streak">μέρες στη σειρά</string>
+    <string name="playback">Αναπαραγωγή</string>
+    <string name="auto_off">Αυτόματο όχι</string>
+    <string name="auto_n">Αυτόματο %1$d×</string>
+    <string name="appearance">Εμφάνιση</string>
+    <string name="theme">Θέμα</string>
+    <string name="theme_credit">Χρώματα θεμάτων βασισμένα στο daisyUI.</string>
+    <string name="dark_mode">Σκούρο θέμα</string>
+    <string name="dark_system">Όπως το σύστημα</string>
+    <string name="dark_light">Φωτεινό</string>
+    <string name="dark_dark">Σκούρο</string>
+    <string name="library">Βιβλιοθήκη</string>
+    <string name="languages">Γλώσσες</string>
 </resources>

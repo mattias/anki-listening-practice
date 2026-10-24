@@ -128,4 +128,20 @@
     <string name="update_check_failed">Не вдалося перевірити оновлення: %1$s</string>
     <string name="update_download_failed">Не вдалося завантажити оновлення: %1$s</string>
     <string name="update_damaged">завантажений файл пошкоджено (контрольна сума не збігається)</string>
+
+    <string name="stats_today">сьогодні</string>
+    <string name="stats_clear">ясно</string>
+    <string name="stats_streak">днів поспіль</string>
+    <string name="playback">Відтворення</string>
+    <string name="auto_off">Авто вимк.</string>
+    <string name="auto_n">Авто %1$d×</string>
+    <string name="appearance">Вигляд</string>
+    <string name="theme">Тема</string>
+    <string name="theme_credit">Кольори тем за мотивами daisyUI.</string>
+    <string name="dark_mode">Темний режим</string>
+    <string name="dark_system">Як у системі</string>
+    <string name="dark_light">Світлий</string>
+    <string name="dark_dark">Темний</string>
+    <string name="library">Бібліотека</string>
+    <string name="languages">Мови</string>
 </resources>

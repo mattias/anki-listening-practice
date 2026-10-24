@@ -128,4 +128,20 @@
     <string name="update_check_failed">تعذّر البحث عن تحديثات: %1$s</string>
     <string name="update_download_failed">فشل تنزيل التحديث: %1$s</string>
     <string name="update_damaged">الملف الذي تم تنزيله تالف (المجموع الاختباري غير مطابق)</string>
+
+    <string name="stats_today">اليوم</string>
+    <string name="stats_clear">واضحة</string>
+    <string name="stats_streak">يومًا متتاليًا</string>
+    <string name="playback">التشغيل</string>
+    <string name="auto_off">تلقائي: إيقاف</string>
+    <string name="auto_n">تلقائي %1$d×</string>
+    <string name="appearance">المظهر</string>
+    <string name="theme">السمة</string>
+    <string name="theme_credit">ألوان السمات مستوحاة من daisyUI.</string>
+    <string name="dark_mode">الوضع الداكن</string>
+    <string name="dark_system">حسب النظام</string>
+    <string name="dark_light">فاتح</string>
+    <string name="dark_dark">داكن</string>
+    <string name="library">المكتبة</string>
+    <string name="languages">اللغات</string>
 </resources>

@@ -148,6 +148,15 @@ class LoopPlayer(private val context: Context) {
 
     fun toggle() = if (player.playWhenReady) pause() else play()
 
+    /** How far the current play has come, 0 to 1; 1 during the pause after it. */
+    fun clipProgress(): Float {
+        val item = player.currentMediaItem ?: return 0f
+        if (item.mediaId != CLIP) return 1f
+        val duration = player.duration
+        if (duration <= 0) return 0f
+        return (player.currentPosition.toFloat() / duration).coerceIn(0f, 1f)
+    }
+
     /** Plays the current sentence again from its start. */
     fun restart() {
         if (clip == null) return

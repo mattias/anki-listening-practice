@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.LocalTextStyle
@@ -30,23 +31,50 @@ fun RubyText(
     style: TextStyle = LocalTextStyle.current,
     readingColor: Color = MaterialTheme.colorScheme.primary,
 ) {
-    val units = remember(furigana) { layoutUnits(furigana) }
+    val groups = remember(furigana) { keepTogether(layoutUnits(furigana)) }
     val readingStyle = style.copy(fontSize = style.fontSize * READING_SCALE, color = readingColor)
 
     FlowRow(modifier, horizontalArrangement = Arrangement.Center) {
-        for (unit in units) {
-            if (unit.base == "\n") {
+        for (group in groups) {
+            if (group.first().base == "\n") {
                 Spacer(Modifier.fillMaxWidth())
                 continue
             }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Unannotated text still gets an empty reading line so baselines stay aligned.
-                Text(unit.reading.orEmpty(), style = readingStyle, maxLines = 1, softWrap = false)
-                Text(unit.base, style = style, maxLines = 1, softWrap = false)
+            Row {
+                for (unit in group) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        // Unannotated text still gets an empty reading line so baselines stay aligned.
+                        Text(unit.reading.orEmpty(), style = readingStyle, maxLines = 1, softWrap = false)
+                        Text(unit.base, style = style, maxLines = 1, softWrap = false)
+                    }
+                }
             }
         }
     }
 }
+
+/**
+ * Groups units that must not be split by a line break: punctuation like 、。」 never starts a
+ * line, and opening brackets like 「 never end one (Japanese kinsoku rules).
+ */
+private fun keepTogether(units: List<AnkiText.RubySegment>): List<List<AnkiText.RubySegment>> {
+    val groups = mutableListOf<MutableList<AnkiText.RubySegment>>()
+    var openBracket = false
+    for (unit in units) {
+        val previous = groups.lastOrNull()
+        val glue = unit.reading == null && unit.base.isNotEmpty() && unit.base[0] in NO_LINE_START
+        if (previous != null && unit.base != "\n" && previous.first().base != "\n" && (glue || openBracket)) {
+            previous += unit
+        } else {
+            groups += mutableListOf(unit)
+        }
+        openBracket = unit.reading == null && unit.base.isNotEmpty() && unit.base[0] in NO_LINE_END
+    }
+    return groups
+}
+
+private const val NO_LINE_START = "、。，．,.!?！？)）]］}｝」』】〉》〕ー・：；:;～…ゃゅょっぁぃぅぇぉャュョッァィゥェォ"
+private const val NO_LINE_END = "(（[［{｛「『【〈《〔"
 
 private fun layoutUnits(furigana: String): List<AnkiText.RubySegment> =
     AnkiText.ruby(furigana).flatMap { seg ->

@@ -128,4 +128,20 @@
     <string name="update_check_failed">No s\'han pogut cercar actualitzacions: %1$s</string>
     <string name="update_download_failed">No s\'ha pogut baixar l\'actualització: %1$s</string>
     <string name="update_damaged">el fitxer baixat està malmès (la suma de verificació no coincideix)</string>
+
+    <string name="stats_today">avui</string>
+    <string name="stats_clear">ben clares</string>
+    <string name="stats_streak">dies seguits</string>
+    <string name="playback">Reproducció</string>
+    <string name="auto_off">Auto no</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Aparença</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Colors dels temes basats en daisyUI.</string>
+    <string name="dark_mode">Mode fosc</string>
+    <string name="dark_system">Com el sistema</string>
+    <string name="dark_light">Clar</string>
+    <string name="dark_dark">Fosc</string>
+    <string name="library">Biblioteca</string>
+    <string name="languages">Idiomes</string>
 </resources>

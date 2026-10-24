@@ -32,6 +32,12 @@
     <string name="no_more_in_video">No more sentences you know in this video. Pick another source, or reset cool-downs in Settings to go through it again.</string>
     <string name="no_eligible">No eligible sentences. Import your known words, check the note type preset in Settings, or wait for cool-downs to expire.</string>
     <string name="notification_subtitle">Listening practice · %1$s</string>
+    <string name="stats_today">today</string>
+    <string name="stats_clear">clear</string>
+    <string name="stats_streak">day streak</string>
+    <string name="playback">Playback</string>
+    <string name="auto_off">Auto off</string>
+    <string name="auto_n">Auto %1$d×</string>
 
     <!-- Settings -->
     <string name="back">Back</string>
@@ -39,6 +45,15 @@
     <string name="system_default">System default</string>
     <string name="study_language">Language you study</string>
     <string name="kept_per_language">Anki decks, videos and known words are kept per language.</string>
+    <string name="appearance">Appearance</string>
+    <string name="theme">Theme</string>
+    <string name="theme_credit">Theme colors after daisyUI.</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="dark_system">Follow system</string>
+    <string name="dark_light">Light</string>
+    <string name="dark_dark">Dark</string>
+    <string name="library">Library</string>
+    <string name="languages">Languages</string>
 
     <string name="anki_decks">Anki decks</string>
     <string name="decks_help">In AnkiDroid, export a deck (.apkg) or your collection (.colpkg) with \"Include media\" checked, then import it here. Its cards count as the language you study, so import each language\'s deck while that language is selected. Only sentence audio is kept. Re-import after adding cards.</string>

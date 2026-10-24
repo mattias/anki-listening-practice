@@ -128,4 +128,20 @@
     <string name="update_check_failed">업데이트를 확인하지 못했습니다: %1$s</string>
     <string name="update_download_failed">업데이트 다운로드 실패: %1$s</string>
     <string name="update_damaged">다운로드한 파일이 손상되었습니다(체크섬 불일치)</string>
+
+    <string name="stats_today">오늘</string>
+    <string name="stats_clear">완벽</string>
+    <string name="stats_streak">일 연속</string>
+    <string name="playback">재생</string>
+    <string name="auto_off">자동 끄기</string>
+    <string name="auto_n">자동 %1$d회</string>
+    <string name="appearance">모양</string>
+    <string name="theme">테마</string>
+    <string name="theme_credit">테마 색상은 daisyUI를 바탕으로 합니다.</string>
+    <string name="dark_mode">다크 모드</string>
+    <string name="dark_system">시스템 설정 따르기</string>
+    <string name="dark_light">밝게</string>
+    <string name="dark_dark">어둡게</string>
+    <string name="library">라이브러리</string>
+    <string name="languages">언어</string>
 </resources>

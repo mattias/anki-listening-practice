@@ -128,4 +128,20 @@
     <string name="update_check_failed">Kunne ikke se etter oppdateringer: %1$s</string>
     <string name="update_download_failed">Nedlastingen av oppdateringen mislyktes: %1$s</string>
     <string name="update_damaged">den nedlastede filen er skadet (kontrollsummen stemmer ikke)</string>
+
+    <string name="stats_today">i dag</string>
+    <string name="stats_clear">klare</string>
+    <string name="stats_streak">dager på rad</string>
+    <string name="playback">Avspilling</string>
+    <string name="auto_off">Auto av</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Utseende</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Temafarger etter daisyUI.</string>
+    <string name="dark_mode">Mørk modus</string>
+    <string name="dark_system">Følg systemet</string>
+    <string name="dark_light">Lys</string>
+    <string name="dark_dark">Mørk</string>
+    <string name="library">Bibliotek</string>
+    <string name="languages">Språk</string>
 </resources>

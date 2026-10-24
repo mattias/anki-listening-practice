@@ -128,4 +128,20 @@
     <string name="update_check_failed">Nu s-au putut căuta actualizări: %1$s</string>
     <string name="update_download_failed">Descărcarea actualizării a eșuat: %1$s</string>
     <string name="update_damaged">fișierul descărcat este deteriorat (suma de control nu se potrivește)</string>
+
+    <string name="stats_today">azi</string>
+    <string name="stats_clear">limpezi</string>
+    <string name="stats_streak">zile la rând</string>
+    <string name="playback">Redare</string>
+    <string name="auto_off">Auto oprit</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Aspect</string>
+    <string name="theme">Temă</string>
+    <string name="theme_credit">Culorile temelor după daisyUI.</string>
+    <string name="dark_mode">Mod întunecat</string>
+    <string name="dark_system">Ca sistemul</string>
+    <string name="dark_light">Luminos</string>
+    <string name="dark_dark">Întunecat</string>
+    <string name="library">Bibliotecă</string>
+    <string name="languages">Limbi</string>
 </resources>

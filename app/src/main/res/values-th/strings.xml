@@ -128,4 +128,20 @@
     <string name="update_check_failed">ตรวจหาอัปเดตไม่ได้: %1$s</string>
     <string name="update_download_failed">ดาวน์โหลดอัปเดตไม่สำเร็จ: %1$s</string>
     <string name="update_damaged">ไฟล์ที่ดาวน์โหลดเสียหาย (ค่าตรวจสอบไม่ตรงกัน)</string>
+
+    <string name="stats_today">วันนี้</string>
+    <string name="stats_clear">เข้าใจชัด</string>
+    <string name="stats_streak">วันติดต่อกัน</string>
+    <string name="playback">การเล่น</string>
+    <string name="auto_off">อัตโนมัติ ปิด</string>
+    <string name="auto_n">อัตโนมัติ %1$d×</string>
+    <string name="appearance">รูปลักษณ์</string>
+    <string name="theme">ธีม</string>
+    <string name="theme_credit">สีของธีมอิงจาก daisyUI</string>
+    <string name="dark_mode">โหมดมืด</string>
+    <string name="dark_system">ตามระบบ</string>
+    <string name="dark_light">สว่าง</string>
+    <string name="dark_dark">มืด</string>
+    <string name="library">คลัง</string>
+    <string name="languages">ภาษา</string>
 </resources>

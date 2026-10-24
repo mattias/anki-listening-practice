@@ -1,5 +1,31 @@
 package dev.lovkvist.listening.ui
 
+import android.os.Build
+import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import dev.lovkvist.listening.ui.theme.DarkMode
+import dev.lovkvist.listening.ui.theme.Palette
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,6 +85,17 @@ import dev.lovkvist.listening.text.Reading
 import java.text.DateFormat
 import java.util.Date
 
+/** Settings' main page with its groups, and the pages it opens. */
+private enum class Page(val title: Int) {
+    MAIN(R.string.settings),
+    DECKS(R.string.anki_decks),
+    MEDIA(R.string.videos_audio),
+    KNOWN(R.string.known_words),
+    PRESET(R.string.note_type_preset),
+    PROGRESS(R.string.progress),
+    UPDATES(R.string.app_updates),
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () -> Unit) {
@@ -68,8 +105,13 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
     val message by vm.message.collectAsStateWithLifecycle()
     val cooldownCount by vm.cooldownCount.collectAsStateWithLifecycle()
     val cardWordCount by vm.cardWordCount.collectAsStateWithLifecycle()
+    val decks by vm.decks.collectAsStateWithLifecycle()
+    val mediaItems by vm.mediaItems.collectAsStateWithLifecycle()
     var confirm by remember { mutableStateOf<Reset?>(null) }
+    var page by rememberSaveable { mutableStateOf(Page.MAIN) }
     LaunchedEffect(Unit) { vm.refreshCounts() }
+    // Back on a sub page goes to the main page; MainActivity's handler closes Settings.
+    BackHandler(enabled = page != Page.MAIN) { page = Page.MAIN }
 
     val pickKnownWords = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let(vm::importKnownWords)
@@ -78,8 +120,12 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.settings)) },
-                navigationIcon = { TextButton(onClick = onBack) { Text(stringResource(R.string.back)) } },
+                title = { Text(stringResource(page.title)) },
+                navigationIcon = {
+                    IconButton(onClick = { if (page == Page.MAIN) onBack() else page = Page.MAIN }) {
+                        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.back))
+                    }
+                },
             )
         },
     ) { padding ->
@@ -92,77 +138,152 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Section(stringResource(R.string.app_language))
-            AppLanguagePicker()
+            when (page) {
+                Page.MAIN -> {
+                    Group(stringResource(R.string.appearance)) {
+                        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            ThemePicker(s.theme, vm::setTheme)
+                            if (s.theme == Palette.MATERIAL_YOU) {
+                                Text(stringResource(R.string.dark_mode), style = MaterialTheme.typography.labelLarge)
+                                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    for ((mode, label) in listOf(
+                                        DarkMode.SYSTEM to R.string.dark_system,
+                                        DarkMode.LIGHT to R.string.dark_light,
+                                        DarkMode.DARK to R.string.dark_dark,
+                                    )) {
+                                        FilterChip(
+                                            selected = s.darkMode == mode,
+                                            onClick = { vm.setDarkMode(mode) },
+                                            label = { Text(stringResource(label)) },
+                                        )
+                                    }
+                                }
+                            }
+                            Text(
+                                stringResource(R.string.theme_credit),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
 
-            Section(stringResource(R.string.study_language))
-            LanguagePicker(s.language, vm::selectLanguage)
-            Text(
-                stringResource(R.string.kept_per_language),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+                    Group(stringResource(R.string.languages)) {
+                        val current = AppLanguage.current()
+                        val systemDefault = stringResource(R.string.system_default)
+                        MenuRow(
+                            R.drawable.ic_translate,
+                            stringResource(R.string.app_language),
+                            AppLanguage.available.firstOrNull { it.first == current }?.second ?: systemDefault,
+                            (listOf(null to systemDefault) + AppLanguage.available).map { (tag, name) ->
+                                name to { if (tag != current) AppLanguage.set(tag) }
+                            },
+                        )
+                        RowDivider()
+                        MenuRow(
+                            R.drawable.ic_headphones,
+                            stringResource(R.string.study_language),
+                            s.language.label(),
+                            Language.entries.sortedBy { it.displayName() }.map { l ->
+                                l.label() to { if (l != s.language) vm.selectLanguage(l) }
+                            },
+                        )
+                    }
+                    Text(
+                        stringResource(R.string.kept_per_language),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 4.dp),
+                    )
 
-            Section(stringResource(R.string.anki_decks))
-            Decks(vm, s.language)
+                    Group(stringResource(R.string.library)) {
+                        NavRow(R.drawable.ic_style, stringResource(R.string.anki_decks), decks.count { it.language == s.language }.toString()) {
+                            page = Page.DECKS
+                        }
+                        RowDivider()
+                        NavRow(R.drawable.ic_video_library, stringResource(R.string.videos_audio), mediaItems.count { it.language == s.language }.toString()) {
+                            page = Page.MEDIA
+                        }
+                        RowDivider()
+                        NavRow(R.drawable.ic_abc, stringResource(R.string.known_words), (knownCounts[s.language] ?: 0).toString()) {
+                            page = Page.KNOWN
+                        }
+                        RowDivider()
+                        NavRow(R.drawable.ic_tune, stringResource(R.string.note_type_preset), s.preset.label) { page = Page.PRESET }
+                    }
 
-            Section(stringResource(R.string.videos_audio))
-            MediaItems(vm, s.language, s.translation)
+                    Group(null) {
+                        NavRow(R.drawable.ic_insights, stringResource(R.string.progress), "") {
+                            page = Page.PROGRESS
+                        }
+                        RowDivider()
+                        NavRow(R.drawable.ic_system_update, stringResource(R.string.app_updates), updateVm.currentVersion) {
+                            page = Page.UPDATES
+                        }
+                    }
+                }
 
-            Section(stringResource(R.string.known_words))
-            Text(
-                when (val n = knownCounts[s.language]) {
-                    null -> stringResource(R.string.loading)
-                    0 -> stringResource(
-                        when {
-                            s.language == Language.JAPANESE -> R.string.known_none_jiten
-                            s.language.inAnkiMiner -> R.string.known_none_miner
-                            else -> R.string.known_none
+                Page.DECKS -> Decks(vm, s.language)
+
+                Page.MEDIA -> MediaItems(vm, s.language, s.translation)
+
+                Page.KNOWN -> {
+                    Text(
+                        when (val n = knownCounts[s.language]) {
+                            null -> stringResource(R.string.loading)
+                            0 -> stringResource(
+                                when {
+                                    s.language == Language.JAPANESE -> R.string.known_none_jiten
+                                    s.language.inAnkiMiner -> R.string.known_none_miner
+                                    else -> R.string.known_none
+                                },
+                            )
+                            else -> stringResource(R.string.known_count, n)
                         },
                     )
-                    else -> stringResource(R.string.known_count, n)
-                },
-            )
-            Text(
-                if (s.mapping.word.isBlank()) stringResource(R.string.no_word_field)
-                else stringResource(R.string.card_words, cardWordCount, s.mapping.word),
-            )
-            Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text(stringResource(R.string.import_known_words)) }
-
-            Section(stringResource(R.string.note_type_preset))
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                for (p in Preset.availableFor(s.language)) {
-                    FilterChip(selected = p == s.preset, onClick = { vm.selectPreset(s.language, p) }, label = { Text(p.label) })
+                    Text(
+                        if (s.mapping.word.isBlank()) stringResource(R.string.no_word_field)
+                        else stringResource(R.string.card_words, cardWordCount, s.mapping.word),
+                    )
+                    Button(onClick = { pickKnownWords.launch(arrayOf("text/*")) }) { Text(stringResource(R.string.import_known_words)) }
                 }
-            }
-            if (s.language != Language.JAPANESE) {
-                Text(
-                    stringResource(R.string.japanese_presets_note),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            MappingEditor(
-                preset = s.preset,
-                language = s.language,
-                mapping = s.mapping,
-                onSave = { vm.saveMapping(s.preset, s.language, it) },
-                onReset = { vm.resetMapping(s.preset, s.language) },
-            )
 
-            Section(stringResource(R.string.progress))
-            Text(stringResource(R.string.cooling_down, cooldownCount))
-            OutlinedButton(onClick = { confirm = Reset.COOLDOWNS }, enabled = cooldownCount > 0) {
-                Text(stringResource(R.string.reset_cooldowns))
-            }
-            Text(stringResource(R.string.blacklisted_count, blacklistCount))
-            Blacklist(vm)
-            OutlinedButton(onClick = { confirm = Reset.BLACKLIST }, enabled = blacklistCount > 0) {
-                Text(stringResource(R.string.clear_blacklist))
-            }
+                Page.PRESET -> {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        for (p in Preset.availableFor(s.language)) {
+                            FilterChip(selected = p == s.preset, onClick = { vm.selectPreset(s.language, p) }, label = { Text(p.label) })
+                        }
+                    }
+                    if (s.language != Language.JAPANESE) {
+                        Text(
+                            stringResource(R.string.japanese_presets_note),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    MappingEditor(
+                        preset = s.preset,
+                        language = s.language,
+                        mapping = s.mapping,
+                        onSave = { vm.saveMapping(s.preset, s.language, it) },
+                        onReset = { vm.resetMapping(s.preset, s.language) },
+                    )
+                }
 
-            Section(stringResource(R.string.app_updates))
-            Updates(updateVm)
+                Page.PROGRESS -> {
+                    Text(stringResource(R.string.cooling_down, cooldownCount))
+                    OutlinedButton(onClick = { confirm = Reset.COOLDOWNS }, enabled = cooldownCount > 0) {
+                        Text(stringResource(R.string.reset_cooldowns))
+                    }
+                    HorizontalDivider()
+                    Text(stringResource(R.string.blacklisted_count, blacklistCount))
+                    Blacklist(vm)
+                    OutlinedButton(onClick = { confirm = Reset.BLACKLIST }, enabled = blacklistCount > 0) {
+                        Text(stringResource(R.string.clear_blacklist))
+                    }
+                }
+
+                Page.UPDATES -> Updates(updateVm)
+            }
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -199,6 +320,131 @@ private enum class Reset(val title: Int, val body: Int) {
     BLACKLIST(R.string.clear_blacklist_title, R.string.clear_blacklist_body),
 }
 
+/** A titled card holding rows, like Android's own settings. */
+@Composable
+private fun Group(title: String?, content: @Composable ColumnScope.() -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        if (title != null) {
+            Text(
+                title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 4.dp, top = 8.dp),
+            )
+        }
+        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainer) {
+            Column(content = content)
+        }
+    }
+}
+
+@Composable
+private fun RowDivider() = HorizontalDivider(Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
+
+@Composable
+private fun RowContent(@DrawableRes icon: Int, title: String, value: String, @DrawableRes trailing: Int) {
+    Row(Modifier.padding(horizontal = 16.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(painterResource(icon), contentDescription = null, Modifier.size(22.dp), tint = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.width(14.dp))
+        Text(title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(start = 8.dp).widthIn(max = 200.dp),
+        )
+        Icon(painterResource(trailing), contentDescription = null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** A row that opens a page. */
+@Composable
+private fun NavRow(@DrawableRes icon: Int, title: String, value: String, onClick: () -> Unit) {
+    Box(Modifier.fillMaxWidth().clickable(onClick = onClick)) {
+        RowContent(icon, title, value, R.drawable.ic_chevron_right)
+    }
+}
+
+/** A row that opens a menu of choices. */
+@Composable
+private fun MenuRow(@DrawableRes icon: Int, title: String, value: String, items: List<Pair<String, () -> Unit>>) {
+    var open by remember { mutableStateOf(false) }
+    Box(Modifier.fillMaxWidth().clickable { open = true }) {
+        RowContent(icon, title, value, R.drawable.ic_expand_more)
+        DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.heightIn(max = 480.dp)) {
+            for ((name, action) in items) {
+                DropdownMenuItem(
+                    text = { Text(name) },
+                    onClick = {
+                        open = false
+                        action()
+                    },
+                )
+            }
+        }
+    }
+}
+
+/** Tiles in the style of daisyUI's theme picker: each in its own colors, with four swatches. */
+@Composable
+private fun ThemePicker(selected: String, onSelect: (String) -> Unit) {
+    val context = LocalContext.current
+    val dark = isSystemInDarkTheme()
+    val materialYou = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+            if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        dark -> darkColorScheme()
+        else -> lightColorScheme()
+    }
+    val tiles = listOf(
+        ThemeTile(
+            Palette.MATERIAL_YOU, "Material You", materialYou.surfaceContainer, materialYou.onSurface,
+            listOf(materialYou.primary, materialYou.secondary, materialYou.tertiary, materialYou.onSurface),
+        ),
+    ) + Palette.all.map { p -> ThemeTile(p.id, p.name, Color(p.base100), Color(p.content), p.swatches) }
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        for (row in tiles.chunked(3)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                for (tile in row) {
+                    val isSelected = tile.id == selected
+                    Surface(
+                        onClick = { onSelect(tile.id) },
+                        shape = RoundedCornerShape(12.dp),
+                        color = tile.background,
+                        contentColor = tile.content,
+                        border = BorderStroke(
+                            if (isSelected) 2.5.dp else 1.dp,
+                            if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                        ),
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
+                            Text(tile.name, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Spacer(Modifier.height(6.dp))
+                            Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                                for (c in tile.swatches) {
+                                    Box(
+                                        Modifier
+                                            .size(12.dp)
+                                            .clip(RoundedCornerShape(4.dp))
+                                            .background(c),
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                // Keep the last row's tiles the same width as the others.
+                repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
+            }
+        }
+    }
+}
+
+private data class ThemeTile(val id: String, val name: String, val background: Color, val content: Color, val swatches: List<Color>)
+
 @Composable
 private fun Updates(vm: UpdateViewModel) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -215,45 +461,6 @@ private fun Updates(vm: UpdateViewModel) {
         }
     } else {
         OutlinedButton(onClick = { vm.check() }) { Text(stringResource(R.string.check_for_updates)) }
-    }
-}
-
-/** The app's own language: the phone's, or one of the translations, each named in itself. */
-@Composable
-private fun AppLanguagePicker() {
-    var open by remember { mutableStateOf(false) }
-    val current = AppLanguage.current()
-    val systemDefault = stringResource(R.string.system_default)
-    val name = AppLanguage.available.firstOrNull { it.first == current }?.second ?: systemDefault
-    OutlinedButton(onClick = { open = true }) { Text("$name ▾") }
-    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
-        for ((tag, label) in listOf(null to systemDefault) + AppLanguage.available) {
-            DropdownMenuItem(
-                text = { Text(label) },
-                onClick = {
-                    open = false
-                    if (tag != current) AppLanguage.set(tag)
-                },
-            )
-        }
-    }
-}
-
-/** A menu of every study language, labeled in itself and in the app's language. */
-@Composable
-private fun LanguagePicker(current: Language, onSelect: (Language) -> Unit) {
-    var open by remember { mutableStateOf(false) }
-    OutlinedButton(onClick = { open = true }) { Text("${current.label()} ▾") }
-    DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
-        for (l in Language.entries.sortedBy { it.displayName() }) {
-            DropdownMenuItem(
-                text = { Text(l.label()) },
-                onClick = {
-                    open = false
-                    if (l != current) onSelect(l)
-                },
-            )
-        }
     }
 }
 
@@ -309,12 +516,6 @@ private fun Blacklist(vm: SettingsViewModel) {
             TextButton(onClick = { vm.restore(item.noteId) }) { Text(stringResource(R.string.restore)) }
         }
     }
-}
-
-@Composable
-private fun Section(title: String) {
-    HorizontalDivider()
-    Text(title, style = MaterialTheme.typography.titleMedium)
 }
 
 @Composable

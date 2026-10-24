@@ -128,4 +128,20 @@
     <string name="update_check_failed">Kan niet naar updates zoeken: %1$s</string>
     <string name="update_download_failed">Downloaden van de update mislukt: %1$s</string>
     <string name="update_damaged">het gedownloade bestand is beschadigd (controlesom klopt niet)</string>
+
+    <string name="stats_today">vandaag</string>
+    <string name="stats_clear">glashelder</string>
+    <string name="stats_streak">dagen op rij</string>
+    <string name="playback">Afspelen</string>
+    <string name="auto_off">Auto uit</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Weergave</string>
+    <string name="theme">Thema</string>
+    <string name="theme_credit">Themakleuren naar daisyUI.</string>
+    <string name="dark_mode">Donkere modus</string>
+    <string name="dark_system">Zoals systeem</string>
+    <string name="dark_light">Licht</string>
+    <string name="dark_dark">Donker</string>
+    <string name="library">Bibliotheek</string>
+    <string name="languages">Talen</string>
 </resources>

@@ -128,4 +128,20 @@
     <string name="update_check_failed">Suche nach Updates fehlgeschlagen: %1$s</string>
     <string name="update_download_failed">Download des Updates fehlgeschlagen: %1$s</string>
     <string name="update_damaged">die heruntergeladene Datei ist beschädigt (Prüfsumme stimmt nicht)</string>
+
+    <string name="stats_today">heute</string>
+    <string name="stats_clear">glasklar</string>
+    <string name="stats_streak">Tage in Folge</string>
+    <string name="playback">Wiedergabe</string>
+    <string name="auto_off">Auto aus</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Darstellung</string>
+    <string name="theme">Design</string>
+    <string name="theme_credit">Designfarben nach daisyUI.</string>
+    <string name="dark_mode">Dunkelmodus</string>
+    <string name="dark_system">Wie System</string>
+    <string name="dark_light">Hell</string>
+    <string name="dark_dark">Dunkel</string>
+    <string name="library">Bibliothek</string>
+    <string name="languages">Sprachen</string>
 </resources>

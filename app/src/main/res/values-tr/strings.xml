@@ -128,4 +128,20 @@
     <string name="update_check_failed">Güncellemeler denetlenemedi: %1$s</string>
     <string name="update_download_failed">Güncelleme indirilemedi: %1$s</string>
     <string name="update_damaged">indirilen dosya bozuk (sağlama toplamı eşleşmiyor)</string>
+
+    <string name="stats_today">bugün</string>
+    <string name="stats_clear">apaçık</string>
+    <string name="stats_streak">gün üst üste</string>
+    <string name="playback">Oynatma</string>
+    <string name="auto_off">Otomatik kapalı</string>
+    <string name="auto_n">Otomatik %1$d×</string>
+    <string name="appearance">Görünüm</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Tema renkleri daisyUI\'dan.</string>
+    <string name="dark_mode">Koyu mod</string>
+    <string name="dark_system">Sistemi izle</string>
+    <string name="dark_light">Açık</string>
+    <string name="dark_dark">Koyu</string>
+    <string name="library">Kitaplık</string>
+    <string name="languages">Diller</string>
 </resources>

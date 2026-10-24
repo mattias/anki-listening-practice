@@ -128,4 +128,20 @@
     <string name="update_check_failed">更新を確認できませんでした: %1$s</string>
     <string name="update_download_failed">更新のダウンロードに失敗しました: %1$s</string>
     <string name="update_damaged">ダウンロードしたファイルが壊れています (チェックサムが一致しません)</string>
+
+    <string name="stats_today">今日</string>
+    <string name="stats_clear">完璧</string>
+    <string name="stats_streak">日連続</string>
+    <string name="playback">再生</string>
+    <string name="auto_off">自動 オフ</string>
+    <string name="auto_n">自動 %1$d回</string>
+    <string name="appearance">外観</string>
+    <string name="theme">テーマ</string>
+    <string name="theme_credit">テーマの色は daisyUI に基づいています。</string>
+    <string name="dark_mode">ダークモード</string>
+    <string name="dark_system">システムに合わせる</string>
+    <string name="dark_light">ライト</string>
+    <string name="dark_dark">ダーク</string>
+    <string name="library">ライブラリ</string>
+    <string name="languages">言語</string>
 </resources>

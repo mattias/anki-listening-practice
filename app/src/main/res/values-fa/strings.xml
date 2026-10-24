@@ -128,4 +128,20 @@
     <string name="update_check_failed">بررسی به‌روزرسانی ممکن نشد: %1$s</string>
     <string name="update_download_failed">بارگیری به‌روزرسانی ناموفق بود: %1$s</string>
     <string name="update_damaged">فایل بارگیری‌شده خراب است (مجموع کنترلی مطابقت ندارد)</string>
+
+    <string name="stats_today">امروز</string>
+    <string name="stats_clear">واضح</string>
+    <string name="stats_streak">روز پیاپی</string>
+    <string name="playback">پخش</string>
+    <string name="auto_off">خودکار خاموش</string>
+    <string name="auto_n">خودکار %1$d×</string>
+    <string name="appearance">ظاهر</string>
+    <string name="theme">پوسته</string>
+    <string name="theme_credit">رنگ پوسته‌ها برگرفته از daisyUI.</string>
+    <string name="dark_mode">حالت تیره</string>
+    <string name="dark_system">مطابق سیستم</string>
+    <string name="dark_light">روشن</string>
+    <string name="dark_dark">تیره</string>
+    <string name="library">کتابخانه</string>
+    <string name="languages">زبان‌ها</string>
 </resources>

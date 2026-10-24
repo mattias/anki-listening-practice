@@ -128,4 +128,20 @@
     <string name="update_check_failed">Impossible de rechercher des mises à jour : %1$s</string>
     <string name="update_download_failed">Échec du téléchargement de la mise à jour : %1$s</string>
     <string name="update_damaged">le fichier téléchargé est endommagé (somme de contrôle incorrecte)</string>
+
+    <string name="stats_today">aujourd\'hui</string>
+    <string name="stats_clear">limpides</string>
+    <string name="stats_streak">jours d\'affilée</string>
+    <string name="playback">Lecture</string>
+    <string name="auto_off">Auto désactivé</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Apparence</string>
+    <string name="theme">Thème</string>
+    <string name="theme_credit">Couleurs des thèmes d\'après daisyUI.</string>
+    <string name="dark_mode">Mode sombre</string>
+    <string name="dark_system">Comme le système</string>
+    <string name="dark_light">Clair</string>
+    <string name="dark_dark">Sombre</string>
+    <string name="library">Bibliothèque</string>
+    <string name="languages">Langues</string>
 </resources>

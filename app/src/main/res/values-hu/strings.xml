@@ -128,4 +128,20 @@
     <string name="update_check_failed">Nem sikerült frissítéseket keresni: %1$s</string>
     <string name="update_download_failed">A frissítés letöltése sikertelen: %1$s</string>
     <string name="update_damaged">a letöltött fájl sérült (az ellenőrzőösszeg nem egyezik)</string>
+
+    <string name="stats_today">ma</string>
+    <string name="stats_clear">tiszta</string>
+    <string name="stats_streak">nap egymás után</string>
+    <string name="playback">Lejátszás</string>
+    <string name="auto_off">Auto ki</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Megjelenés</string>
+    <string name="theme">Téma</string>
+    <string name="theme_credit">A témák színei a daisyUI alapján.</string>
+    <string name="dark_mode">Sötét mód</string>
+    <string name="dark_system">Rendszer szerint</string>
+    <string name="dark_light">Világos</string>
+    <string name="dark_dark">Sötét</string>
+    <string name="library">Könyvtár</string>
+    <string name="languages">Nyelvek</string>
 </resources>

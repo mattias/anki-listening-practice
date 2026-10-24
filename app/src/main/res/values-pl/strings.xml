@@ -128,4 +128,20 @@
     <string name="update_check_failed">Nie udało się sprawdzić aktualizacji: %1$s</string>
     <string name="update_download_failed">Pobieranie aktualizacji nie powiodło się: %1$s</string>
     <string name="update_damaged">pobrany plik jest uszkodzony (suma kontrolna się nie zgadza)</string>
+
+    <string name="stats_today">dziś</string>
+    <string name="stats_clear">jasne</string>
+    <string name="stats_streak">dni z rzędu</string>
+    <string name="playback">Odtwarzanie</string>
+    <string name="auto_off">Auto wył.</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Wygląd</string>
+    <string name="theme">Motyw</string>
+    <string name="theme_credit">Kolory motywów na podstawie daisyUI.</string>
+    <string name="dark_mode">Tryb ciemny</string>
+    <string name="dark_system">Jak w systemie</string>
+    <string name="dark_light">Jasny</string>
+    <string name="dark_dark">Ciemny</string>
+    <string name="library">Biblioteka</string>
+    <string name="languages">Języki</string>
 </resources>

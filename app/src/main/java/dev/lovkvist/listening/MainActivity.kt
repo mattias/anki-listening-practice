@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -33,16 +35,21 @@ import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
 import dev.lovkvist.listening.playback.PlaybackService
 import dev.lovkvist.listening.playback.PracticeController
+import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.ui.PracticeScreen
 import dev.lovkvist.listening.ui.SettingsScreen
 import dev.lovkvist.listening.ui.SettingsViewModel
 import dev.lovkvist.listening.ui.UpdateDialog
 import dev.lovkvist.listening.ui.UpdateViewModel
+import dev.lovkvist.listening.ui.theme.DarkMode
+import dev.lovkvist.listening.ui.theme.Palette
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     @Inject lateinit var practice: PracticeController
+    @Inject lateinit var settingsRepo: SettingsRepository
 
     /** Keeps the playback service and its media session up while the app is visible. */
     private var controller: ListenableFuture<MediaController>? = null
@@ -50,14 +57,34 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Read once up front, so the first frame already has the chosen theme.
+        val initialSettings = runBlocking { settingsRepo.current() }
         setContent {
-            val dark = isSystemInDarkTheme()
+            val settings by settingsRepo.settings.collectAsStateWithLifecycle(initialSettings)
+            val palette = Palette.byId(settings.theme)
+            val systemDark = isSystemInDarkTheme()
+            val dark = palette?.dark ?: when (settings.darkMode) {
+                DarkMode.SYSTEM -> systemDark
+                DarkMode.LIGHT -> false
+                DarkMode.DARK -> true
+            }
             val context = LocalContext.current
-            val colors = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
-                    if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-                dark -> darkColorScheme()
-                else -> lightColorScheme()
+            val colors = remember(palette, dark) {
+                palette?.colorScheme() ?: when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+                        if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+                    dark -> darkColorScheme()
+                    else -> lightColorScheme()
+                }
+            }
+            // Status and navigation bar icons follow the theme, not the phone's dark mode.
+            LaunchedEffect(dark) {
+                val style = if (dark) {
+                    SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+                } else {
+                    SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+                }
+                enableEdgeToEdge(style, style)
             }
             MaterialTheme(colorScheme = colors) {
                 val updateVm: UpdateViewModel = hiltViewModel()

@@ -128,4 +128,20 @@
     <string name="update_check_failed">לא ניתן לבדוק עדכונים: %1$s</string>
     <string name="update_download_failed">הורדת העדכון נכשלה: %1$s</string>
     <string name="update_damaged">הקובץ שהורד פגום (סכום הביקורת אינו תואם)</string>
+
+    <string name="stats_today">היום</string>
+    <string name="stats_clear">ברורים</string>
+    <string name="stats_streak">ימים ברצף</string>
+    <string name="playback">השמעה</string>
+    <string name="auto_off">אוטומטי כבוי</string>
+    <string name="auto_n">אוטומטי %1$d×</string>
+    <string name="appearance">מראה</string>
+    <string name="theme">ערכת נושא</string>
+    <string name="theme_credit">צבעי ערכות הנושא בהשראת daisyUI.</string>
+    <string name="dark_mode">מצב כהה</string>
+    <string name="dark_system">לפי המערכת</string>
+    <string name="dark_light">בהיר</string>
+    <string name="dark_dark">כהה</string>
+    <string name="library">ספרייה</string>
+    <string name="languages">שפות</string>
 </resources>

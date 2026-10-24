@@ -128,4 +128,20 @@
     <string name="update_check_failed">Nepavyko patikrinti naujinių: %1$s</string>
     <string name="update_download_failed">Nepavyko atsisiųsti naujinio: %1$s</string>
     <string name="update_damaged">atsisiųstas failas sugadintas (kontrolinė suma nesutampa)</string>
+
+    <string name="stats_today">šiandien</string>
+    <string name="stats_clear">aišku</string>
+    <string name="stats_streak">dienų iš eilės</string>
+    <string name="playback">Grojimas</string>
+    <string name="auto_off">Auto išj.</string>
+    <string name="auto_n">Auto %1$d×</string>
+    <string name="appearance">Išvaizda</string>
+    <string name="theme">Tema</string>
+    <string name="theme_credit">Temų spalvos pagal daisyUI.</string>
+    <string name="dark_mode">Tamsusis režimas</string>
+    <string name="dark_system">Kaip sistemoje</string>
+    <string name="dark_light">Šviesi</string>
+    <string name="dark_dark">Tamsi</string>
+    <string name="library">Biblioteka</string>
+    <string name="languages">Kalbos</string>
 </resources>

@@ -22,6 +22,7 @@ import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.text.Language
+import dev.lovkvist.listening.ui.theme.DarkMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -172,6 +173,10 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun setTranslation(l: Language?) = viewModelScope.launch { settingsRepo.setTranslation(l) }
+
+    fun setTheme(id: String) = viewModelScope.launch { settingsRepo.setTheme(id) }
+
+    fun setDarkMode(mode: DarkMode) = viewModelScope.launch { settingsRepo.setDarkMode(mode) }
 
     fun removeMedia(id: String) = viewModelScope.launch {
         media.remove(id)

@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Notları ve sesleri bu uygulamadan silinir. AnkiDroid koleksiyonun etkilenmez.</string>
     <string name="deck_imported">%1$s içe aktarıldı.\nNotlar: %2$d\nCümle ses dosyaları: %3$d\nKullanılmayan medya kaldırıldı (görseller, kelime sesleri vb.): %4$s</string>
     <string name="no_deck">Ayarlar\'dan öğrendiğin dil (%1$s) için bir Anki destesi (.apkg) ya da koleksiyonu (.colpkg) içe aktar.</string>
-    <string name="no_notes">\"%1$s\" not türü için cümle sesi olan not bulunamadı. Şablonu ve dışa aktarmanın medyayı içerip içermediğini kontrol et.</string>
 
     <string name="videos_audio">Videolar ve ses</string>
     <string name="media_help">Bir video ya da ses dosyası seç, ardından öğrendiğin dildeki altyazısını seç (.srt, .vtt ya da .ass). Her altyazı satırı sırayla bir cümle olur. Alıştırma ekranının üstündeki menüden seç.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">known_words.txt içe aktar</string>
     <string name="known_imported">İçe aktarılan bilinen kelimeler: %1$d</string>
 
-    <string name="note_type_preset">Not türü şablonu</string>
     <string name="japanese_presets_note">Kiku, Lapis ve Senren Japonca not türleridir. Diğer diller Anki Miner Note kullanır.</string>
-    <string name="field_note_type">Not türü adı şunu içerir</string>
     <string name="field_sentence">Cümle alanı</string>
     <string name="field_furigana">Furigana alanı</string>
     <string name="field_reading">%1$s alanı (isteğe bağlı)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Yukarı taşı</string>
     <string name="move_down">Aşağı taşı</string>
     <string name="onboarding_wiktionary_body">Bir sözlükle bir cümledeki herhangi bir kelimeye dokunup arayabilir, bilinen ya da yok sayılan olarak işaretleyebilirsin. Vikisözlük\'te her dil için bir sözlük var: tanımların dilini seç. Kendini günceller.</string>
+    <string name="field_preset">Alan şablonu</string>
+    <string name="presets_note">Şablon yalnızca aşağıdaki alan adlarını doldurur. Cümle ve ses alanları olan her not türünün kartları kullanılır, adı ne olursa olsun.</string>
+    <string name="no_notes_fields">\"%1$s\" alanı olan ve \"%2$s\" alanında cümle sesi bulunan kart yok. Alan şablonu altındaki alan adlarını ve dışa aktarmanın medya içerdiğini kontrol et.</string>
 </resources>

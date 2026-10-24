@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Njegovi zapiski in zvok se izbrišejo iz te aplikacije. Tvoja zbirka AnkiDroid ostane nespremenjena.</string>
     <string name="deck_imported">Uvoženo: %1$s.\nZapiski: %2$d\nZvočne datoteke stavkov: %3$d\nOdstranjene neuporabljene predstavnosti (slike, zvok besed ipd.): %4$s</string>
     <string name="no_deck">V Nastavitvah uvozi kupček Anki (.apkg) ali zbirko (.colpkg) za jezik, ki se ga učiš (%1$s).</string>
-    <string name="no_notes">Za vrsto zapiska \"%1$s\" ni bilo najdenih zapiskov z zvokom stavka. Preveri predlogo in ali je izvoz vključeval predstavnosti.</string>
 
     <string name="videos_audio">Videi in zvok</string>
     <string name="media_help">Izberi video ali zvočno datoteko in nato njene podnapise v jeziku, ki se ga učiš (.srt, .vtt ali .ass). Vsaka vrstica podnapisov postane stavek, po vrsti. Izberi jo v meniju na vrhu zaslona za vajo.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Uvozi known_words.txt</string>
     <string name="known_imported">Uvožene znane besede: %1$d</string>
 
-    <string name="note_type_preset">Predloga vrste zapiska</string>
     <string name="japanese_presets_note">Kiku, Lapis in Senren so japonske vrste zapiskov. Drugi jeziki uporabljajo Anki Miner Note.</string>
-    <string name="field_note_type">Ime vrste zapiska vsebuje</string>
     <string name="field_sentence">Polje stavka</string>
     <string name="field_furigana">Polje furigane</string>
     <string name="field_reading">Polje %1$s (neobvezno)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Premakni gor</string>
     <string name="move_down">Premakni dol</string>
     <string name="onboarding_wiktionary_body">S slovarjem lahko tapneš katero koli besedo v stavku, jo poiščeš in označiš kot znano ali prezrto. Wikislovar ima slovar za vsak jezik: izberi jezik definicij. Posodablja se sam.</string>
+    <string name="field_preset">Predloga polj</string>
+    <string name="presets_note">Predloga le izpolni imena polj spodaj. Uporabijo se kartice katere koli vrste zapiska s polji za stavek in zvok, ne glede na njeno ime.</string>
+    <string name="no_notes_fields">Ni kartic s poljem »%1$s« in zvokom stavka v polju »%2$s«. Preveri imena polj pod Predloga polj in ali je izvoz vseboval medije.</string>
 </resources>

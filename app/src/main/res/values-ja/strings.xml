@@ -45,7 +45,6 @@
     <string name="remove_deck_body">ノートと音声はこのアプリから削除されます。AnkiDroid のコレクションには影響しません。</string>
     <string name="deck_imported">%1$s をインポートしました。\nノート: %2$d\n文の音声ファイル: %3$d\n未使用のメディアを削除 (画像、単語の音声など): %4$s</string>
     <string name="no_deck">設定で、学習している言語 (%1$s) の Anki デッキ (.apkg) またはコレクション (.colpkg) をインポートしてください。</string>
-    <string name="no_notes">ノートタイプ「%1$s」に文の音声があるノートが見つかりません。プリセットと、エクスポートにメディアが含まれているかを確認してください。</string>
 
     <string name="videos_audio">動画と音声</string>
     <string name="media_help">動画または音声ファイルを選び、次に学習している言語の字幕 (.srt、.vtt、.ass) を選んでください。字幕の各行が順番に 1 つの文になります。練習画面の上部のメニューから選択してください。</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">known_words.txt をインポート</string>
     <string name="known_imported">インポートした既知の単語: %1$d</string>
 
-    <string name="note_type_preset">ノートタイプのプリセット</string>
     <string name="japanese_presets_note">Kiku、Lapis、Senren は日本語用のノートタイプです。ほかの言語では Anki Miner Note を使います。</string>
-    <string name="field_note_type">ノートタイプ名に含まれる文字</string>
     <string name="field_sentence">文のフィールド</string>
     <string name="field_furigana">ふりがなのフィールド</string>
     <string name="field_reading">%1$s のフィールド (任意)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">上へ移動</string>
     <string name="move_down">下へ移動</string>
     <string name="onboarding_wiktionary_body">辞書があれば、文の中の単語をタップして調べ、既知や無視に設定できます。ウィクショナリーにはどの言語の辞書もあります。定義の言語を選んでください。自動で更新されます。</string>
+    <string name="field_preset">フィールドのプリセット</string>
+    <string name="presets_note">プリセットは下のフィールド名を入れるだけです。文と音声のフィールドがあれば、ノートタイプの名前に関係なくどのカードも使われます。</string>
+    <string name="no_notes_fields">「%1$s」フィールドがあり、「%2$s」フィールドに文の音声があるカードが見つかりません。「フィールドのプリセット」でフィールド名を確認し、エクスポートにメディアが含まれていたか確認してください。</string>
 </resources>

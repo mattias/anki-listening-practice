@@ -84,10 +84,12 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   screen off.
 - **Pauses for calls** — audio pauses while the phone rings or you're in a call (also app calls)
   and resumes afterwards; it also pauses when headphones are unplugged.
-- **Note type presets** for [Anki Miner Note](https://github.com/0xzerolight/anki_miner_note)
-  (every language) and the Japanese note types [Kiku](https://github.com/youyoumu/kiku),
-  [Lapis](https://github.com/donkuri/lapis) and [Senren](https://github.com/BrenoAqua/Senren),
-  with editable field mappings for anything else.
+- **Any note type** — cards are read by their field names, not their note type: every card with
+  the sentence and sentence audio fields is used. Presets fill in the field names of
+  [Anki Miner Note](https://github.com/0xzerolight/anki_miner_note) (every language) and the
+  Japanese note types [Kiku](https://github.com/youyoumu/kiku),
+  [Lapis](https://github.com/donkuri/lapis) and [Senren](https://github.com/BrenoAqua/Senren);
+  edit them for your own note type.
 - **Themes** — Material You (your wallpaper's colors, light or dark) or one of 19 palettes after
   [daisyUI](https://daisyui.com)'s themes, like the ones Kiku offers: cupcake, nord, dracula,
   synthwave, coffee and more. Pick one under **Settings → Appearance**.
@@ -122,7 +124,8 @@ words and your Anki deck. You can open it again under **Settings → Setup guide
    - choose the **language** you study,
    - tap **Import .apkg / .colpkg** and pick your export (its cards count as that language),
    - tap **Import known_words.txt** and pick your word list,
-   - choose the preset matching your note type.
+   - under **Field preset**, choose the preset for your note type, or edit the field names to
+     match your own.
 4. Go back and start listening.
 
 Re-import your deck after adding cards. Removing an import in Settings deletes only the app's
@@ -146,12 +149,16 @@ study only.
 
 ### Field presets
 
-| Preset          | Languages | Note type contains | Sentence   | Furigana           | Translation           | Audio           | Word         |
-|-----------------|-----------|--------------------|------------|--------------------|-----------------------|-----------------|--------------|
-| Kiku            | Japanese  | `Kiku`             | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` |
-| Lapis           | Japanese  | `Lapis`            | `Sentence` | `SentenceFurigana` | —                     | `SentenceAudio` | `Expression` |
-| Senren          | Japanese  | `Senren`           | `sentence` | `sentenceFurigana` | `sentenceTranslation` | `sentenceAudio` | `word`       |
-| Anki Miner Note | All       | `Anki Miner Note`  | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` |
+| Preset          | Languages | Sentence   | Furigana           | Translation           | Audio           | Word         |
+|-----------------|-----------|------------|--------------------|-----------------------|-----------------|--------------|
+| Kiku            | Japanese  | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` |
+| Lapis           | Japanese  | `Sentence` | `SentenceFurigana` | —                     | `SentenceAudio` | `Expression` |
+| Senren          | Japanese  | `sentence` | `sentenceFurigana` | `sentenceTranslation` | `sentenceAudio` | `word`       |
+| Anki Miner Note | All       | `Sentence` | `SentenceFurigana` | `SentenceTranslation` | `SentenceAudio` | `Expression` |
+
+A preset only fills in field names; the note type's name doesn't matter. Every card whose note
+type has the sentence field and the sentence audio field (with a `[sound:…]` file) is used, so a
+note type of your own works once its field names are filled in. The other fields are optional.
 
 Kiku, Lapis and Senren are offered only while Japanese is selected; in every other language the
 preset is Anki Miner Note. The furigana field exists only for Japanese; for Chinese and Cantonese

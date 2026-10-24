@@ -45,7 +45,6 @@
     <string name="remove_deck_body">노트와 오디오가 이 앱에서 삭제됩니다. AnkiDroid 컬렉션에는 영향이 없습니다.</string>
     <string name="deck_imported">%1$s을(를) 가져왔습니다.\n노트: %2$d\n문장 오디오 파일: %3$d\n사용하지 않는 미디어 삭제(이미지, 단어 오디오 등): %4$s</string>
     <string name="no_deck">설정에서 공부하는 언어(%1$s)의 Anki 덱(.apkg)이나 컬렉션(.colpkg)을 가져오세요.</string>
-    <string name="no_notes">노트 유형 \"%1$s\"에서 문장 오디오가 있는 노트를 찾지 못했습니다. 프리셋과 내보내기에 미디어가 포함되었는지 확인하세요.</string>
 
     <string name="videos_audio">동영상 및 오디오</string>
     <string name="media_help">동영상이나 오디오 파일을 고른 다음, 공부하는 언어로 된 자막(.srt, .vtt, .ass)을 고르세요. 자막 한 줄이 순서대로 문장 하나가 됩니다. 연습 화면 위쪽 메뉴에서 선택하세요.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">known_words.txt 가져오기</string>
     <string name="known_imported">가져온 아는 단어: %1$d</string>
 
-    <string name="note_type_preset">노트 유형 프리셋</string>
     <string name="japanese_presets_note">Kiku, Lapis, Senren은 일본어 노트 유형입니다. 다른 언어는 Anki Miner Note를 사용합니다.</string>
-    <string name="field_note_type">노트 유형 이름에 포함된 문자</string>
     <string name="field_sentence">문장 필드</string>
     <string name="field_furigana">후리가나 필드</string>
     <string name="field_reading">%1$s 필드(선택)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">위로 이동</string>
     <string name="move_down">아래로 이동</string>
     <string name="onboarding_wiktionary_body">사전이 있으면 문장의 단어를 탭해서 찾아보고 아는 단어나 무시로 표시할 수 있습니다. 위키낱말사전에는 모든 언어의 사전이 있습니다. 정의 언어를 고르세요. 자동으로 업데이트됩니다.</string>
+    <string name="field_preset">필드 프리셋</string>
+    <string name="presets_note">프리셋은 아래 필드 이름만 채웁니다. 문장 필드와 오디오 필드가 있으면 노트 유형 이름과 관계없이 모든 카드가 사용됩니다.</string>
+    <string name="no_notes_fields">\"%1$s\" 필드가 있고 \"%2$s\" 필드에 문장 오디오가 있는 카드가 없습니다. 필드 프리셋에서 필드 이름을 확인하고, 내보내기에 미디어가 포함되었는지 확인하세요.</string>
 </resources>

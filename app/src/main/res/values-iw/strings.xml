@@ -45,7 +45,6 @@
     <string name="remove_deck_body">הפתקים והשמע שלה יימחקו מהאפליקציה. האוסף שלכם ב-AnkiDroid לא יושפע.</string>
     <string name="deck_imported">%1$s יובא.\nפתקים: %2$d\nקובצי שמע של משפטים: %3$d\nמדיה שלא בשימוש הוסרה (תמונות, שמע של מילים וכו\'): %4$s</string>
     <string name="no_deck">ייבאו בהגדרות חפיסת Anki ‏(.apkg) או אוסף (.colpkg) לשפה שאתם לומדים (%1$s).</string>
-    <string name="no_notes">לא נמצאו פתקים עם שמע משפט לסוג הפתק \"%1$s\". בדקו את התבנית ושהייצוא כלל מדיה.</string>
 
     <string name="videos_audio">סרטונים ושמע</string>
     <string name="media_help">בחרו קובץ וידאו או שמע, ואז את הכתוביות שלו בשפה שאתם לומדים (.srt, .vtt או .ass). כל שורת כתוביות הופכת למשפט, לפי הסדר. בחרו אותו בתפריט בראש מסך התרגול.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">ייבוא known_words.txt</string>
     <string name="known_imported">מילים מוכרות שיובאו: %1$d</string>
 
-    <string name="note_type_preset">תבנית סוג פתק</string>
     <string name="japanese_presets_note">Kiku, ‏Lapis ו-Senren הם סוגי פתקים ליפנית. שפות אחרות משתמשות ב-Anki Miner Note.</string>
-    <string name="field_note_type">שם סוג הפתק מכיל</string>
     <string name="field_sentence">שדה המשפט</string>
     <string name="field_furigana">שדה הפוריגנה</string>
     <string name="field_reading">שדה %1$s (לא חובה)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">הזזה למעלה</string>
     <string name="move_down">הזזה למטה</string>
     <string name="onboarding_wiktionary_body">עם מילון אפשר להקיש על כל מילה במשפט כדי לחפש אותה ולסמן אותה כמוכרת או להתעלם ממנה. בוויקימילון יש מילון לכל שפה: בחרו את שפת ההגדרות. הוא מתעדכן בעצמו.</string>
+    <string name="field_preset">תבנית שדות</string>
+    <string name="presets_note">תבנית רק ממלאת את שמות השדות למטה. כרטיסים מכל סוג פתק שיש בו שדות משפט ושמע ישמשו, לא משנה איך הוא נקרא.</string>
+    <string name="no_notes_fields">אין כרטיסים עם שדה \"%1$s\" ושמע של משפט בשדה \"%2$s\". בדקו את שמות השדות בתבנית שדות, ושהייצוא כלל מדיה.</string>
 </resources>

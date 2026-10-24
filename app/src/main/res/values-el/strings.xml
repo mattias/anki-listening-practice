@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Οι σημειώσεις και ο ήχος της διαγράφονται από την εφαρμογή. Η συλλογή σου στο AnkiDroid δεν επηρεάζεται.</string>
     <string name="deck_imported">Έγινε εισαγωγή: %1$s.\nΣημειώσεις: %2$d\nΑρχεία ήχου προτάσεων: %3$d\nΑφαιρέθηκαν αχρησιμοποίητα πολυμέσα (εικόνες, ήχος λέξεων κ.λπ.): %4$s</string>
     <string name="no_deck">Εισήγαγε στις Ρυθμίσεις μια τράπουλα Anki (.apkg) ή συλλογή (.colpkg) για τη γλώσσα που μαθαίνεις (%1$s).</string>
-    <string name="no_notes">Δεν βρέθηκαν σημειώσεις με ήχο πρότασης για τον τύπο σημείωσης «%1$s». Έλεγξε το πρότυπο και ότι η εξαγωγή περιλάμβανε πολυμέσα.</string>
 
     <string name="videos_audio">Βίντεο και ήχος</string>
     <string name="media_help">Διάλεξε ένα αρχείο βίντεο ή ήχου και μετά τους υπότιτλούς του στη γλώσσα που μαθαίνεις (.srt, .vtt ή .ass). Κάθε γραμμή υποτίτλων γίνεται μια πρόταση, με τη σειρά. Διάλεξέ το από το μενού στο πάνω μέρος της οθόνης εξάσκησης.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Εισαγωγή known_words.txt</string>
     <string name="known_imported">Εισηγμένες γνωστές λέξεις: %1$d</string>
 
-    <string name="note_type_preset">Πρότυπο τύπου σημείωσης</string>
     <string name="japanese_presets_note">Τα Kiku, Lapis και Senren είναι ιαπωνικοί τύποι σημειώσεων. Οι άλλες γλώσσες χρησιμοποιούν το Anki Miner Note.</string>
-    <string name="field_note_type">Το όνομα του τύπου σημείωσης περιέχει</string>
     <string name="field_sentence">Πεδίο πρότασης</string>
     <string name="field_furigana">Πεδίο furigana</string>
     <string name="field_reading">Πεδίο %1$s (προαιρετικό)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Μετακίνηση πάνω</string>
     <string name="move_down">Μετακίνηση κάτω</string>
     <string name="onboarding_wiktionary_body">Με ένα λεξικό μπορείς να πατήσεις οποιαδήποτε λέξη μιας πρότασης για να την αναζητήσεις και να τη σημειώσεις ως γνωστή ή να την αγνοήσεις. Το Βικιλεξικό έχει ένα για κάθε γλώσσα: διάλεξε τη γλώσσα των ορισμών. Ενημερώνεται μόνο του.</string>
+    <string name="field_preset">Πρότυπο πεδίων</string>
+    <string name="presets_note">Ένα πρότυπο απλώς συμπληρώνει τα ονόματα πεδίων παρακάτω. Χρησιμοποιούνται κάρτες κάθε τύπου σημείωσης που έχει τα πεδία πρότασης και ήχου, όπως κι αν λέγεται.</string>
+    <string name="no_notes_fields">Δεν υπάρχουν κάρτες με πεδίο «%1$s» και ήχο πρότασης σε πεδίο «%2$s». Έλεγξε τα ονόματα πεδίων στο Πρότυπο πεδίων και ότι η εξαγωγή περιείχε πολυμέσα.</string>
 </resources>

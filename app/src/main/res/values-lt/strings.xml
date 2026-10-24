@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Jos užrašai ir garsas bus ištrinti iš šios programos. Jūsų AnkiDroid kolekcija nepasikeis.</string>
     <string name="deck_imported">Importuota: %1$s.\nUžrašai: %2$d\nSakinių garso failai: %3$d\nPašalinta nenaudojama medija (paveikslėliai, žodžių garsas ir kt.): %4$s</string>
     <string name="no_deck">Nustatymuose importuokite Anki kaladę (.apkg) arba kolekciją (.colpkg) kalbai, kurios mokotės (%1$s).</string>
-    <string name="no_notes">Užrašo tipui „%1$s“ nerasta užrašų su sakinio garsu. Patikrinkite šabloną ir ar eksportas apėmė mediją.</string>
 
     <string name="videos_audio">Vaizdo įrašai ir garsas</string>
     <string name="media_help">Pasirinkite vaizdo ar garso failą, o tada jo subtitrus kalba, kurios mokotės (.srt, .vtt arba .ass). Kiekviena subtitrų eilutė tampa sakiniu, iš eilės. Pasirinkite jį meniu pratybų ekrano viršuje.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importuoti known_words.txt</string>
     <string name="known_imported">Importuoti žinomi žodžiai: %1$d</string>
 
-    <string name="note_type_preset">Užrašo tipo šablonas</string>
     <string name="japanese_presets_note">Kiku, Lapis ir Senren yra japonų kalbos užrašų tipai. Kitos kalbos naudoja Anki Miner Note.</string>
-    <string name="field_note_type">Užrašo tipo pavadinime yra</string>
     <string name="field_sentence">Sakinio laukas</string>
     <string name="field_furigana">Furiganos laukas</string>
     <string name="field_reading">%1$s laukas (neprivaloma)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Perkelti aukštyn</string>
     <string name="move_down">Perkelti žemyn</string>
     <string name="onboarding_wiktionary_body">Su žodynu galite bakstelėti bet kurį sakinio žodį, jį surasti ir pažymėti kaip žinomą ar ignoruojamą. Vikižodynas turi žodyną kiekvienai kalbai: pasirinkite apibrėžimų kalbą. Jis atsinaujina pats.</string>
+    <string name="field_preset">Laukų šablonas</string>
+    <string name="presets_note">Šablonas tik užpildo toliau esančius laukų pavadinimus. Naudojamos bet kurio pastabos tipo kortelės, turinčios sakinio ir garso laukus, kad ir kaip tipas vadintųsi.</string>
+    <string name="no_notes_fields">Nėra kortelių su lauku „%1$s“ ir sakinio garsu lauke „%2$s“. Patikrinkite laukų pavadinimus skiltyje Laukų šablonas ir ar eksporte buvo medijos failai.</string>
 </resources>

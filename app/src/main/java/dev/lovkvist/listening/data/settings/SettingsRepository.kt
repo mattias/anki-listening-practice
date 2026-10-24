@@ -73,7 +73,6 @@ class SettingsRepository @Inject constructor(
         // Per-preset overrides, so editing Lapis doesn't clobber Kiku. Presets for every
         // language are also per language, since their reading field differs.
         private fun prefix(p: Preset, l: Language) = if (p.everyLanguage) "${p.name}_${l.code}" else p.name
-        fun noteType(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_note_type")
         fun sentence(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_sentence")
         fun furigana(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_furigana")
         fun translation(p: Preset, l: Language) = stringPreferencesKey("${prefix(p, l)}_translation")
@@ -133,7 +132,6 @@ class SettingsRepository @Inject constructor(
     private fun mappingFor(prefs: Preferences, p: Preset, l: Language): FieldMapping {
         val d = p.defaults(l)
         return FieldMapping(
-            noteTypeMatch = prefs[Keys.noteType(p, l)] ?: d.noteTypeMatch,
             sentence = prefs[Keys.sentence(p, l)] ?: d.sentence,
             // Only languages with readings have a reading field.
             furigana = if (l.reading == null) "" else prefs[Keys.furigana(p, l)] ?: d.furigana,
@@ -149,7 +147,6 @@ class SettingsRepository @Inject constructor(
     suspend fun setPreset(l: Language, p: Preset) = context.dataStore.edit { it[Keys.preset(l)] = p.name }
 
     suspend fun setMapping(p: Preset, l: Language, m: FieldMapping) = context.dataStore.edit {
-        it[Keys.noteType(p, l)] = m.noteTypeMatch
         it[Keys.sentence(p, l)] = m.sentence
         it[Keys.furigana(p, l)] = m.furigana
         it[Keys.translation(p, l)] = m.translation
@@ -158,7 +155,6 @@ class SettingsRepository @Inject constructor(
     }
 
     suspend fun resetMapping(p: Preset, l: Language) = context.dataStore.edit {
-        it.remove(Keys.noteType(p, l))
         it.remove(Keys.sentence(p, l))
         it.remove(Keys.furigana(p, l))
         it.remove(Keys.translation(p, l))

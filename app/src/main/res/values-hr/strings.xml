@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Njegove bilješke i zvuk brišu se iz ove aplikacije. Tvoja AnkiDroid zbirka ostaje netaknuta.</string>
     <string name="deck_imported">Uvezeno: %1$s.\nBilješke: %2$d\nZvučne datoteke rečenica: %3$d\nUklonjeni neiskorišteni mediji (slike, zvuk riječi itd.): %4$s</string>
     <string name="no_deck">U Postavkama uvezi Anki špil (.apkg) ili zbirku (.colpkg) za jezik koji učiš (%1$s).</string>
-    <string name="no_notes">Nisu pronađene bilješke sa zvukom rečenice za vrstu bilješke \"%1$s\". Provjeri predložak i je li izvoz uključivao medije.</string>
 
     <string name="videos_audio">Videozapisi i zvuk</string>
     <string name="media_help">Odaberi video ili zvučnu datoteku, a zatim njezine titlove na jeziku koji učiš (.srt, .vtt ili .ass). Svaki redak titlova postaje jedna rečenica, redom. Odaberi je u izborniku na vrhu zaslona za vježbu.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Uvezi known_words.txt</string>
     <string name="known_imported">Uvezene poznate riječi: %1$d</string>
 
-    <string name="note_type_preset">Predložak vrste bilješke</string>
     <string name="japanese_presets_note">Kiku, Lapis i Senren su japanske vrste bilješki. Ostali jezici koriste Anki Miner Note.</string>
-    <string name="field_note_type">Naziv vrste bilješke sadrži</string>
     <string name="field_sentence">Polje rečenice</string>
     <string name="field_furigana">Polje furigane</string>
     <string name="field_reading">Polje %1$s (neobavezno)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Pomakni gore</string>
     <string name="move_down">Pomakni dolje</string>
     <string name="onboarding_wiktionary_body">S rječnikom možeš dodirnuti bilo koju riječ u rečenici da je potražiš i označiš kao poznatu ili zanemarenu. Wiktionary ima rječnik za svaki jezik: odaberi jezik definicija. Sam se ažurira.</string>
+    <string name="field_preset">Predložak polja</string>
+    <string name="presets_note">Predložak samo ispunjava nazive polja u nastavku. Koriste se kartice bilo koje vrste bilješke s poljima rečenice i zvuka, kako god se zvala.</string>
+    <string name="no_notes_fields">Nema kartica s poljem \"%1$s\" i zvukom rečenice u polju \"%2$s\". Provjeri nazive polja pod Predložak polja i je li izvoz sadržavao medije.</string>
 </resources>

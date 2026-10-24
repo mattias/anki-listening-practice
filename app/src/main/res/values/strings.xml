@@ -78,7 +78,6 @@
     <string name="remove_deck_body">Its notes and audio are deleted from this app. Your AnkiDroid collection isn\'t affected.</string>
     <string name="deck_imported">Imported %1$s.\nNotes: %2$d\nSentence audio files: %3$d\nUnused media removed (images, word audio, etc.): %4$s</string>
     <string name="no_deck">Import an Anki deck (.apkg) or collection (.colpkg) for the language you study (%1$s) in Settings.</string>
-    <string name="no_notes">No notes with sentence audio found for note type \"%1$s\". Check the preset, and that the export included media.</string>
 
     <string name="videos_audio">Videos &amp; audio</string>
     <string name="media_help">Pick a video or audio file, then its subtitles in the language you study (.srt, .vtt or .ass). Each subtitle line becomes one sentence, in order. Choose it from the menu at the top of the practice screen.</string>
@@ -119,9 +118,7 @@
     <string name="unknown_words">Unknown words per sentence</string>
     <string name="unknown_words_help">n+0 plays only sentences where you know every word. n+1 to n+5 also let in sentences with up to that many words you don\'t know yet: more sentences, and new words to pick up by ear.</string>
 
-    <string name="note_type_preset">Note type preset</string>
     <string name="japanese_presets_note">Kiku, Lapis and Senren are Japanese note types. Other languages use Anki Miner Note.</string>
-    <string name="field_note_type">Note type name contains</string>
     <string name="field_sentence">Sentence field</string>
     <string name="field_furigana">Furigana field</string>
     <string name="field_reading">%1$s field (optional)</string>
@@ -220,4 +217,7 @@
     <string name="move_up">Move up</string>
     <string name="move_down">Move down</string>
     <string name="onboarding_wiktionary_body">With a dictionary you can tap any word in a sentence to look it up, and mark it known or ignored. Wiktionary has one for every language: choose the language of the definitions. It updates itself.</string>
+    <string name="field_preset">Field preset</string>
+    <string name="presets_note">A preset only fills in the field names below. Cards of any note type that has the sentence and audio fields are used, whatever the note type is called.</string>
+    <string name="no_notes_fields">No cards with a \"%1$s\" field and sentence audio in a \"%2$s\" field. Check the field names under Field preset, and that the export included media.</string>
 </resources>

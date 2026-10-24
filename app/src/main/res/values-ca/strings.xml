@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Les notes i l\'àudio s\'esborren d\'aquesta aplicació. La teva col·lecció d\'AnkiDroid no es modifica.</string>
     <string name="deck_imported">S\'ha importat %1$s.\nNotes: %2$d\nFitxers d\'àudio de frases: %3$d\nMultimèdia no utilitzat eliminat (imatges, àudio de paraules, etc.): %4$s</string>
     <string name="no_deck">Importa a Configuració una pila d\'Anki (.apkg) o una col·lecció (.colpkg) per a l\'idioma que estudies (%1$s).</string>
-    <string name="no_notes">No s\'ha trobat cap nota amb àudio de frase per al tipus de nota \"%1$s\". Revisa la plantilla i que l\'exportació inclogués els fitxers multimèdia.</string>
 
     <string name="videos_audio">Vídeos i àudio</string>
     <string name="media_help">Tria un fitxer de vídeo o d\'àudio i després els seus subtítols en l\'idioma que estudies (.srt, .vtt o .ass). Cada línia de subtítols es converteix en una frase, en ordre. Tria\'l al menú de la part superior de la pantalla de pràctica.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importa known_words.txt</string>
     <string name="known_imported">Paraules conegudes importades: %1$d</string>
 
-    <string name="note_type_preset">Plantilla de tipus de nota</string>
     <string name="japanese_presets_note">Kiku, Lapis i Senren són tipus de nota japonesos. Els altres idiomes fan servir Anki Miner Note.</string>
-    <string name="field_note_type">El nom del tipus de nota conté</string>
     <string name="field_sentence">Camp de la frase</string>
     <string name="field_furigana">Camp de furigana</string>
     <string name="field_reading">Camp de %1$s (opcional)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Puja</string>
     <string name="move_down">Baixa</string>
     <string name="onboarding_wiktionary_body">Amb un diccionari pots tocar qualsevol paraula d\'una frase per cercar-la i marcar-la com a coneguda o ignorada. El Viccionari en té un per a cada llengua: tria la llengua de les definicions. S\'actualitza sol.</string>
+    <string name="field_preset">Plantilla de camps</string>
+    <string name="presets_note">Una plantilla només omple els noms de camp de sota. S\'utilitzen les targetes de qualsevol tipus de nota que tingui els camps de frase i d\'àudio, es digui com es digui.</string>
+    <string name="no_notes_fields">No hi ha cap targeta amb un camp «%1$s» i l\'àudio de la frase en un camp «%2$s». Comprova els noms de camp a Plantilla de camps i que l\'exportació inclogués els fitxers multimèdia.</string>
 </resources>

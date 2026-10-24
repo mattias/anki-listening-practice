@@ -100,7 +100,7 @@ private enum class Page(val title: Int) {
     KNOWN(R.string.known_words),
     MY_WORDS(R.string.my_words),
     DICTIONARIES(R.string.dictionaries),
-    PRESET(R.string.note_type_preset),
+    PRESET(R.string.field_preset),
     PROGRESS(R.string.progress),
     UPDATES(R.string.app_updates),
 }
@@ -233,7 +233,7 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                             page = Page.DICTIONARIES
                         }
                         RowDivider()
-                        NavRow(R.drawable.ic_tune, stringResource(R.string.note_type_preset), s.preset.label) { page = Page.PRESET }
+                        NavRow(R.drawable.ic_tune, stringResource(R.string.field_preset), s.preset.label) { page = Page.PRESET }
                     }
 
                     Group(null) {
@@ -302,6 +302,11 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                             FilterChip(selected = p == s.preset, onClick = { vm.selectPreset(s.language, p) }, label = { Text(p.label) })
                         }
                     }
+                    Text(
+                        stringResource(R.string.presets_note),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                     if (s.language != Language.JAPANESE) {
                         Text(
                             stringResource(R.string.japanese_presets_note),
@@ -735,14 +740,12 @@ private fun MappingEditor(
     onSave: (FieldMapping) -> Unit,
     onReset: () -> Unit,
 ) {
-    var noteType by remember(preset, language, mapping) { mutableStateOf(mapping.noteTypeMatch) }
     var sentence by remember(preset, language, mapping) { mutableStateOf(mapping.sentence) }
     var furigana by remember(preset, language, mapping) { mutableStateOf(mapping.furigana) }
     var translation by remember(preset, language, mapping) { mutableStateOf(mapping.translation) }
     var audio by remember(preset, language, mapping) { mutableStateOf(mapping.audio) }
     var word by remember(preset, language, mapping) { mutableStateOf(mapping.word) }
 
-    Field(stringResource(R.string.field_note_type), noteType) { noteType = it }
     Field(stringResource(R.string.field_sentence), sentence) { sentence = it }
     // Only languages with readings above the text have a reading field.
     when (val reading = language.reading) {
@@ -760,7 +763,7 @@ private fun MappingEditor(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 
-    val edited = FieldMapping(noteType, sentence, furigana, translation, audio, word)
+    val edited = FieldMapping(sentence, furigana, translation, audio, word)
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(onClick = { onSave(edited) }, enabled = edited != mapping) { Text(stringResource(R.string.save_mapping)) }
         OutlinedButton(onClick = onReset, enabled = mapping != preset.defaults(language)) { Text(stringResource(R.string.reset_defaults)) }

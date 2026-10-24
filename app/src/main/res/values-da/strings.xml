@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Noterne og lyden slettes fra denne app. Din AnkiDroid-samling påvirkes ikke.</string>
     <string name="deck_imported">%1$s er importeret.\nNoter: %2$d\nLydfiler med sætninger: %3$d\nUbrugte medier fjernet (billeder, ordlyd osv.): %4$s</string>
     <string name="no_deck">Importér en Anki-bunke (.apkg) eller samling (.colpkg) til det sprog, du lærer (%1$s), i Indstillinger.</string>
-    <string name="no_notes">Fandt ingen noter med sætningslyd for notetypen \"%1$s\". Tjek skabelonen, og at eksporten indeholdt medier.</string>
 
     <string name="videos_audio">Videoer og lyd</string>
     <string name="media_help">Vælg en video- eller lydfil og derefter dens undertekster på det sprog, du lærer (.srt, .vtt eller .ass). Hver undertekstlinje bliver en sætning, i rækkefølge. Vælg den i menuen øverst på øveskærmen.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importér known_words.txt</string>
     <string name="known_imported">Importerede kendte ord: %1$d</string>
 
-    <string name="note_type_preset">Notetype-skabelon</string>
     <string name="japanese_presets_note">Kiku, Lapis og Senren er japanske notetyper. Andre sprog bruger Anki Miner Note.</string>
-    <string name="field_note_type">Notetypens navn indeholder</string>
     <string name="field_sentence">Sætningsfelt</string>
     <string name="field_furigana">Furiganafelt</string>
     <string name="field_reading">%1$s-felt (valgfrit)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Flyt op</string>
     <string name="move_down">Flyt ned</string>
     <string name="onboarding_wiktionary_body">Med en ordbog kan du trykke på et hvilket som helst ord i en sætning for at slå det op og markere det som kendt eller ignoreret. Wiktionary har en til hvert sprog: vælg sproget for definitionerne. Den opdaterer sig selv.</string>
+    <string name="field_preset">Feltskabelon</string>
+    <string name="presets_note">En skabelon udfylder kun feltnavnene nedenfor. Kort af enhver notetype med sætnings- og lydfelterne bruges, uanset hvad notetypen hedder.</string>
+    <string name="no_notes_fields">Ingen kort med et felt \"%1$s\" og sætningslyd i et felt \"%2$s\". Tjek feltnavnene under Feltskabelon, og at eksporten indeholdt medier.</string>
 </resources>

@@ -45,7 +45,6 @@
     <string name="remove_deck_body">تُحذف ملاحظاتها وأصواتها من هذا التطبيق. لا تتأثر مجموعتك في AnkiDroid.</string>
     <string name="deck_imported">تم استيراد %1$s.\nالملاحظات: %2$d\nملفات صوت الجمل: %3$d\nأُزيلت الوسائط غير المستخدمة (الصور، أصوات الكلمات، إلخ): %4$s</string>
     <string name="no_deck">استورد من الإعدادات رزمة Anki ‏(.apkg) أو مجموعة (.colpkg) للغة التي تتعلمها (%1$s).</string>
-    <string name="no_notes">لم يُعثر على ملاحظات فيها صوت الجملة لنوع الملاحظة \"%1$s\". تحقّق من القالب ومن أن التصدير تضمّن الوسائط.</string>
 
     <string name="videos_audio">الفيديو والصوت</string>
     <string name="media_help">اختر ملف فيديو أو صوت، ثم ترجمته باللغة التي تتعلمها (.srt أو .vtt أو .ass). يصبح كل سطر من الترجمة جملة واحدة بالترتيب. اختره من القائمة أعلى شاشة التدريب.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">استيراد known_words.txt</string>
     <string name="known_imported">الكلمات المعروفة المستوردة: %1$d</string>
 
-    <string name="note_type_preset">قالب نوع الملاحظة</string>
     <string name="japanese_presets_note">Kiku وLapis وSenren أنواع ملاحظات يابانية. تستخدم اللغات الأخرى Anki Miner Note.</string>
-    <string name="field_note_type">اسم نوع الملاحظة يحتوي على</string>
     <string name="field_sentence">حقل الجملة</string>
     <string name="field_furigana">حقل الفوريغانا</string>
     <string name="field_reading">حقل %1$s (اختياري)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">نقل لأعلى</string>
     <string name="move_down">نقل لأسفل</string>
     <string name="onboarding_wiktionary_body">مع القاموس يمكنك النقر على أي كلمة في الجملة للبحث عنها وتحديدها معروفة أو متجاهَلة. في ويكاموس قاموس لكل لغة: اختر لغة التعريفات. وهو يحدّث نفسه.</string>
+    <string name="field_preset">قالب الحقول</string>
+    <string name="presets_note">القالب يملأ أسماء الحقول أدناه فقط. تُستخدم بطاقات أي نوع ملاحظة فيه حقلا الجملة والصوت، أيًّا كان اسمه.</string>
+    <string name="no_notes_fields">لا توجد بطاقات فيها حقل «%1$s» وصوت الجملة في حقل «%2$s». تحقّق من أسماء الحقول في قالب الحقول، ومن أن التصدير تضمّن الوسائط.</string>
 </resources>

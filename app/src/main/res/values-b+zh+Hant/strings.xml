@@ -45,7 +45,6 @@
     <string name="remove_deck_body">它的筆記和音訊會從本應用程式中刪除。你的 AnkiDroid 收藏不受影響。</string>
     <string name="deck_imported">已匯入 %1$s。\n筆記：%2$d\n句子音訊檔：%3$d\n已刪除未使用的媒體（圖片、單字音訊等）：%4$s</string>
     <string name="no_deck">請在設定中為你在學的語言（%1$s）匯入 Anki 牌組 (.apkg) 或收藏 (.colpkg)。</string>
-    <string name="no_notes">筆記類型「%1$s」中找不到帶句子音訊的筆記。請檢查預設，以及匯出時是否包含媒體。</string>
 
     <string name="videos_audio">影片和音訊</string>
     <string name="media_help">選擇一個影片或音訊檔，再選擇它在你所學語言中的字幕（.srt、.vtt 或 .ass）。每行字幕依序成為一個句子。然後在練習畫面頂端的選單中選擇它。</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">匯入 known_words.txt</string>
     <string name="known_imported">已匯入的已知詞：%1$d</string>
 
-    <string name="note_type_preset">筆記類型預設</string>
     <string name="japanese_presets_note">Kiku、Lapis 和 Senren 是日文筆記類型。其他語言使用 Anki Miner Note。</string>
-    <string name="field_note_type">筆記類型名稱包含</string>
     <string name="field_sentence">句子欄位</string>
     <string name="field_furigana">振假名欄位</string>
     <string name="field_reading">%1$s 欄位（選填）</string>
@@ -209,4 +206,7 @@
     <string name="move_up">上移</string>
     <string name="move_down">下移</string>
     <string name="onboarding_wiktionary_body">有了詞典，你可以點句子裡的任何詞來查詢，並標為已知或忽略。維基詞典為每種語言都提供詞典：選擇釋義的語言。它會自動更新。</string>
+    <string name="field_preset">欄位預設</string>
+    <string name="presets_note">預設只會填寫下面的欄位名稱。只要有句子欄位和音訊欄位，任何筆記類型的卡片都會被使用，無論筆記類型叫什麼。</string>
+    <string name="no_notes_fields">沒有卡片同時具有「%1$s」欄位和「%2$s」欄位中的句子音訊。請在「欄位預設」中檢查欄位名稱，並確認匯出時包含了媒體。</string>
 </resources>

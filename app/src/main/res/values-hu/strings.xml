@@ -45,7 +45,6 @@
     <string name="remove_deck_body">A jegyzetei és hangjai törlődnek ebből az alkalmazásból. Az AnkiDroid-gyűjteményed nem változik.</string>
     <string name="deck_imported">Importálva: %1$s.\nJegyzetek: %2$d\nMondathangfájlok: %3$d\nEltávolított nem használt médiafájlok (képek, szavak hangja stb.): %4$s</string>
     <string name="no_deck">Importálj a Beállításokban egy Anki-paklit (.apkg) vagy gyűjteményt (.colpkg) a tanult nyelvhez (%1$s).</string>
-    <string name="no_notes">Nem található mondathangot tartalmazó jegyzet a(z) „%1$s” jegyzettípushoz. Ellenőrizd a sablont, és hogy az exportálás tartalmazta-e a médiafájlokat.</string>
 
     <string name="videos_audio">Videók és hang</string>
     <string name="media_help">Válassz egy video- vagy hangfájlt, majd a feliratát a tanult nyelven (.srt, .vtt vagy .ass). A felirat minden sora egy mondat lesz, sorrendben. Válaszd ki a gyakorlóképernyő tetején lévő menüben.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">known_words.txt importálása</string>
     <string name="known_imported">Importált ismert szavak: %1$d</string>
 
-    <string name="note_type_preset">Jegyzettípus-sablon</string>
     <string name="japanese_presets_note">A Kiku, a Lapis és a Senren japán jegyzettípusok. A többi nyelv az Anki Miner Note-ot használja.</string>
-    <string name="field_note_type">A jegyzettípus neve tartalmazza</string>
     <string name="field_sentence">Mondatmező</string>
     <string name="field_furigana">Furigana-mező</string>
     <string name="field_reading">%1$s mező (nem kötelező)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Feljebb</string>
     <string name="move_down">Lejjebb</string>
     <string name="onboarding_wiktionary_body">Szótárral egy mondat bármely szavára koppintva megkeresheted, és ismertnek vagy mellőzöttnek jelölheted. A Wikiszótárban minden nyelvhez van szótár: válaszd ki a meghatározások nyelvét. Magától frissül.</string>
+    <string name="field_preset">Mezősablon</string>
+    <string name="presets_note">A sablon csak kitölti az alábbi mezőneveket. Minden jegyzettípus kártyái használhatók, amelyekben megvannak a mondat- és hangmezők, bármi is a típus neve.</string>
+    <string name="no_notes_fields">Nincs olyan kártya, amelynek van „%1$s” mezője és mondathangja a(z) „%2$s” mezőben. Ellenőrizd a mezőneveket a Mezősablonban, és hogy az export tartalmazta-e a médiát.</string>
 </resources>

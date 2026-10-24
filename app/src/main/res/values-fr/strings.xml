@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Ses notes et son audio sont supprimés de l\'application. Votre collection AnkiDroid n\'est pas modifiée.</string>
     <string name="deck_imported">%1$s importé.\nNotes : %2$d\nFichiers audio des phrases : %3$d\nMédias inutilisés supprimés (images, audio des mots, etc.) : %4$s</string>
     <string name="no_deck">Importez dans les Paramètres un paquet Anki (.apkg) ou une collection (.colpkg) pour la langue étudiée (%1$s).</string>
-    <string name="no_notes">Aucune note avec audio de phrase trouvée pour le type de note « %1$s ». Vérifiez le modèle et que l\'export incluait les médias.</string>
 
     <string name="videos_audio">Vidéos et audio</string>
     <string name="media_help">Choisissez un fichier vidéo ou audio, puis ses sous-titres dans la langue étudiée (.srt, .vtt ou .ass). Chaque ligne de sous-titres devient une phrase, dans l\'ordre. Sélectionnez-le dans le menu en haut de l\'écran d\'entraînement.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importer known_words.txt</string>
     <string name="known_imported">Mots connus importés : %1$d</string>
 
-    <string name="note_type_preset">Modèle de type de note</string>
     <string name="japanese_presets_note">Kiku, Lapis et Senren sont des types de note japonais. Les autres langues utilisent Anki Miner Note.</string>
-    <string name="field_note_type">Le nom du type de note contient</string>
     <string name="field_sentence">Champ de la phrase</string>
     <string name="field_furigana">Champ des furigana</string>
     <string name="field_reading">Champ %1$s (facultatif)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Monter</string>
     <string name="move_down">Descendre</string>
     <string name="onboarding_wiktionary_body">Avec un dictionnaire, touchez n\'importe quel mot d\'une phrase pour le chercher et le marquer connu ou ignoré. Le Wiktionnaire en a un pour chaque langue : choisissez la langue des définitions. Il se met à jour tout seul.</string>
+    <string name="field_preset">Modèle de champs</string>
+    <string name="presets_note">Un modèle ne fait que remplir les noms de champs ci-dessous. Les cartes de tout type de note ayant les champs de phrase et d\'audio sont utilisées, quel que soit son nom.</string>
+    <string name="no_notes_fields">Aucune carte avec un champ « %1$s » et l\'audio de la phrase dans un champ « %2$s ». Vérifiez les noms de champs sous Modèle de champs, et que l\'export contenait les médias.</string>
 </resources>

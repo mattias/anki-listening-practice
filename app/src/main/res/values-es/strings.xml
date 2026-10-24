@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Sus notas y audio se borran de esta app. Tu colección de AnkiDroid no se ve afectada.</string>
     <string name="deck_imported">%1$s importado.\nNotas: %2$d\nArchivos de audio de frases: %3$d\nMultimedia sin usar eliminada (imágenes, audio de palabras, etc.): %4$s</string>
     <string name="no_deck">Importa en Ajustes un mazo de Anki (.apkg) o una colección (.colpkg) para el idioma que estudias (%1$s).</string>
-    <string name="no_notes">No se encontraron notas con audio de frase para el tipo de nota \"%1$s\". Revisa la plantilla y que la exportación incluyera multimedia.</string>
 
     <string name="videos_audio">Vídeos y audio</string>
     <string name="media_help">Elige un archivo de vídeo o audio y luego sus subtítulos en el idioma que estudias (.srt, .vtt o .ass). Cada línea de subtítulos se convierte en una frase, en orden. Elígelo en el menú de la parte superior de la pantalla de práctica.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importar known_words.txt</string>
     <string name="known_imported">Palabras conocidas importadas: %1$d</string>
 
-    <string name="note_type_preset">Plantilla de tipo de nota</string>
     <string name="japanese_presets_note">Kiku, Lapis y Senren son tipos de nota japoneses. Los demás idiomas usan Anki Miner Note.</string>
-    <string name="field_note_type">El nombre del tipo de nota contiene</string>
     <string name="field_sentence">Campo de la frase</string>
     <string name="field_furigana">Campo de furigana</string>
     <string name="field_reading">Campo de %1$s (opcional)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Subir</string>
     <string name="move_down">Bajar</string>
     <string name="onboarding_wiktionary_body">Con un diccionario puedes tocar cualquier palabra de una frase para buscarla y marcarla como conocida o ignorada. Wikcionario tiene uno para cada idioma: elige el idioma de las definiciones. Se actualiza solo.</string>
+    <string name="field_preset">Plantilla de campos</string>
+    <string name="presets_note">Una plantilla solo rellena los nombres de campo de abajo. Se usan las tarjetas de cualquier tipo de nota que tenga los campos de frase y audio, se llame como se llame.</string>
+    <string name="no_notes_fields">No hay tarjetas con un campo «%1$s» y audio de la frase en un campo «%2$s». Revisa los nombres de campo en Plantilla de campos y que la exportación incluyera los archivos multimedia.</string>
 </resources>

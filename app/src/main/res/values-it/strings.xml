@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Le sue note e l\'audio vengono eliminati da questa app. La tua raccolta di AnkiDroid non viene toccata.</string>
     <string name="deck_imported">%1$s importato.\nNote: %2$d\nFile audio delle frasi: %3$d\nContenuti non usati rimossi (immagini, audio delle parole, ecc.): %4$s</string>
     <string name="no_deck">Importa nelle Impostazioni un mazzo di Anki (.apkg) o una raccolta (.colpkg) per la lingua che studi (%1$s).</string>
-    <string name="no_notes">Nessuna nota con audio della frase trovata per il tipo di nota \"%1$s\". Controlla il modello e che l\'esportazione includesse i contenuti multimediali.</string>
 
     <string name="videos_audio">Video e audio</string>
     <string name="media_help">Scegli un file video o audio, poi i suoi sottotitoli nella lingua che studi (.srt, .vtt o .ass). Ogni riga di sottotitoli diventa una frase, in ordine. Sceglilo dal menu in alto nella schermata di esercizio.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importa known_words.txt</string>
     <string name="known_imported">Parole conosciute importate: %1$d</string>
 
-    <string name="note_type_preset">Modello del tipo di nota</string>
     <string name="japanese_presets_note">Kiku, Lapis e Senren sono tipi di nota giapponesi. Le altre lingue usano Anki Miner Note.</string>
-    <string name="field_note_type">Il nome del tipo di nota contiene</string>
     <string name="field_sentence">Campo della frase</string>
     <string name="field_furigana">Campo dei furigana</string>
     <string name="field_reading">Campo %1$s (facoltativo)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Sposta su</string>
     <string name="move_down">Sposta giù</string>
     <string name="onboarding_wiktionary_body">Con un dizionario puoi toccare qualsiasi parola di una frase per cercarla e segnarla come nota o ignorata. Il Wikizionario ne ha uno per ogni lingua: scegli la lingua delle definizioni. Si aggiorna da solo.</string>
+    <string name="field_preset">Modello di campi</string>
+    <string name="presets_note">Un modello compila solo i nomi dei campi qui sotto. Si usano le carte di qualsiasi tipo di nota che abbia i campi della frase e dell\'audio, comunque si chiami.</string>
+    <string name="no_notes_fields">Nessuna carta con un campo \"%1$s\" e l\'audio della frase in un campo \"%2$s\". Controlla i nomi dei campi in Modello di campi e che l\'esportazione includesse i media.</string>
 </resources>

@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Các ghi chú và âm thanh của nó bị xóa khỏi ứng dụng này. Bộ sưu tập AnkiDroid của bạn không bị ảnh hưởng.</string>
     <string name="deck_imported">Đã nhập %1$s.\nGhi chú: %2$d\nTệp âm thanh câu: %3$d\nĐã xóa phương tiện không dùng (hình ảnh, âm thanh từ, v.v.): %4$s</string>
     <string name="no_deck">Hãy nhập một bộ thẻ Anki (.apkg) hoặc bộ sưu tập (.colpkg) cho ngôn ngữ bạn học (%1$s) trong Cài đặt.</string>
-    <string name="no_notes">Không tìm thấy ghi chú có âm thanh câu cho loại ghi chú \"%1$s\". Hãy kiểm tra mẫu và xem bản xuất có bao gồm phương tiện không.</string>
 
     <string name="videos_audio">Video và âm thanh</string>
     <string name="media_help">Chọn một tệp video hoặc âm thanh, rồi chọn phụ đề của nó bằng ngôn ngữ bạn học (.srt, .vtt hoặc .ass). Mỗi dòng phụ đề trở thành một câu, theo thứ tự. Chọn nó trong menu ở đầu màn hình luyện tập.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Nhập known_words.txt</string>
     <string name="known_imported">Đã nhập từ đã biết: %1$d</string>
 
-    <string name="note_type_preset">Mẫu loại ghi chú</string>
     <string name="japanese_presets_note">Kiku, Lapis và Senren là các loại ghi chú tiếng Nhật. Các ngôn ngữ khác dùng Anki Miner Note.</string>
-    <string name="field_note_type">Tên loại ghi chú chứa</string>
     <string name="field_sentence">Trường câu</string>
     <string name="field_furigana">Trường furigana</string>
     <string name="field_reading">Trường %1$s (không bắt buộc)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Chuyển lên</string>
     <string name="move_down">Chuyển xuống</string>
     <string name="onboarding_wiktionary_body">Có từ điển, bạn có thể chạm vào bất kỳ từ nào trong câu để tra và đánh dấu là đã biết hoặc bỏ qua. Wiktionary có từ điển cho mọi ngôn ngữ: hãy chọn ngôn ngữ của phần định nghĩa. Nó tự cập nhật.</string>
+    <string name="field_preset">Mẫu trường</string>
+    <string name="presets_note">Mẫu chỉ điền sẵn tên các trường bên dưới. Thẻ của bất kỳ kiểu ghi chú nào có trường câu và trường âm thanh đều được dùng, dù kiểu đó tên là gì.</string>
+    <string name="no_notes_fields">Không có thẻ nào có trường \"%1$s\" và âm thanh câu trong trường \"%2$s\". Hãy kiểm tra tên trường trong Mẫu trường, và bản xuất có kèm tệp media.</string>
 </resources>

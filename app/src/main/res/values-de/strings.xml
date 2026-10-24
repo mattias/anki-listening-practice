@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Die Notizen und das Audio werden aus dieser App gelöscht. Deine AnkiDroid-Sammlung bleibt unverändert.</string>
     <string name="deck_imported">%1$s importiert.\nNotizen: %2$d\nSatz-Audiodateien: %3$d\nUngenutzte Medien entfernt (Bilder, Wort-Audio usw.): %4$s</string>
     <string name="no_deck">Importiere in den Einstellungen einen Anki-Stapel (.apkg) oder eine Sammlung (.colpkg) für die Sprache, die du lernst (%1$s).</string>
-    <string name="no_notes">Keine Notizen mit Satz-Audio für den Notiztyp \"%1$s\" gefunden. Prüfe die Vorlage und ob der Export Medien enthielt.</string>
 
     <string name="videos_audio">Videos &amp; Audio</string>
     <string name="media_help">Wähle eine Video- oder Audiodatei und dann ihre Untertitel in der Sprache, die du lernst (.srt, .vtt oder .ass). Jede Untertitelzeile wird ein Satz, in Reihenfolge. Wähle sie im Menü oben auf dem Übungsbildschirm.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">known_words.txt importieren</string>
     <string name="known_imported">Bekannte Wörter importiert: %1$d</string>
 
-    <string name="note_type_preset">Notiztyp-Vorlage</string>
     <string name="japanese_presets_note">Kiku, Lapis und Senren sind japanische Notiztypen. Andere Sprachen verwenden Anki Miner Note.</string>
-    <string name="field_note_type">Name des Notiztyps enthält</string>
     <string name="field_sentence">Satzfeld</string>
     <string name="field_furigana">Furigana-Feld</string>
     <string name="field_reading">%1$s-Feld (optional)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Nach oben</string>
     <string name="move_down">Nach unten</string>
     <string name="onboarding_wiktionary_body">Mit einem Wörterbuch kannst du jedes Wort in einem Satz antippen, um es nachzuschlagen und als bekannt oder ignoriert zu markieren. Wiktionary hat eines für jede Sprache: Wähle die Sprache der Definitionen. Es aktualisiert sich selbst.</string>
+    <string name="field_preset">Feldvorlage</string>
+    <string name="presets_note">Eine Vorlage füllt nur die Feldnamen unten aus. Karten jedes Notiztyps mit den Satz- und Audiofeldern werden verwendet, egal wie der Notiztyp heißt.</string>
+    <string name="no_notes_fields">Keine Karten mit einem Feld \"%1$s\" und Satzaudio in einem Feld \"%2$s\". Prüfe die Feldnamen unter Feldvorlage und ob der Export Medien enthielt.</string>
 </resources>

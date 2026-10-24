@@ -45,7 +45,6 @@
     <string name="remove_deck_body">它的笔记和音频会从本应用中删除。你的 AnkiDroid 收藏不受影响。</string>
     <string name="deck_imported">已导入 %1$s。\n笔记：%2$d\n句子音频文件：%3$d\n已删除未使用的媒体（图片、单词音频等）：%4$s</string>
     <string name="no_deck">请在设置中为你在学的语言（%1$s）导入 Anki 牌组 (.apkg) 或收藏 (.colpkg)。</string>
-    <string name="no_notes">笔记类型“%1$s”中没有找到带句子音频的笔记。请检查预设，以及导出时是否包含媒体。</string>
 
     <string name="videos_audio">视频和音频</string>
     <string name="media_help">选择一个视频或音频文件，再选择它在你所学语言中的字幕（.srt、.vtt 或 .ass）。每行字幕按顺序成为一个句子。然后在练习界面顶部的菜单中选择它。</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">导入 known_words.txt</string>
     <string name="known_imported">已导入的已知词：%1$d</string>
 
-    <string name="note_type_preset">笔记类型预设</string>
     <string name="japanese_presets_note">Kiku、Lapis 和 Senren 是日语笔记类型。其他语言使用 Anki Miner Note。</string>
-    <string name="field_note_type">笔记类型名称包含</string>
     <string name="field_sentence">句子字段</string>
     <string name="field_furigana">振假名字段</string>
     <string name="field_reading">%1$s 字段（可选）</string>
@@ -209,4 +206,7 @@
     <string name="move_up">上移</string>
     <string name="move_down">下移</string>
     <string name="onboarding_wiktionary_body">有了词典，你可以点句子里的任何词来查询，并标为已知或忽略。维基词典为每种语言都提供词典：选择释义的语言。它会自动更新。</string>
+    <string name="field_preset">字段预设</string>
+    <string name="presets_note">预设只会填写下面的字段名。只要有句子字段和音频字段，任何笔记类型的卡片都会被使用，无论笔记类型叫什么。</string>
+    <string name="no_notes_fields">没有卡片同时具有“%1$s”字段和“%2$s”字段中的句子音频。请在“字段预设”中检查字段名，并确认导出时包含了媒体。</string>
 </resources>

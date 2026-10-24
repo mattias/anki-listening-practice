@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Її записи та аудіо буде видалено із застосунку. Ваша колекція AnkiDroid не зміниться.</string>
     <string name="deck_imported">Імпортовано: %1$s.\nЗаписів: %2$d\nАудіофайлів речень: %3$d\nВидалено невикористаних медіафайлів (зображення, аудіо слів тощо): %4$s</string>
     <string name="no_deck">Імпортуйте в налаштуваннях колоду Anki (.apkg) або колекцію (.colpkg) для мови, яку ви вивчаєте (%1$s).</string>
-    <string name="no_notes">Не знайдено записів з аудіо речень для типу запису «%1$s». Перевірте шаблон і те, що експорт містив медіафайли.</string>
 
     <string name="videos_audio">Відео та аудіо</string>
     <string name="media_help">Виберіть відео- або аудіофайл, а потім його субтитри мовою, яку ви вивчаєте (.srt, .vtt або .ass). Кожен рядок субтитрів стає реченням, по черзі. Виберіть його в меню вгорі екрана тренування.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Імпортувати known_words.txt</string>
     <string name="known_imported">Імпортовано відомих слів: %1$d</string>
 
-    <string name="note_type_preset">Шаблон типу запису</string>
     <string name="japanese_presets_note">Kiku, Lapis і Senren — японські типи записів. Для інших мов використовується Anki Miner Note.</string>
-    <string name="field_note_type">Назва типу запису містить</string>
     <string name="field_sentence">Поле речення</string>
     <string name="field_furigana">Поле фурігани</string>
     <string name="field_reading">Поле %1$s (необов\'язково)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Вгору</string>
     <string name="move_down">Вниз</string>
     <string name="onboarding_wiktionary_body">Зі словником можна торкнутися будь-якого слова в реченні, щоб знайти його й позначити як відоме чи ігнороване. У Вікісловнику є словник для кожної мови: виберіть мову визначень. Він оновлюється сам.</string>
+    <string name="field_preset">Шаблон полів</string>
+    <string name="presets_note">Шаблон лише заповнює назви полів нижче. Використовуються картки будь-якого типу нотаток із полями речення й аудіо, хоч як би він називався.</string>
+    <string name="no_notes_fields">Немає карток із полем «%1$s» і аудіо речення в полі «%2$s». Перевірте назви полів у розділі «Шаблон полів» і чи експорт містив медіафайли.</string>
 </resources>

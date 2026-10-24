@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Catatan dan audionya dihapus dari aplikasi ini. Koleksi AnkiDroid Anda tidak berubah.</string>
     <string name="deck_imported">%1$s diimpor.\nCatatan: %2$d\nFile audio kalimat: %3$d\nMedia tak terpakai dihapus (gambar, audio kata, dll.): %4$s</string>
     <string name="no_deck">Impor dek Anki (.apkg) atau koleksi (.colpkg) untuk bahasa yang Anda pelajari (%1$s) di Setelan.</string>
-    <string name="no_notes">Tidak ditemukan catatan dengan audio kalimat untuk jenis catatan \"%1$s\". Periksa preset dan pastikan ekspor menyertakan media.</string>
 
     <string name="videos_audio">Video &amp; audio</string>
     <string name="media_help">Pilih file video atau audio, lalu subtitelnya dalam bahasa yang Anda pelajari (.srt, .vtt, atau .ass). Setiap baris subtitel menjadi satu kalimat, berurutan. Pilih dari menu di bagian atas layar latihan.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Impor known_words.txt</string>
     <string name="known_imported">Kata dikenal yang diimpor: %1$d</string>
 
-    <string name="note_type_preset">Preset jenis catatan</string>
     <string name="japanese_presets_note">Kiku, Lapis, dan Senren adalah jenis catatan bahasa Jepang. Bahasa lain memakai Anki Miner Note.</string>
-    <string name="field_note_type">Nama jenis catatan berisi</string>
     <string name="field_sentence">Kolom kalimat</string>
     <string name="field_furigana">Kolom furigana</string>
     <string name="field_reading">Kolom %1$s (opsional)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Pindah ke atas</string>
     <string name="move_down">Pindah ke bawah</string>
     <string name="onboarding_wiktionary_body">Dengan kamus, Anda bisa mengetuk kata apa pun dalam kalimat untuk mencarinya dan menandainya dikenal atau diabaikan. Wikikamus punya kamus untuk setiap bahasa: pilih bahasa definisinya. Kamus ini memperbarui dirinya sendiri.</string>
+    <string name="field_preset">Templat kolom</string>
+    <string name="presets_note">Templat hanya mengisi nama kolom di bawah. Kartu dari jenis catatan apa pun yang punya kolom kalimat dan audio akan dipakai, apa pun namanya.</string>
+    <string name="no_notes_fields">Tidak ada kartu dengan kolom \"%1$s\" dan audio kalimat di kolom \"%2$s\". Periksa nama kolom di Templat kolom, dan pastikan ekspor menyertakan media.</string>
 </resources>

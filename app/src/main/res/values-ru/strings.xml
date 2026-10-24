@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Её записи и аудио будут удалены из приложения. Ваша коллекция AnkiDroid не изменится.</string>
     <string name="deck_imported">Импортировано: %1$s.\nЗаписей: %2$d\nАудиофайлов предложений: %3$d\nУдалено неиспользуемых медиафайлов (изображения, аудио слов и т. п.): %4$s</string>
     <string name="no_deck">Импортируйте в настройках колоду Anki (.apkg) или коллекцию (.colpkg) для изучаемого языка (%1$s).</string>
-    <string name="no_notes">Не найдено записей с аудио предложений для типа записи «%1$s». Проверьте шаблон и то, что экспорт включал медиафайлы.</string>
 
     <string name="videos_audio">Видео и аудио</string>
     <string name="media_help">Выберите видео- или аудиофайл, а затем его субтитры на изучаемом языке (.srt, .vtt или .ass). Каждая строка субтитров становится предложением, по порядку. Выберите его в меню вверху экрана тренировки.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Импортировать known_words.txt</string>
     <string name="known_imported">Импортировано известных слов: %1$d</string>
 
-    <string name="note_type_preset">Шаблон типа записи</string>
     <string name="japanese_presets_note">Kiku, Lapis и Senren — японские типы записей. Для других языков используется Anki Miner Note.</string>
-    <string name="field_note_type">Название типа записи содержит</string>
     <string name="field_sentence">Поле предложения</string>
     <string name="field_furigana">Поле фуриганы</string>
     <string name="field_reading">Поле %1$s (необязательно)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Вверх</string>
     <string name="move_down">Вниз</string>
     <string name="onboarding_wiktionary_body">Со словарём можно нажать на любое слово в предложении, чтобы найти его и отметить как известное или игнорируемое. В Викисловаре есть словарь для каждого языка: выберите язык определений. Он обновляется сам.</string>
+    <string name="field_preset">Шаблон полей</string>
+    <string name="presets_note">Шаблон лишь заполняет названия полей ниже. Используются карточки любого типа записей с полями предложения и аудио, как бы он ни назывался.</string>
+    <string name="no_notes_fields">Нет карточек с полем «%1$s» и аудио предложения в поле «%2$s». Проверьте названия полей в разделе «Шаблон полей» и что экспорт включал медиафайлы.</string>
 </resources>

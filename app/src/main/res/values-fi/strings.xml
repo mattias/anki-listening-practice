@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Sen muistiinpanot ja äänet poistetaan tästä sovelluksesta. AnkiDroid-kokoelmaasi ei muuteta.</string>
     <string name="deck_imported">Tuotiin %1$s.\nMuistiinpanot: %2$d\nLauseiden äänitiedostot: %3$d\nKäyttämätön media poistettu (kuvat, sanojen äänet jne.): %4$s</string>
     <string name="no_deck">Tuo asetuksissa Anki-pakka (.apkg) tai kokoelma (.colpkg) opiskeltavalle kielelle (%1$s).</string>
-    <string name="no_notes">Muistiinpanotyypille \"%1$s\" ei löytynyt muistiinpanoja, joissa on lauseen ääni. Tarkista pohja ja että vientiin sisältyi media.</string>
 
     <string name="videos_audio">Videot ja ääni</string>
     <string name="media_help">Valitse video- tai äänitiedosto ja sitten sen tekstitykset opiskeltavalla kielellä (.srt, .vtt tai .ass). Jokaisesta tekstitysrivistä tulee lause, järjestyksessä. Valitse se harjoitusnäkymän yläreunan valikosta.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Tuo known_words.txt</string>
     <string name="known_imported">Tuotuja tuttuja sanoja: %1$d</string>
 
-    <string name="note_type_preset">Muistiinpanotyypin pohja</string>
     <string name="japanese_presets_note">Kiku, Lapis ja Senren ovat japanilaisia muistiinpanotyyppejä. Muut kielet käyttävät Anki Miner Notea.</string>
-    <string name="field_note_type">Muistiinpanotyypin nimi sisältää</string>
     <string name="field_sentence">Lausekenttä</string>
     <string name="field_furigana">Furigana-kenttä</string>
     <string name="field_reading">%1$s-kenttä (valinnainen)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Siirrä ylös</string>
     <string name="move_down">Siirrä alas</string>
     <string name="onboarding_wiktionary_body">Sanakirjan avulla voit napauttaa mitä tahansa lauseen sanaa, hakea sen ja merkitä sen tunnetuksi tai ohitetuksi. Wikisanakirjassa on sanakirja jokaiselle kielelle: valitse määritelmien kieli. Se päivittyy itsestään.</string>
+    <string name="field_preset">Kenttäpohja</string>
+    <string name="presets_note">Pohja vain täyttää alla olevat kenttien nimet. Käytetään kaikkien muistiinpanotyyppien kortteja, joissa on lause- ja äänikentät, oli tyypin nimi mikä tahansa.</string>
+    <string name="no_notes_fields">Ei kortteja, joissa on kenttä \"%1$s\" ja lauseen ääni kentässä \"%2$s\". Tarkista kenttien nimet kohdassa Kenttäpohja ja että vienti sisälsi mediat.</string>
 </resources>

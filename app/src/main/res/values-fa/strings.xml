@@ -45,7 +45,6 @@
     <string name="remove_deck_body">یادداشت‌ها و صداهای آن از این برنامه پاک می‌شوند. مجموعهٔ AnkiDroid شما تغییری نمی‌کند.</string>
     <string name="deck_imported">%1$s وارد شد.\nیادداشت‌ها: %2$d\nفایل‌های صوتی جمله: %3$d\nرسانه‌های بی‌استفاده حذف شد (تصویرها، صدای واژه‌ها و غیره): %4$s</string>
     <string name="no_deck">در تنظیمات یک دستهٔ Anki ‏(.apkg) یا مجموعه (.colpkg) برای زبانی که یاد می‌گیرید (%1$s) وارد کنید.</string>
-    <string name="no_notes">برای نوع یادداشت «%1$s» یادداشتی با صدای جمله پیدا نشد. الگو را بررسی کنید و مطمئن شوید که خروجی شامل رسانه بوده است.</string>
 
     <string name="videos_audio">ویدیو و صدا</string>
     <string name="media_help">یک فایل ویدیویی یا صوتی و سپس زیرنویس آن را به زبانی که یاد می‌گیرید انتخاب کنید (.srt، .vtt یا .ass). هر سطر زیرنویس به ترتیب یک جمله می‌شود. آن را از منوی بالای صفحهٔ تمرین انتخاب کنید.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">وارد کردن known_words.txt</string>
     <string name="known_imported">واژه‌های آشنای واردشده: %1$d</string>
 
-    <string name="note_type_preset">الگوی نوع یادداشت</string>
     <string name="japanese_presets_note">Kiku، Lapis و Senren انواع یادداشت ژاپنی هستند. زبان‌های دیگر از Anki Miner Note استفاده می‌کنند.</string>
-    <string name="field_note_type">نام نوع یادداشت شامل</string>
     <string name="field_sentence">فیلد جمله</string>
     <string name="field_furigana">فیلد فوریگانا</string>
     <string name="field_reading">فیلد %1$s (اختیاری)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">انتقال به بالا</string>
     <string name="move_down">انتقال به پایین</string>
     <string name="onboarding_wiktionary_body">با واژه‌نامه می‌توانید روی هر واژه‌ای در جمله بزنید تا آن را جست‌وجو کنید و آشنا یا نادیده علامت بزنید. ویکی‌واژه برای هر زبانی واژه‌نامه دارد: زبان تعریف‌ها را انتخاب کنید. خودش به‌روز می‌شود.</string>
+    <string name="field_preset">الگوی فیلدها</string>
+    <string name="presets_note">الگو فقط نام فیلدهای زیر را پر می‌کند. کارت‌های هر نوع یادداشتی که فیلدهای جمله و صدا را دارد استفاده می‌شوند، نامش هر چه باشد.</string>
+    <string name="no_notes_fields">هیچ کارتی با فیلد «%1$s» و صدای جمله در فیلد «%2$s» نیست. نام فیلدها را در الگوی فیلدها بررسی کنید و اینکه خروجی شامل رسانه بوده است.</string>
 </resources>

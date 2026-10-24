@@ -96,7 +96,6 @@ class DeckLibrary @Inject constructor(
         for (deck in _decks.value.filter { it.language == language }) {
             openCollection(File(File(root, deck.id), ApkgUnpacker.COLLECTION_FILE)) { db ->
                 for (type in loadNoteTypes(db)) {
-                    if (!type.name.contains(mapping.noteTypeMatch.trim(), ignoreCase = true)) continue
                     val idx = type.indexOf(mapping.word)
                     if (idx < 0) continue
                     db.rawQuery("SELECT flds FROM notes WHERE mid = ?", arrayOf(type.id.toString())).use { c ->
@@ -124,14 +123,14 @@ class DeckLibrary @Inject constructor(
         val decks = _decks.value.filter { it.language == language }
         val sentences = decks.flatMap { deck ->
             val dir = File(root, deck.id)
+            // Every note type with the mapped fields, whatever it's called: presets only name fields.
             openCollection(File(dir, ApkgUnpacker.COLLECTION_FILE)) { db ->
                 loadNoteTypes(db)
-                    .filter { it.name.contains(mapping.noteTypeMatch.trim(), ignoreCase = true) }
                     .flatMap { readNotes(db, it, mapping, language, File(dir, "media")) }
             }
         }
         if (sentences.isEmpty()) {
-            throw AnkiReadException(strings(R.string.no_notes, mapping.noteTypeMatch))
+            throw AnkiReadException(strings(R.string.no_notes_fields, mapping.sentence, mapping.audio))
         }
         // The same note can appear in several imports; keep one.
         sentences.distinctBy { it.id }

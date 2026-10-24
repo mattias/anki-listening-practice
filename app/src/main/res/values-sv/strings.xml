@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Dess notiser och ljud raderas från appen. Din AnkiDroid-samling påverkas inte.</string>
     <string name="deck_imported">Importerade %1$s.\nNotiser: %2$d\nLjudfiler med meningar: %3$d\nOanvända medier borttagna (bilder, ordljud m.m.): %4$s</string>
     <string name="no_deck">Importera en Anki-kortlek (.apkg) eller samling (.colpkg) för språket du studerar (%1$s) i Inställningar.</string>
-    <string name="no_notes">Hittade inga notiser med meningsljud för notistypen \"%1$s\". Kontrollera förinställningen och att exporten innehöll media.</string>
 
     <string name="videos_audio">Videor och ljud</string>
     <string name="media_help">Välj en video- eller ljudfil och sedan dess undertexter på språket du studerar (.srt, .vtt eller .ass). Varje undertextrad blir en mening, i ordning. Välj den i menyn högst upp på övningsskärmen.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importera known_words.txt</string>
     <string name="known_imported">Importerade kända ord: %1$d</string>
 
-    <string name="note_type_preset">Förinställning för notistyp</string>
     <string name="japanese_presets_note">Kiku, Lapis och Senren är japanska notistyper. Andra språk använder Anki Miner Note.</string>
-    <string name="field_note_type">Notistypens namn innehåller</string>
     <string name="field_sentence">Meningsfält</string>
     <string name="field_furigana">Furiganafält</string>
     <string name="field_reading">%1$s-fält (valfritt)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Flytta upp</string>
     <string name="move_down">Flytta ned</string>
     <string name="onboarding_wiktionary_body">Med en ordbok kan du trycka på vilket ord som helst i en mening för att slå upp det och markera det som känt eller ignorerat. Wiktionary har en för varje språk: välj språket för definitionerna. Den uppdaterar sig själv.</string>
+    <string name="field_preset">Fältmall</string>
+    <string name="presets_note">En mall fyller bara i fältnamnen nedan. Kort av alla notistyper som har menings- och ljudfälten används, oavsett vad notistypen heter.</string>
+    <string name="no_notes_fields">Inga kort med ett fält \"%1$s\" och meningsljud i ett fält \"%2$s\". Kontrollera fältnamnen under Fältmall, och att exporten innehöll media.</string>
 </resources>

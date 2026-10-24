@@ -45,7 +45,6 @@
     <string name="remove_deck_body">De notities en audio worden uit deze app verwijderd. Je AnkiDroid-verzameling blijft ongewijzigd.</string>
     <string name="deck_imported">%1$s geïmporteerd.\nNotities: %2$d\nZinsaudiobestanden: %3$d\nOngebruikte media verwijderd (afbeeldingen, woordaudio enz.): %4$s</string>
     <string name="no_deck">Importeer in Instellingen een Anki-stapel (.apkg) of verzameling (.colpkg) voor de taal die je leert (%1$s).</string>
-    <string name="no_notes">Geen notities met zinsaudio gevonden voor notitietype \"%1$s\". Controleer de voorinstelling en of de export media bevatte.</string>
 
     <string name="videos_audio">Video\'s en audio</string>
     <string name="media_help">Kies een video- of audiobestand en daarna de ondertitels in de taal die je leert (.srt, .vtt of .ass). Elke ondertitelregel wordt een zin, op volgorde. Kies het in het menu boven aan het oefenscherm.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">known_words.txt importeren</string>
     <string name="known_imported">Bekende woorden geïmporteerd: %1$d</string>
 
-    <string name="note_type_preset">Notitietype-voorinstelling</string>
     <string name="japanese_presets_note">Kiku, Lapis en Senren zijn Japanse notitietypes. Andere talen gebruiken Anki Miner Note.</string>
-    <string name="field_note_type">Naam van notitietype bevat</string>
     <string name="field_sentence">Zinsveld</string>
     <string name="field_furigana">Furiganaveld</string>
     <string name="field_reading">%1$s-veld (optioneel)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Omhoog</string>
     <string name="move_down">Omlaag</string>
     <string name="onboarding_wiktionary_body">Met een woordenboek tik je op elk woord in een zin om het op te zoeken en als bekend of genegeerd te markeren. Wiktionary heeft er een voor elke taal: kies de taal van de definities. Het werkt zichzelf bij.</string>
+    <string name="field_preset">Veldsjabloon</string>
+    <string name="presets_note">Een sjabloon vult alleen de veldnamen hieronder in. Kaarten van elk notitietype met de zins- en audiovelden worden gebruikt, hoe het notitietype ook heet.</string>
+    <string name="no_notes_fields">Geen kaarten met een veld \"%1$s\" en zinsaudio in een veld \"%2$s\". Controleer de veldnamen onder Veldsjabloon, en of de export media bevatte.</string>
 </resources>

@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Notatene og lyden slettes fra denne appen. AnkiDroid-samlingen din påvirkes ikke.</string>
     <string name="deck_imported">%1$s er importert.\nNotater: %2$d\nLydfiler med setninger: %3$d\nUbrukte medier fjernet (bilder, ordlyd osv.): %4$s</string>
     <string name="no_deck">Importer en Anki-kortstokk (.apkg) eller samling (.colpkg) for språket du lærer (%1$s), i Innstillinger.</string>
-    <string name="no_notes">Fant ingen notater med setningslyd for notattypen \"%1$s\". Sjekk malen, og at eksporten inneholdt medier.</string>
 
     <string name="videos_audio">Videoer og lyd</string>
     <string name="media_help">Velg en video- eller lydfil og deretter undertekstene på språket du lærer (.srt, .vtt eller .ass). Hver undertekstlinje blir en setning, i rekkefølge. Velg den i menyen øverst på øveskjermen.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importer known_words.txt</string>
     <string name="known_imported">Importerte kjente ord: %1$d</string>
 
-    <string name="note_type_preset">Notattypemal</string>
     <string name="japanese_presets_note">Kiku, Lapis og Senren er japanske notattyper. Andre språk bruker Anki Miner Note.</string>
-    <string name="field_note_type">Navnet på notattypen inneholder</string>
     <string name="field_sentence">Setningsfelt</string>
     <string name="field_furigana">Furiganafelt</string>
     <string name="field_reading">%1$s-felt (valgfritt)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Flytt opp</string>
     <string name="move_down">Flytt ned</string>
     <string name="onboarding_wiktionary_body">Med en ordbok kan du trykke på et hvilket som helst ord i en setning for å slå det opp og merke det som kjent eller ignorert. Wiktionary har en for hvert språk: velg språket for definisjonene. Den oppdaterer seg selv.</string>
+    <string name="field_preset">Feltmal</string>
+    <string name="presets_note">En mal fyller bare ut feltnavnene nedenfor. Kort av alle notattyper som har setnings- og lydfeltene, brukes, uansett hva notattypen heter.</string>
+    <string name="no_notes_fields">Ingen kort med et felt \"%1$s\" og setningslyd i et felt \"%2$s\". Sjekk feltnavnene under Feltmal, og at eksporten inneholdt medier.</string>
 </resources>

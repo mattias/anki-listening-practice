@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Notele și sunetul lui sunt șterse din aplicație. Colecția ta AnkiDroid nu este afectată.</string>
     <string name="deck_imported">S-a importat %1$s.\nNote: %2$d\nFișiere audio cu propoziții: %3$d\nMedia neutilizată eliminată (imagini, sunetul cuvintelor etc.): %4$s</string>
     <string name="no_deck">Importă din Setări un pachet Anki (.apkg) sau o colecție (.colpkg) pentru limba pe care o studiezi (%1$s).</string>
-    <string name="no_notes">Nu s-au găsit note cu sunetul propoziției pentru tipul de notă „%1$s”. Verifică șablonul și dacă exportul a inclus media.</string>
 
     <string name="videos_audio">Videoclipuri și audio</string>
     <string name="media_help">Alege un fișier video sau audio, apoi subtitrările lui în limba pe care o studiezi (.srt, .vtt sau .ass). Fiecare rând de subtitrare devine o propoziție, în ordine. Alege-l din meniul din partea de sus a ecranului de exersare.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importă known_words.txt</string>
     <string name="known_imported">Cuvinte cunoscute importate: %1$d</string>
 
-    <string name="note_type_preset">Șablonul tipului de notă</string>
     <string name="japanese_presets_note">Kiku, Lapis și Senren sunt tipuri de note japoneze. Celelalte limbi folosesc Anki Miner Note.</string>
-    <string name="field_note_type">Numele tipului de notă conține</string>
     <string name="field_sentence">Câmpul propoziției</string>
     <string name="field_furigana">Câmpul furigana</string>
     <string name="field_reading">Câmpul %1$s (opțional)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Mută în sus</string>
     <string name="move_down">Mută în jos</string>
     <string name="onboarding_wiktionary_body">Cu un dicționar poți atinge orice cuvânt dintr-o propoziție ca să-l cauți și să-l marchezi drept cunoscut sau ignorat. Wikționarul are unul pentru fiecare limbă: alege limba definițiilor. Se actualizează singur.</string>
+    <string name="field_preset">Șablon de câmpuri</string>
+    <string name="presets_note">Un șablon doar completează numele câmpurilor de mai jos. Se folosesc cardurile oricărui tip de notă care are câmpurile de propoziție și audio, indiferent cum se numește.</string>
+    <string name="no_notes_fields">Niciun card cu un câmp „%1$s” și audio al propoziției într-un câmp „%2$s”. Verifică numele câmpurilor la Șablon de câmpuri și dacă exportul a inclus fișierele media.</string>
 </resources>

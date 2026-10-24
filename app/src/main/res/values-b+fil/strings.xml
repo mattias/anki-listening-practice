@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Buburahin sa app na ito ang mga note at audio nito. Hindi maaapektuhan ang iyong koleksyon sa AnkiDroid.</string>
     <string name="deck_imported">Na-import ang %1$s.\nMga note: %2$d\nMga audio file ng pangungusap: %3$d\nInalis ang hindi ginagamit na media (mga larawan, audio ng salita, atbp.): %4$s</string>
     <string name="no_deck">Mag-import sa Mga Setting ng Anki deck (.apkg) o koleksyon (.colpkg) para sa wikang pinag-aaralan mo (%1$s).</string>
-    <string name="no_notes">Walang nakitang note na may audio ng pangungusap para sa uri ng note na \"%1$s\". Tingnan ang preset, at kung kasama ang media sa export.</string>
 
     <string name="videos_audio">Mga video at audio</string>
     <string name="media_help">Pumili ng video o audio file, tapos ang subtitle nito sa wikang pinag-aaralan mo (.srt, .vtt, o .ass). Bawat linya ng subtitle ay nagiging isang pangungusap, nang sunod-sunod. Piliin ito sa menu sa itaas ng screen ng pagsasanay.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">I-import ang known_words.txt</string>
     <string name="known_imported">Na-import na kilalang salita: %1$d</string>
 
-    <string name="note_type_preset">Preset ng uri ng note</string>
     <string name="japanese_presets_note">Ang Kiku, Lapis, at Senren ay mga uri ng note para sa Japanese. Anki Miner Note ang gamit ng ibang wika.</string>
-    <string name="field_note_type">Naglalaman ang pangalan ng uri ng note ng</string>
     <string name="field_sentence">Field ng pangungusap</string>
     <string name="field_furigana">Field ng furigana</string>
     <string name="field_reading">Field ng %1$s (opsyonal)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Ilipat pataas</string>
     <string name="move_down">Ilipat pababa</string>
     <string name="onboarding_wiktionary_body">Sa isang diksyunaryo, puwede mong i-tap ang kahit anong salita sa pangungusap para hanapin ito at markahang kilala o balewalain. May diksyunaryo ang Wiktionary para sa bawat wika: piliin ang wika ng mga kahulugan. Kusa itong nag-a-update.</string>
+    <string name="field_preset">Preset ng mga field</string>
+    <string name="presets_note">Pinupunan lang ng preset ang mga pangalan ng field sa ibaba. Gagamitin ang mga card ng kahit anong note type na may field ng pangungusap at audio, anuman ang pangalan nito.</string>
+    <string name="no_notes_fields">Walang card na may field na \"%1$s\" at audio ng pangungusap sa field na \"%2$s\". Tingnan ang mga pangalan ng field sa Preset ng mga field, at na may kasamang media ang export.</string>
 </resources>

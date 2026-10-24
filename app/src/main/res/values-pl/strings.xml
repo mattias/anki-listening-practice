@@ -45,7 +45,6 @@
     <string name="remove_deck_body">Jej notatki i audio zostaną usunięte z aplikacji. Twoja kolekcja AnkiDroid pozostanie bez zmian.</string>
     <string name="deck_imported">Zaimportowano %1$s.\nNotatki: %2$d\nPliki audio zdań: %3$d\nUsunięte nieużywane multimedia (obrazy, audio słów itp.): %4$s</string>
     <string name="no_deck">Zaimportuj w Ustawieniach talię Anki (.apkg) lub kolekcję (.colpkg) dla języka, którego się uczysz (%1$s).</string>
-    <string name="no_notes">Nie znaleziono notatek z audio zdania dla typu notatki „%1$s”. Sprawdź szablon i czy eksport zawierał multimedia.</string>
 
     <string name="videos_audio">Filmy i audio</string>
     <string name="media_help">Wybierz plik wideo lub audio, a potem jego napisy w języku, którego się uczysz (.srt, .vtt lub .ass). Każda linia napisów staje się zdaniem, po kolei. Wybierz go w menu u góry ekranu ćwiczeń.</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">Importuj known_words.txt</string>
     <string name="known_imported">Zaimportowane znane słowa: %1$d</string>
 
-    <string name="note_type_preset">Szablon typu notatki</string>
     <string name="japanese_presets_note">Kiku, Lapis i Senren to japońskie typy notatek. Inne języki używają Anki Miner Note.</string>
-    <string name="field_note_type">Nazwa typu notatki zawiera</string>
     <string name="field_sentence">Pole zdania</string>
     <string name="field_furigana">Pole furigany</string>
     <string name="field_reading">Pole %1$s (opcjonalne)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">Przesuń w górę</string>
     <string name="move_down">Przesuń w dół</string>
     <string name="onboarding_wiktionary_body">Ze słownikiem możesz dotknąć dowolnego słowa w zdaniu, aby je sprawdzić i oznaczyć jako znane lub ignorowane. Wikisłownik ma słownik dla każdego języka: wybierz język definicji. Aktualizuje się sam.</string>
+    <string name="field_preset">Szablon pól</string>
+    <string name="presets_note">Szablon tylko wypełnia nazwy pól poniżej. Używane są karty każdego typu notatki, który ma pola zdania i dźwięku, niezależnie od jego nazwy.</string>
+    <string name="no_notes_fields">Brak kart z polem „%1$s” i dźwiękiem zdania w polu „%2$s”. Sprawdź nazwy pól w Szablonie pól oraz czy eksport zawierał multimedia.</string>
 </resources>

@@ -45,7 +45,6 @@
     <string name="remove_deck_body">โน้ตและเสียงของสำรับนี้จะถูกลบออกจากแอป คอลเลกชัน AnkiDroid ของคุณไม่ได้รับผลกระทบ</string>
     <string name="deck_imported">นำเข้า %1$s แล้ว\nโน้ต: %2$d\nไฟล์เสียงประโยค: %3$d\nลบสื่อที่ไม่ได้ใช้ (รูปภาพ เสียงคำ ฯลฯ): %4$s</string>
     <string name="no_deck">นำเข้าสำรับ Anki (.apkg) หรือคอลเลกชัน (.colpkg) สำหรับภาษาที่คุณเรียน (%1$s) ในการตั้งค่า</string>
-    <string name="no_notes">ไม่พบโน้ตที่มีเสียงประโยคสำหรับประเภทโน้ต \"%1$s\" ตรวจสอบพรีเซ็ต และดูว่าการส่งออกรวมสื่อไว้หรือไม่</string>
 
     <string name="videos_audio">วิดีโอและเสียง</string>
     <string name="media_help">เลือกไฟล์วิดีโอหรือเสียง แล้วเลือกคำบรรยายเป็นภาษาที่คุณเรียน (.srt, .vtt หรือ .ass) คำบรรยายแต่ละบรรทัดจะเป็นหนึ่งประโยคตามลำดับ เลือกได้จากเมนูด้านบนของหน้าฝึก</string>
@@ -84,9 +83,7 @@
     <string name="import_known_words">นำเข้า known_words.txt</string>
     <string name="known_imported">นำเข้าคำที่รู้แล้ว: %1$d</string>
 
-    <string name="note_type_preset">พรีเซ็ตประเภทโน้ต</string>
     <string name="japanese_presets_note">Kiku, Lapis และ Senren เป็นประเภทโน้ตภาษาญี่ปุ่น ภาษาอื่นใช้ Anki Miner Note</string>
-    <string name="field_note_type">ชื่อประเภทโน้ตมีคำว่า</string>
     <string name="field_sentence">ฟิลด์ประโยค</string>
     <string name="field_furigana">ฟิลด์ฟุริงานะ</string>
     <string name="field_reading">ฟิลด์ %1$s (ไม่บังคับ)</string>
@@ -209,4 +206,7 @@
     <string name="move_up">ย้ายขึ้น</string>
     <string name="move_down">ย้ายลง</string>
     <string name="onboarding_wiktionary_body">เมื่อมีพจนานุกรม คุณแตะคำใดก็ได้ในประโยคเพื่อค้นหาและทำเครื่องหมายว่ารู้แล้วหรือละเว้นได้ วิกิพจนานุกรมมีพจนานุกรมของทุกภาษา เลือกภาษาของคำอธิบายได้ และอัปเดตเองได้</string>
+    <string name="field_preset">ค่าที่ตั้งไว้ของฟิลด์</string>
+    <string name="presets_note">ค่าที่ตั้งไว้แค่กรอกชื่อฟิลด์ด้านล่างให้ การ์ดของโน้ตทุกประเภทที่มีฟิลด์ประโยคและเสียงจะถูกใช้ ไม่ว่าประเภทโน้ตจะชื่ออะไร</string>
+    <string name="no_notes_fields">ไม่มีการ์ดที่มีฟิลด์ \"%1$s\" และเสียงประโยคในฟิลด์ \"%2$s\" ตรวจสอบชื่อฟิลด์ใน ค่าที่ตั้งไว้ของฟิลด์ และว่าไฟล์ส่งออกมีสื่อด้วย</string>
 </resources>

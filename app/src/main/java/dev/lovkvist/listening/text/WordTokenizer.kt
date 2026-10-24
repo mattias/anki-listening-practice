@@ -39,6 +39,25 @@ class WordTokenizer(private val language: Language) : SentenceTokenizer {
         return words.filterNot { isKnown(it, known) }.distinct().size
     }
 
+    override fun unknownRanges(sentence: String, known: Set<String>): List<IntRange> {
+        // Same length as the sentence, so positions carry over; each word is cleaned on its own.
+        val text = sentence.replace('’', '\'')
+        val compounds = HYPHENATED.findAll(text).filter { normalize(it.value) in known }.map { it.range }.toList()
+        val breaker = BreakIterator.getWordInstance(locale)
+        breaker.setText(text)
+        val out = mutableListOf<IntRange>()
+        var start = breaker.first()
+        var end = breaker.next()
+        while (end != BreakIterator.DONE) {
+            val word = text.substring(start, end)
+            val inCompound = compounds.any { start in it }
+            if (word.any { it.isLetter() } && !inCompound && !isKnown(normalize(word), known)) out += start until end
+            start = end
+            end = breaker.next()
+        }
+        return out
+    }
+
     /**
      * The word breaker splits at hyphens, so "mag-aral" or "well-known" become two words. A
      * hyphenated compound that is listed as a whole is taken out before splitting.

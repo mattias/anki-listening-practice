@@ -9,6 +9,7 @@ import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.Sentence
 import dev.lovkvist.listening.data.SentenceRepository
+import dev.lovkvist.listening.data.anki.AnkiText
 import dev.lovkvist.listening.data.local.PracticeDayDao
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
@@ -36,12 +37,25 @@ import javax.inject.Singleton
 /** Today's counts and the run of days with practice, ending today or yesterday. */
 data class PracticeStats(val today: Int = 0, val clearToday: Int = 0, val streak: Int = 0)
 
+/**
+ * The text as the practice screen draws it: for ruby text, the base text without readings, so
+ * positions in it line up with what's drawn.
+ */
+fun displayedText(sentence: Sentence, language: Language): String =
+    if (language == Language.JAPANESE || sentence.furigana.isNotBlank()) {
+        AnkiText.ruby(sentence.furigana.ifBlank { sentence.text }).joinToString("") { it.base }
+    } else {
+        sentence.text
+    }
+
 sealed interface PracticeState {
     data object Loading : PracticeState
     data class Message(val text: String) : PracticeState
     data class Ready(
         val current: Sentence,
         val showText: Boolean,
+        /** Unknown words in the shown text ([displayedText]), with n+1 and up. */
+        val unknown: List<IntRange> = emptyList(),
     ) : PracticeState
 }
 
@@ -225,7 +239,7 @@ class PracticeController @Inject constructor(
             null
         }
 
-    private fun show(sentence: Sentence?, autoPlay: Boolean) {
+    private suspend fun show(sentence: Sentence?, autoPlay: Boolean) {
         if (sentence == null) {
             player.stop()
             return
@@ -238,5 +252,10 @@ class PracticeController @Inject constructor(
             .setArtist(strings(R.string.notification_subtitle, language.value.displayName()))
             .build()
         player.load(sentence.audio, sentence.clip, autoPlay)
+        // With n+0 every word is known, so there's nothing to mark.
+        if (settings.current().maxUnknownWords > 0) {
+            val unknown = runCatching { repository.unknownRanges(displayedText(sentence, language.value)) }.getOrDefault(emptyList())
+            _state.update { if (it is PracticeState.Ready && it.current.id == sentence.id) it.copy(unknown = unknown) else it }
+        }
     }
 }

@@ -67,10 +67,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -154,7 +157,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                         Spacer(Modifier.height(16.dp))
                         // A new sentence gets a fresh card, so it never flips past the old one's text.
                         key(s.current.id) {
-                            SentenceCard(s.current, language, s.showText, practice::toggleText)
+                            SentenceCard(s.current, s.unknown, language, s.showText, practice::toggleText)
                         }
                         Spacer(Modifier.height(16.dp))
                     }
@@ -357,7 +360,7 @@ private fun PlayRing(playing: Boolean, repeats: Int, autoClearAfter: Int, progre
 
 /** The sentence, face down until tapped; it flips over to show the text. */
 @Composable
-private fun SentenceCard(sentence: Sentence, language: Language, shown: Boolean, onToggle: () -> Unit) {
+private fun SentenceCard(sentence: Sentence, unknown: List<IntRange>, language: Language, shown: Boolean, onToggle: () -> Unit) {
     val rotation by animateFloatAsState(if (shown) 180f else 0f, tween(450), label = "flip")
     Card(
         onClick = onToggle,
@@ -380,7 +383,7 @@ private fun SentenceCard(sentence: Sentence, language: Language, shown: Boolean,
             verticalArrangement = Arrangement.Center,
         ) {
             if (rotation > 90f) {
-                SentenceText(sentence, language)
+                SentenceText(sentence, unknown, language)
                 Spacer(Modifier.height(12.dp))
                 Hint(R.drawable.ic_visibility_off, stringResource(R.string.hide_text))
             } else {
@@ -421,7 +424,7 @@ private fun Centered(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-private fun SentenceText(sentence: Sentence, language: Language) {
+private fun SentenceText(sentence: Sentence, unknown: List<IntRange>, language: Language) {
     // Tagging the text with its language makes Android draw the right Han glyph variants.
     val style = MaterialTheme.typography.headlineSmall.copy(
         fontFamily = FontFamily.Serif,
@@ -429,10 +432,16 @@ private fun SentenceText(sentence: Sentence, language: Language) {
     )
     if (language == Language.JAPANESE || sentence.furigana.isNotBlank()) {
         // Without a furigana field the sentence still goes through RubyText, so it lays out the same.
-        RubyText(furigana = sentence.furigana.ifBlank { sentence.text }, style = style)
+        RubyText(furigana = sentence.furigana.ifBlank { sentence.text }, style = style, highlights = unknown)
     } else {
         // Plain text keeps words whole when wrapping, and Arabic letters joined.
-        Text(sentence.text, style = style, textAlign = TextAlign.Center)
+        // Unknown words (with n+1 and up) are marked like in RubyText.
+        val marked = SpanStyle(color = MaterialTheme.colorScheme.tertiary, textDecoration = TextDecoration.Underline)
+        val text = buildAnnotatedString {
+            append(sentence.text)
+            for (r in unknown) if (r.last < sentence.text.length) addStyle(marked, r.first, r.last + 1)
+        }
+        Text(text, style = style, textAlign = TextAlign.Center)
     }
     if (sentence.translation.isNotBlank()) {
         Spacer(Modifier.height(12.dp))

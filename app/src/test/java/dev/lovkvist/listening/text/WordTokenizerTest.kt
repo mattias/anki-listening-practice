@@ -32,6 +32,15 @@ class WordTokenizerTest {
     }
 
     @Test
+    fun unknownWordsAreFoundWhereTheyAre() {
+        val (t, known) = known(Language.SWEDISH, "jag", "dricker")
+        assertEquals(listOf(12..16), t.unknownRanges("Jag dricker kaffe.", known))
+        // A known hyphenated compound isn't split into unknown parts.
+        val (e, eKnown) = known(Language.ENGLISH, "a", "well-known")
+        assertEquals(listOf(13..15), e.unknownRanges("A well-known man", eKnown))
+    }
+
+    @Test
     fun unknownWordsAreCountedOnce() {
         val (t, known) = known(Language.SWEDISH, "jag", "dricker")
         assertEquals(0, t.unknownWords("Jag dricker.", known))

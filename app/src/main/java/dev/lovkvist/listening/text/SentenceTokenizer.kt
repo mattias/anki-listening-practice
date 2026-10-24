@@ -15,6 +15,9 @@ interface SentenceTokenizer {
      */
     fun unknownWords(sentence: String, known: Set<String>): Int?
 
+    /** Where in [sentence] the words that aren't in [known] are, as character ranges. */
+    fun unknownRanges(sentence: String, known: Set<String>): List<IntRange>
+
     /** True only if every word in [sentence] is in [known]. */
     fun isFullyKnown(sentence: String, known: Set<String>): Boolean = unknownWords(sentence, known) == 0
 }

@@ -113,6 +113,14 @@ class SentenceRepository @Inject constructor(
         }
     }
 
+    /** Where the words of [text] that aren't known are, to highlight them. */
+    suspend fun unknownRanges(text: String): List<IntRange> = mutex.withLock {
+        val language = settings.current().language
+        val tokenizer = tokenizers.forLanguage(language)
+        val known = (knownWords.words(language) + loadCardWords(language)).mapTo(HashSet(), tokenizer::normalize)
+        withContext(Dispatchers.Default) { tokenizer.unknownRanges(text, known) }
+    }
+
     suspend fun markCrystalClear(id: Long) {
         val until = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(COOLDOWN_DAYS)
         val current = dao.get(id) ?: SentenceState(id)

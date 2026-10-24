@@ -5,8 +5,11 @@ import com.atilika.kuromoji.ipadic.Tokenizer
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** A content word in a sentence: its dictionary form plus the forms we accept as "known". */
-data class Word(val baseForm: String, val candidates: Set<String>)
+/**
+ * A content word in a sentence: its dictionary form plus the forms we accept as "known", and
+ * where it is in the sentence.
+ */
+data class Word(val baseForm: String, val candidates: Set<String>, val range: IntRange = IntRange.EMPTY)
 
 @Singleton
 class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
@@ -19,7 +22,7 @@ class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
             .map { t ->
                 val base = t.baseForm.takeUnless { it.isNullOrBlank() || it == "*" } ?: t.surface
                 val reading = t.reading.takeUnless { it.isNullOrBlank() || it == "*" }?.let(::toHiragana)
-                Word(base, setOfNotNull(base, t.surface, reading))
+                Word(base, setOfNotNull(base, t.surface, reading), t.position until t.position + t.surface.length)
             }
 
     /** Known lists are matched as written: kanji and kana spellings are told apart by [words]. */
@@ -35,6 +38,9 @@ class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
         if (words.isEmpty()) return null
         return words.filter { w -> w.candidates.none { it in known } }.distinctBy { it.baseForm }.size
     }
+
+    override fun unknownRanges(sentence: String, known: Set<String>): List<IntRange> =
+        words(sentence).filter { w -> w.candidates.none { it in known } }.map { it.range }
 
     /**
      * Generates Anki bracket furigana (`食[た]べる`) from Kuromoji's readings, for text that

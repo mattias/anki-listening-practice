@@ -42,7 +42,8 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   known: in your word list (from [Jiten](https://jiten.moe) or Anki Miner) or the target word
   (e.g. *Expression*) of one of your cards.
   Want more sentences? Under **Settings → Known words** you can allow up to 1–5 unknown words
-  per sentence (n+1 to n+5); the default is n+0.
+  per sentence (n+1 to n+5); the default is n+0. The unknown words are then marked in the
+  sentence when you show the text, so you can see which word was new.
 - **Looping audio** — adjustable speed (0.5x–1.5x) and pause between repeats (0–5 s), set from
   the chips under the sentence. A ring around the play button shows how far the sentence (or,
   with auto Crystal Clear, all its plays) has come.

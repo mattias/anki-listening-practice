@@ -30,6 +30,13 @@ class JapaneseTokenizerTest {
     }
 
     @Test
+    fun unknownWordsAreFoundWhereTheyAre() {
+        val known = setOf("私", "は", "を", "ます", "た")
+        // 本 at 2 and 読み (読む) at 4–5.
+        assertEquals(listOf(2..2, 4..5), tokenizer.unknownRanges("私は本を読みました。", known))
+    }
+
+    @Test
     fun kanaSpellingInKnownListCounts() {
         // Known list has the kana spelling; the sentence uses kanji.
         val known = setOf("わたし", "は", "ねこ", "が", "好き", "です")

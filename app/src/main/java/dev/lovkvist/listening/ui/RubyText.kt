@@ -16,8 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
 import dev.lovkvist.listening.data.anki.AnkiText
 
 /**
@@ -39,35 +42,49 @@ fun RubyText(
     onTap: ((Int) -> Unit)? = null,
 ) {
     val groups = remember(furigana) { keepTogether(layoutUnits(furigana)) }
-    val readingStyle = style.copy(fontSize = style.fontSize * READING_SCALE, color = readingColor)
-    val markedStyle = style.copy(color = highlightColor, textDecoration = TextDecoration.Underline)
+    // Line boxes about as tall as the glyphs: the reading right on its kanji, and lines close together.
+    val (baseStyle, readingStyle) = rubyStyles(style, readingColor)
+    val markedStyle = baseStyle.copy(color = highlightColor, textDecoration = TextDecoration.Underline)
     val markedReadingStyle = readingStyle.copy(color = highlightColor)
 
-    FlowRow(modifier, horizontalArrangement = Arrangement.Center) {
+    FlowRow(modifier, horizontalArrangement = Arrangement.Center, verticalArrangement = Arrangement.spacedBy(2.dp)) {
         for (group in groups) {
             if (group.first().segment.base == "\n") {
                 Spacer(Modifier.fillMaxWidth())
                 continue
             }
-            Row {
+            // Units line up on the base text's baseline, so a character from a fallback font (?, !) sits
+            // on the same line as the rest.
+            Row(Modifier.alignBy(LastBaseline)) {
                 for (unit in group) {
                     val end = unit.start + unit.segment.base.length - 1
                     val marked = highlights.any { it.first <= end && unit.start <= it.last }
                     val tap = if (onTap != null) Modifier.clickable { onTap(unit.start) } else Modifier
-                    Column(tap, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(tap.alignBy(LastBaseline), horizontalAlignment = Alignment.CenterHorizontally) {
                         // Unannotated text still gets an empty reading line so baselines stay aligned.
                         Text(
                             unit.segment.reading.orEmpty(),
                             style = if (marked) markedReadingStyle else readingStyle,
                             maxLines = 1,
                             softWrap = false,
+                            modifier = Modifier.trimVertical(0.15f),
                         )
-                        Text(unit.segment.base, style = if (marked) markedStyle else style, maxLines = 1, softWrap = false)
+                        Text(unit.segment.base, style = if (marked) markedStyle else baseStyle, maxLines = 1, softWrap = false, modifier = Modifier.trimVertical(0.12f))
                     }
                 }
             }
         }
     }
+}
+
+/**
+ * Takes [fraction] of the height off the top and off the bottom: the empty space fonts keep above
+ * and below their glyphs, so readings sit on their kanji and lines stay close. Nothing is clipped.
+ */
+internal fun Modifier.trimVertical(fraction: Float) = layout { measurable, constraints ->
+    val p = measurable.measure(constraints)
+    val trim = (p.height * fraction).toInt()
+    layout(p.width, p.height - 2 * trim) { p.place(0, -trim) }
 }
 
 /** A piece of ruby text and where its base text starts in the whole base text. */

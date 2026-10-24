@@ -209,4 +209,9 @@
     <string name="field_preset">Laukų šablonas</string>
     <string name="presets_note">Šablonas tik užpildo toliau esančius laukų pavadinimus. Naudojamos bet kurio pastabos tipo kortelės, turinčios sakinio ir garso laukus, kad ir kaip tipas vadintųsi.</string>
     <string name="no_notes_fields">Nėra kortelių su lauku „%1$s“ ir sakinio garsu lauke „%2$s“. Patikrinkite laukų pavadinimus skiltyje Laukų šablonas ir ar eksporte buvo medijos failai.</string>
+    <string name="sleep_timer">Miego laikmatis</string>
+    <string name="minutes_short">%1$d min.</string>
+    <string name="sleep_stops_in">Sustos po %1$s</string>
+    <string name="favorite_add">Pridėti prie mėgstamų</string>
+    <string name="favorite_remove">Pašalinti iš mėgstamų</string>
 </resources>

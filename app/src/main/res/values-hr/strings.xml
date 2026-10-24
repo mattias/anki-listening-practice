@@ -209,4 +209,9 @@
     <string name="field_preset">Predložak polja</string>
     <string name="presets_note">Predložak samo ispunjava nazive polja u nastavku. Koriste se kartice bilo koje vrste bilješke s poljima rečenice i zvuka, kako god se zvala.</string>
     <string name="no_notes_fields">Nema kartica s poljem \"%1$s\" i zvukom rečenice u polju \"%2$s\". Provjeri nazive polja pod Predložak polja i je li izvoz sadržavao medije.</string>
+    <string name="sleep_timer">Mjerač vremena za spavanje</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Zaustavlja se za %1$s</string>
+    <string name="favorite_add">Dodaj u favorite</string>
+    <string name="favorite_remove">Ukloni iz favorita</string>
 </resources>

@@ -209,4 +209,9 @@
     <string name="field_preset">Πρότυπο πεδίων</string>
     <string name="presets_note">Ένα πρότυπο απλώς συμπληρώνει τα ονόματα πεδίων παρακάτω. Χρησιμοποιούνται κάρτες κάθε τύπου σημείωσης που έχει τα πεδία πρότασης και ήχου, όπως κι αν λέγεται.</string>
     <string name="no_notes_fields">Δεν υπάρχουν κάρτες με πεδίο «%1$s» και ήχο πρότασης σε πεδίο «%2$s». Έλεγξε τα ονόματα πεδίων στο Πρότυπο πεδίων και ότι η εξαγωγή περιείχε πολυμέσα.</string>
+    <string name="sleep_timer">Χρονοδιακόπτης ύπνου</string>
+    <string name="minutes_short">%1$d λεπ.</string>
+    <string name="sleep_stops_in">Σταματά σε %1$s</string>
+    <string name="favorite_add">Προσθήκη στα αγαπημένα</string>
+    <string name="favorite_remove">Αφαίρεση από τα αγαπημένα</string>
 </resources>

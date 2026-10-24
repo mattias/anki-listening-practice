@@ -209,4 +209,9 @@
     <string name="field_preset">Mezősablon</string>
     <string name="presets_note">A sablon csak kitölti az alábbi mezőneveket. Minden jegyzettípus kártyái használhatók, amelyekben megvannak a mondat- és hangmezők, bármi is a típus neve.</string>
     <string name="no_notes_fields">Nincs olyan kártya, amelynek van „%1$s” mezője és mondathangja a(z) „%2$s” mezőben. Ellenőrizd a mezőneveket a Mezősablonban, és hogy az export tartalmazta-e a médiát.</string>
+    <string name="sleep_timer">Elalvási időzítő</string>
+    <string name="minutes_short">%1$d perc</string>
+    <string name="sleep_stops_in">Leáll: %1$s múlva</string>
+    <string name="favorite_add">Hozzáadás a kedvencekhez</string>
+    <string name="favorite_remove">Eltávolítás a kedvencek közül</string>
 </resources>

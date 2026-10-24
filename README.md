@@ -27,7 +27,8 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   Polish, Lithuanian, Danish, Turkish, Indonesian, Russian, Arabic, Thai, Persian, Slovenian,
   Ukrainian, Vietnamese and Hebrew — plus Tagalog and Taiwanese (Taigi, 台語). Anki decks, known
   words, videos, the note type preset and the practice source are kept per language: a deck
-  belongs to the language selected when you import it.
+  belongs to the language selected when you import it. Star the languages you switch between
+  in the language menu to keep them at the top.
 - **Taiwanese** — Han characters, Tâi-lô/POJ romanization (hyphenated syllables like *Tâi-gí*)
   or a mix. Han text is split into words like Chinese, and an optional Tâi-lô field shows the
   reading above the characters, like pinyin. Text is drawn with Taiwanese glyph forms.
@@ -79,6 +80,8 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
 - **Hands-free** — move on automatically after 3, 5, 10 or 20 plays: each sentence repeats that
   many times, then counts as Crystal Clear (or is skipped, if you choose *Skip*) and the next one
   starts, so you can listen on the go.
+- **Sleep timer** — pause playback after 10 to 60 minutes, from the playback settings (the
+  chips under the sentence); the time left shows under the play button.
 - **Headset and notification controls** — play/pause from your headset button; double-tap it
   (or press *next*) to skip, *previous* plays the sentence again. While audio plays, a media
   notification has play/pause, replay, skip and Crystal Clear, and practice keeps going with the

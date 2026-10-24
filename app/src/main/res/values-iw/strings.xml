@@ -209,4 +209,9 @@
     <string name="field_preset">תבנית שדות</string>
     <string name="presets_note">תבנית רק ממלאת את שמות השדות למטה. כרטיסים מכל סוג פתק שיש בו שדות משפט ושמע ישמשו, לא משנה איך הוא נקרא.</string>
     <string name="no_notes_fields">אין כרטיסים עם שדה \"%1$s\" ושמע של משפט בשדה \"%2$s\". בדקו את שמות השדות בתבנית שדות, ושהייצוא כלל מדיה.</string>
+    <string name="sleep_timer">טיימר שינה</string>
+    <string name="minutes_short">%1$d דק׳</string>
+    <string name="sleep_stops_in">ייעצר בעוד %1$s</string>
+    <string name="favorite_add">הוספה למועדפים</string>
+    <string name="favorite_remove">הסרה מהמועדפים</string>
 </resources>

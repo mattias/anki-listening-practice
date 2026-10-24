@@ -209,4 +209,9 @@
     <string name="field_preset">Feltmal</string>
     <string name="presets_note">En mal fyller bare ut feltnavnene nedenfor. Kort av alle notattyper som har setnings- og lydfeltene, brukes, uansett hva notattypen heter.</string>
     <string name="no_notes_fields">Ingen kort med et felt \"%1$s\" og setningslyd i et felt \"%2$s\". Sjekk feltnavnene under Feltmal, og at eksporten inneholdt medier.</string>
+    <string name="sleep_timer">Sovetimer</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Stopper om %1$s</string>
+    <string name="favorite_add">Legg til i favoritter</string>
+    <string name="favorite_remove">Fjern fra favoritter</string>
 </resources>

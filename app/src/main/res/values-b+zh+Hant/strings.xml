@@ -209,4 +209,9 @@
     <string name="field_preset">欄位預設</string>
     <string name="presets_note">預設只會填寫下面的欄位名稱。只要有句子欄位和音訊欄位，任何筆記類型的卡片都會被使用，無論筆記類型叫什麼。</string>
     <string name="no_notes_fields">沒有卡片同時具有「%1$s」欄位和「%2$s」欄位中的句子音訊。請在「欄位預設」中檢查欄位名稱，並確認匯出時包含了媒體。</string>
+    <string name="sleep_timer">睡眠計時器</string>
+    <string name="minutes_short">%1$d 分鐘</string>
+    <string name="sleep_stops_in">%1$s 後停止</string>
+    <string name="favorite_add">加入收藏</string>
+    <string name="favorite_remove">取消收藏</string>
 </resources>

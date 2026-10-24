@@ -209,4 +209,9 @@
     <string name="field_preset">ค่าที่ตั้งไว้ของฟิลด์</string>
     <string name="presets_note">ค่าที่ตั้งไว้แค่กรอกชื่อฟิลด์ด้านล่างให้ การ์ดของโน้ตทุกประเภทที่มีฟิลด์ประโยคและเสียงจะถูกใช้ ไม่ว่าประเภทโน้ตจะชื่ออะไร</string>
     <string name="no_notes_fields">ไม่มีการ์ดที่มีฟิลด์ \"%1$s\" และเสียงประโยคในฟิลด์ \"%2$s\" ตรวจสอบชื่อฟิลด์ใน ค่าที่ตั้งไว้ของฟิลด์ และว่าไฟล์ส่งออกมีสื่อด้วย</string>
+    <string name="sleep_timer">ตั้งเวลาปิด</string>
+    <string name="minutes_short">%1$d นาที</string>
+    <string name="sleep_stops_in">หยุดในอีก %1$s</string>
+    <string name="favorite_add">เพิ่มในรายการโปรด</string>
+    <string name="favorite_remove">นำออกจากรายการโปรด</string>
 </resources>

@@ -209,4 +209,9 @@
     <string name="field_preset">Modello di campi</string>
     <string name="presets_note">Un modello compila solo i nomi dei campi qui sotto. Si usano le carte di qualsiasi tipo di nota che abbia i campi della frase e dell\'audio, comunque si chiami.</string>
     <string name="no_notes_fields">Nessuna carta con un campo \"%1$s\" e l\'audio della frase in un campo \"%2$s\". Controlla i nomi dei campi in Modello di campi e che l\'esportazione includesse i media.</string>
+    <string name="sleep_timer">Timer di spegnimento</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Si ferma tra %1$s</string>
+    <string name="favorite_add">Aggiungi ai preferiti</string>
+    <string name="favorite_remove">Rimuovi dai preferiti</string>
 </resources>

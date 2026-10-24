@@ -209,4 +209,9 @@
     <string name="field_preset">Plantilla de campos</string>
     <string name="presets_note">Una plantilla solo rellena los nombres de campo de abajo. Se usan las tarjetas de cualquier tipo de nota que tenga los campos de frase y audio, se llame como se llame.</string>
     <string name="no_notes_fields">No hay tarjetas con un campo «%1$s» y audio de la frase en un campo «%2$s». Revisa los nombres de campo en Plantilla de campos y que la exportación incluyera los archivos multimedia.</string>
+    <string name="sleep_timer">Temporizador de apagado</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Se detiene en %1$s</string>
+    <string name="favorite_add">Añadir a favoritos</string>
+    <string name="favorite_remove">Quitar de favoritos</string>
 </resources>

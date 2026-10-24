@@ -209,4 +209,9 @@
     <string name="field_preset">Modelo de campos</string>
     <string name="presets_note">Um modelo só preenche os nomes dos campos abaixo. São usados os cartões de qualquer tipo de nota que tenha os campos de frase e de áudio, seja qual for o nome.</string>
     <string name="no_notes_fields">Nenhum cartão com um campo \"%1$s\" e áudio da frase num campo \"%2$s\". Verifique os nomes dos campos em Modelo de campos e se a exportação incluiu a mídia.</string>
+    <string name="sleep_timer">Timer de sono</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Para em %1$s</string>
+    <string name="favorite_add">Adicionar aos favoritos</string>
+    <string name="favorite_remove">Remover dos favoritos</string>
 </resources>

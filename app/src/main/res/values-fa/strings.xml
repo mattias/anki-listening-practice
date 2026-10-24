@@ -209,4 +209,9 @@
     <string name="field_preset">الگوی فیلدها</string>
     <string name="presets_note">الگو فقط نام فیلدهای زیر را پر می‌کند. کارت‌های هر نوع یادداشتی که فیلدهای جمله و صدا را دارد استفاده می‌شوند، نامش هر چه باشد.</string>
     <string name="no_notes_fields">هیچ کارتی با فیلد «%1$s» و صدای جمله در فیلد «%2$s» نیست. نام فیلدها را در الگوی فیلدها بررسی کنید و اینکه خروجی شامل رسانه بوده است.</string>
+    <string name="sleep_timer">زمان‌سنج خواب</string>
+    <string name="minutes_short">%1$d دقیقه</string>
+    <string name="sleep_stops_in">توقف پس از %1$s</string>
+    <string name="favorite_add">افزودن به برگزیده‌ها</string>
+    <string name="favorite_remove">حذف از برگزیده‌ها</string>
 </resources>

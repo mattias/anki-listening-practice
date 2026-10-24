@@ -209,4 +209,9 @@
     <string name="field_preset">Fältmall</string>
     <string name="presets_note">En mall fyller bara i fältnamnen nedan. Kort av alla notistyper som har menings- och ljudfälten används, oavsett vad notistypen heter.</string>
     <string name="no_notes_fields">Inga kort med ett fält \"%1$s\" och meningsljud i ett fält \"%2$s\". Kontrollera fältnamnen under Fältmall, och att exporten innehöll media.</string>
+    <string name="sleep_timer">Insomningstimer</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Stannar om %1$s</string>
+    <string name="favorite_add">Lägg till i favoriter</string>
+    <string name="favorite_remove">Ta bort från favoriter</string>
 </resources>

@@ -209,4 +209,9 @@
     <string name="field_preset">Шаблон полів</string>
     <string name="presets_note">Шаблон лише заповнює назви полів нижче. Використовуються картки будь-якого типу нотаток із полями речення й аудіо, хоч як би він називався.</string>
     <string name="no_notes_fields">Немає карток із полем «%1$s» і аудіо речення в полі «%2$s». Перевірте назви полів у розділі «Шаблон полів» і чи експорт містив медіафайли.</string>
+    <string name="sleep_timer">Таймер сну</string>
+    <string name="minutes_short">%1$d хв</string>
+    <string name="sleep_stops_in">Зупиниться через %1$s</string>
+    <string name="favorite_add">Додати до вибраного</string>
+    <string name="favorite_remove">Прибрати з вибраного</string>
 </resources>

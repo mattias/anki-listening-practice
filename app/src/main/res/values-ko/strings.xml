@@ -209,4 +209,9 @@
     <string name="field_preset">필드 프리셋</string>
     <string name="presets_note">프리셋은 아래 필드 이름만 채웁니다. 문장 필드와 오디오 필드가 있으면 노트 유형 이름과 관계없이 모든 카드가 사용됩니다.</string>
     <string name="no_notes_fields">\"%1$s\" 필드가 있고 \"%2$s\" 필드에 문장 오디오가 있는 카드가 없습니다. 필드 프리셋에서 필드 이름을 확인하고, 내보내기에 미디어가 포함되었는지 확인하세요.</string>
+    <string name="sleep_timer">취침 타이머</string>
+    <string name="minutes_short">%1$d분</string>
+    <string name="sleep_stops_in">%1$s 후 정지</string>
+    <string name="favorite_add">즐겨찾기에 추가</string>
+    <string name="favorite_remove">즐겨찾기에서 삭제</string>
 </resources>

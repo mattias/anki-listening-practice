@@ -209,4 +209,9 @@
     <string name="field_preset">Plantilla de camps</string>
     <string name="presets_note">Una plantilla només omple els noms de camp de sota. S\'utilitzen les targetes de qualsevol tipus de nota que tingui els camps de frase i d\'àudio, es digui com es digui.</string>
     <string name="no_notes_fields">No hi ha cap targeta amb un camp «%1$s» i l\'àudio de la frase en un camp «%2$s». Comprova els noms de camp a Plantilla de camps i que l\'exportació inclogués els fitxers multimèdia.</string>
+    <string name="sleep_timer">Temporitzador per dormir</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">S\'atura d\'aquí a %1$s</string>
+    <string name="favorite_add">Afegeix als preferits</string>
+    <string name="favorite_remove">Treu dels preferits</string>
 </resources>

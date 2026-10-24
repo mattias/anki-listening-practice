@@ -209,4 +209,9 @@
     <string name="field_preset">Predloga polj</string>
     <string name="presets_note">Predloga le izpolni imena polj spodaj. Uporabijo se kartice katere koli vrste zapiska s polji za stavek in zvok, ne glede na njeno ime.</string>
     <string name="no_notes_fields">Ni kartic s poljem »%1$s« in zvokom stavka v polju »%2$s«. Preveri imena polj pod Predloga polj in ali je izvoz vseboval medije.</string>
+    <string name="sleep_timer">Časovnik za spanje</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Ustavi se čez %1$s</string>
+    <string name="favorite_add">Dodaj med priljubljene</string>
+    <string name="favorite_remove">Odstrani iz priljubljenih</string>
 </resources>

@@ -209,4 +209,9 @@
     <string name="field_preset">Feldvorlage</string>
     <string name="presets_note">Eine Vorlage füllt nur die Feldnamen unten aus. Karten jedes Notiztyps mit den Satz- und Audiofeldern werden verwendet, egal wie der Notiztyp heißt.</string>
     <string name="no_notes_fields">Keine Karten mit einem Feld \"%1$s\" und Satzaudio in einem Feld \"%2$s\". Prüfe die Feldnamen unter Feldvorlage und ob der Export Medien enthielt.</string>
+    <string name="sleep_timer">Schlaf-Timer</string>
+    <string name="minutes_short">%1$d Min.</string>
+    <string name="sleep_stops_in">Stoppt in %1$s</string>
+    <string name="favorite_add">Zu Favoriten hinzufügen</string>
+    <string name="favorite_remove">Aus Favoriten entfernen</string>
 </resources>

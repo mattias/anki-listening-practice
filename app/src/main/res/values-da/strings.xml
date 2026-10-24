@@ -209,4 +209,9 @@
     <string name="field_preset">Feltskabelon</string>
     <string name="presets_note">En skabelon udfylder kun feltnavnene nedenfor. Kort af enhver notetype med sætnings- og lydfelterne bruges, uanset hvad notetypen hedder.</string>
     <string name="no_notes_fields">Ingen kort med et felt \"%1$s\" og sætningslyd i et felt \"%2$s\". Tjek feltnavnene under Feltskabelon, og at eksporten indeholdt medier.</string>
+    <string name="sleep_timer">Sove-timer</string>
+    <string name="minutes_short">%1$d min.</string>
+    <string name="sleep_stops_in">Stopper om %1$s</string>
+    <string name="favorite_add">Føj til favoritter</string>
+    <string name="favorite_remove">Fjern fra favoritter</string>
 </resources>

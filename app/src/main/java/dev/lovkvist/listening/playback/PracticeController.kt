@@ -1,6 +1,7 @@
 package dev.lovkvist.listening.playback
 
 import android.content.Context
+import android.os.SystemClock
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -23,6 +24,8 @@ import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.text.Language
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -134,6 +137,14 @@ class PracticeController @Inject constructor(
     val language: StateFlow<Language> = settings.settings.map { it.language }
         .stateIn(scope, SharingStarted.Eagerly, Language.JAPANESE)
 
+    /** Starred languages, listed first in the language menu. */
+    val favoriteLanguages: StateFlow<Set<Language>> = settings.settings.map { it.favoriteLanguages }
+        .stateIn(scope, SharingStarted.Eagerly, emptySet())
+
+    fun toggleFavoriteLanguage(l: Language) {
+        scope.launch { settings.toggleFavoriteLanguage(l) }
+    }
+
     val source: StateFlow<PracticeSource> = settings.settings.map { it.source }
         .stateIn(scope, SharingStarted.Eagerly, PracticeSource.Anki)
 
@@ -229,6 +240,32 @@ class PracticeController @Inject constructor(
     fun setAutoAdvanceSkip(skip: Boolean) {
         _autoAdvanceSkip.value = skip
         scope.launch { settings.setAutoAdvanceSkip(skip) }
+    }
+
+    private val _sleepAt = MutableStateFlow<Long?>(null)
+    /** When the sleep timer pauses playback, in [SystemClock.elapsedRealtime] time; null = off. */
+    val sleepAt: StateFlow<Long?> = _sleepAt.asStateFlow()
+    private val _sleepMinutes = MutableStateFlow(0)
+    /** The minutes chosen for the running timer; 0 when it is off. */
+    val sleepMinutes: StateFlow<Int> = _sleepMinutes.asStateFlow()
+    private var sleepJob: Job? = null
+
+    /** Pauses playback after [minutes] (0 turns the timer off). Not kept across app restarts. */
+    fun setSleepTimer(minutes: Int) {
+        sleepJob?.cancel()
+        _sleepMinutes.value = maxOf(minutes, 0)
+        if (minutes <= 0) {
+            _sleepAt.value = null
+            return
+        }
+        val ms = minutes * 60_000L
+        _sleepAt.value = SystemClock.elapsedRealtime() + ms
+        sleepJob = scope.launch {
+            delay(ms)
+            player.pause()
+            _sleepAt.value = null
+            _sleepMinutes.value = 0
+        }
     }
 
     /**

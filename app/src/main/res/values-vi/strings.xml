@@ -209,4 +209,9 @@
     <string name="field_preset">Mẫu trường</string>
     <string name="presets_note">Mẫu chỉ điền sẵn tên các trường bên dưới. Thẻ của bất kỳ kiểu ghi chú nào có trường câu và trường âm thanh đều được dùng, dù kiểu đó tên là gì.</string>
     <string name="no_notes_fields">Không có thẻ nào có trường \"%1$s\" và âm thanh câu trong trường \"%2$s\". Hãy kiểm tra tên trường trong Mẫu trường, và bản xuất có kèm tệp media.</string>
+    <string name="sleep_timer">Hẹn giờ ngủ</string>
+    <string name="minutes_short">%1$d phút</string>
+    <string name="sleep_stops_in">Dừng sau %1$s</string>
+    <string name="favorite_add">Thêm vào yêu thích</string>
+    <string name="favorite_remove">Xóa khỏi yêu thích</string>
 </resources>

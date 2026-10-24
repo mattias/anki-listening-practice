@@ -209,4 +209,9 @@
     <string name="field_preset">Veldsjabloon</string>
     <string name="presets_note">Een sjabloon vult alleen de veldnamen hieronder in. Kaarten van elk notitietype met de zins- en audiovelden worden gebruikt, hoe het notitietype ook heet.</string>
     <string name="no_notes_fields">Geen kaarten met een veld \"%1$s\" en zinsaudio in een veld \"%2$s\". Controleer de veldnamen onder Veldsjabloon, en of de export media bevatte.</string>
+    <string name="sleep_timer">Slaaptimer</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Stopt over %1$s</string>
+    <string name="favorite_add">Toevoegen aan favorieten</string>
+    <string name="favorite_remove">Verwijderen uit favorieten</string>
 </resources>

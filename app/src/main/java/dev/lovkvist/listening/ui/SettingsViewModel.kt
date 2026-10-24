@@ -114,6 +114,8 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun toggleFavoriteLanguage(l: Language) = viewModelScope.launch { settingsRepo.toggleFavoriteLanguage(l) }
+
     fun selectLanguage(l: Language) = viewModelScope.launch {
         settingsRepo.setLanguage(l)
         sentences.invalidate()

@@ -104,7 +104,7 @@ fun OnboardingScreen(vm: SettingsViewModel, onDone: () -> Unit) {
                 Spacer(Modifier.height(16.dp))
                 when (step) {
                     0 -> Welcome()
-                    1 -> StudyLanguage(s.language, vm::selectLanguage)
+                    1 -> StudyLanguage(s.language, s.favoriteLanguages, vm::selectLanguage, vm::toggleFavoriteLanguage)
                     2 -> Dictionaries(vm, s.language)
                     3 -> WordsAndCards(vm, s.language)
                     else -> Tips()
@@ -170,24 +170,25 @@ private fun ColumnScope.Welcome() {
 }
 
 @Composable
-private fun StudyLanguage(current: Language, onSelect: (Language) -> Unit) {
+private fun StudyLanguage(current: Language, favorites: Set<Language>, onSelect: (Language) -> Unit, onToggleFavorite: (Language) -> Unit) {
     Title(stringResource(R.string.onboarding_study_title))
     Body(stringResource(R.string.onboarding_study_body))
     Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainer) {
         Column {
-            // The current language first, so the choice already made is in view.
-            for (l in listOf(current) + Language.entries.filter { it != current }.sortedBy { it.displayName() }) {
+            // The current language first, so the choice already made is in view, then the favorites.
+            for (l in listOf(current) + languagesInOrder(favorites).filter { it != current }) {
                 val selected = l == current
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .clickable { if (!selected) onSelect(l) }
                         .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer)
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(start = 16.dp, end = 4.dp, top = 2.dp, bottom = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(l.label(), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
                     if (selected) Icon(painterResource(R.drawable.ic_check), contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    FavoriteStar(l in favorites) { onToggleFavorite(l) }
                 }
             }
         }

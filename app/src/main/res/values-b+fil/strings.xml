@@ -209,4 +209,9 @@
     <string name="field_preset">Preset ng mga field</string>
     <string name="presets_note">Pinupunan lang ng preset ang mga pangalan ng field sa ibaba. Gagamitin ang mga card ng kahit anong note type na may field ng pangungusap at audio, anuman ang pangalan nito.</string>
     <string name="no_notes_fields">Walang card na may field na \"%1$s\" at audio ng pangungusap sa field na \"%2$s\". Tingnan ang mga pangalan ng field sa Preset ng mga field, at na may kasamang media ang export.</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Hihinto sa loob ng %1$s</string>
+    <string name="favorite_add">Idagdag sa mga paborito</string>
+    <string name="favorite_remove">Alisin sa mga paborito</string>
 </resources>

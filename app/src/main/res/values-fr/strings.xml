@@ -209,4 +209,9 @@
     <string name="field_preset">Modèle de champs</string>
     <string name="presets_note">Un modèle ne fait que remplir les noms de champs ci-dessous. Les cartes de tout type de note ayant les champs de phrase et d\'audio sont utilisées, quel que soit son nom.</string>
     <string name="no_notes_fields">Aucune carte avec un champ « %1$s » et l\'audio de la phrase dans un champ « %2$s ». Vérifiez les noms de champs sous Modèle de champs, et que l\'export contenait les médias.</string>
+    <string name="sleep_timer">Minuterie de sommeil</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">S\'arrête dans %1$s</string>
+    <string name="favorite_add">Ajouter aux favoris</string>
+    <string name="favorite_remove">Retirer des favoris</string>
 </resources>

@@ -197,10 +197,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                             R.drawable.ic_headphones,
                             stringResource(R.string.study_language),
                             s.language.label(),
-                            Language.entries.sortedBy { it.displayName() }.map { l ->
-                                l.label() to { if (l != s.language) vm.selectLanguage(l) }
-                            },
-                        )
+                            emptyList(),
+                        ) { close -> LanguageMenuItems(s.language, s.favoriteLanguages, vm::selectLanguage, vm::toggleFavoriteLanguage, close) }
                     }
                     Text(
                         stringResource(R.string.kept_per_language),
@@ -427,11 +425,19 @@ private fun NavRow(@DrawableRes icon: Int, title: String, value: String, onClick
 
 /** A row that opens a menu of choices. */
 @Composable
-private fun MenuRow(@DrawableRes icon: Int, title: String, value: String, items: List<Pair<String, () -> Unit>>) {
+private fun MenuRow(
+    @DrawableRes icon: Int,
+    title: String,
+    value: String,
+    items: List<Pair<String, () -> Unit>>,
+    /** Menu content in place of [items]; gets a function that closes the menu. */
+    menu: (@Composable (close: () -> Unit) -> Unit)? = null,
+) {
     var open by remember { mutableStateOf(false) }
     Box(Modifier.fillMaxWidth().clickable { open = true }) {
         RowContent(icon, title, value, R.drawable.ic_expand_more)
         DropdownMenu(expanded = open, onDismissRequest = { open = false }, modifier = Modifier.heightIn(max = 480.dp)) {
+            menu?.invoke { open = false }
             for ((name, action) in items) {
                 DropdownMenuItem(
                     text = { Text(name) },

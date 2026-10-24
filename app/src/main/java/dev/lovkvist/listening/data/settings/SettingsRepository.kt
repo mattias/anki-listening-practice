@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.lovkvist.listening.data.PracticeSource
@@ -48,6 +49,8 @@ data class Settings(
     val autoAdvanceSkip: Boolean,
     /** The first-run setup was finished or skipped. */
     val onboardingDone: Boolean,
+    /** Languages starred in the language menus; they're listed first. */
+    val favoriteLanguages: Set<Language> = emptySet(),
 )
 
 @Singleton
@@ -66,6 +69,7 @@ class SettingsRepository @Inject constructor(
         val maxUnknownWords = intPreferencesKey("max_unknown_words")
         val autoAdvanceSkip = booleanPreferencesKey("auto_advance_skip")
         val onboardingDone = booleanPreferencesKey("setup_guide_seen")
+        val favoriteLanguages = stringSetPreferencesKey("favorite_languages")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -104,7 +108,14 @@ class SettingsRepository @Inject constructor(
             maxUnknownWords = (prefs[Keys.maxUnknownWords] ?: 0).coerceIn(0, MAX_UNKNOWN_WORDS),
             autoAdvanceSkip = prefs[Keys.autoAdvanceSkip] ?: false,
             onboardingDone = prefs[Keys.onboardingDone] ?: false,
+            favoriteLanguages = prefs[Keys.favoriteLanguages].orEmpty().mapNotNull { code -> Language.entries.firstOrNull { it.code == code } }.toSet(),
         )
+    }
+
+    /** Stars or unstars a language in the language menus. */
+    suspend fun toggleFavoriteLanguage(l: Language) = context.dataStore.edit {
+        val now = it[Keys.favoriteLanguages].orEmpty()
+        it[Keys.favoriteLanguages] = if (l.code in now) now - l.code else now + l.code
     }
 
     suspend fun setAutoClearAfter(plays: Int) = context.dataStore.edit { it[Keys.autoClearAfter] = plays }

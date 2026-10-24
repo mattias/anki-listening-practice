@@ -209,4 +209,9 @@
     <string name="field_preset">Templat kolom</string>
     <string name="presets_note">Templat hanya mengisi nama kolom di bawah. Kartu dari jenis catatan apa pun yang punya kolom kalimat dan audio akan dipakai, apa pun namanya.</string>
     <string name="no_notes_fields">Tidak ada kartu dengan kolom \"%1$s\" dan audio kalimat di kolom \"%2$s\". Periksa nama kolom di Templat kolom, dan pastikan ekspor menyertakan media.</string>
+    <string name="sleep_timer">Timer tidur</string>
+    <string name="minutes_short">%1$d mnt</string>
+    <string name="sleep_stops_in">Berhenti dalam %1$s</string>
+    <string name="favorite_add">Tambahkan ke favorit</string>
+    <string name="favorite_remove">Hapus dari favorit</string>
 </resources>

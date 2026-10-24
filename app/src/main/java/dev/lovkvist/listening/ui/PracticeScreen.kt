@@ -1,5 +1,6 @@
 package dev.lovkvist.listening.ui
 
+import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Animatable
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -45,18 +47,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,9 +73,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
@@ -123,6 +126,9 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     var tapped by remember { mutableStateOf<TappableWord?>(null) }
     val autoAdvanceSkip by practice.autoAdvanceSkip.collectAsStateWithLifecycle()
     val canUndo by practice.canUndo.collectAsStateWithLifecycle()
+    val favorites by practice.favoriteLanguages.collectAsStateWithLifecycle()
+    val sleepAt by practice.sleepAt.collectAsStateWithLifecycle()
+    val sleepMinutes by practice.sleepMinutes.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
         Column(
@@ -131,7 +137,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                 .padding(padding)
                 .padding(horizontal = 16.dp),
         ) {
-            Header(sources, source, practice::selectSource, language, practice::selectLanguage, onOpenSettings)
+            Header(sources, source, practice::selectSource, language, practice::selectLanguage, favorites, practice::toggleFavoriteLanguage, onOpenSettings)
             Spacer(Modifier.height(12.dp))
             StatsRow(stats)
 
@@ -173,6 +179,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        sleepAt?.let { at -> SleepCountdown(at) { showPlayback = true } }
                         Spacer(Modifier.height(16.dp))
                         // A new sentence gets a fresh card, so it never flips past the old one's text.
                         key(s.current.id) {
@@ -196,11 +203,12 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     }
 
     if (showPlayback) {
-        ModalBottomSheet(onDismissRequest = { showPlayback = false }) {
+        Sheet(onDismiss = { showPlayback = false }) {
             Column(
                 Modifier
                     .padding(horizontal = 24.dp)
-                    .padding(bottom = 32.dp),
+                    .padding(bottom = 32.dp)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(stringResource(R.string.playback), style = MaterialTheme.typography.titleLarge)
@@ -214,6 +222,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                     autoAdvanceSkip = autoAdvanceSkip,
                     onAutoAdvanceSkip = practice::setAutoAdvanceSkip,
                 )
+                SleepTimerSettings(sleepMinutes, practice::setSleepTimer)
             }
         }
     }
@@ -244,6 +253,8 @@ private fun Header(
     onSource: (PracticeSource) -> Unit,
     language: Language,
     onLanguage: (Language) -> Unit,
+    favorites: Set<Language>,
+    onToggleFavorite: (Language) -> Unit,
     onOpenSettings: () -> Unit,
 ) {
     val ankiName = stringResource(R.string.anki_cards)
@@ -262,7 +273,8 @@ private fun Header(
             PillMenu(
                 label = language.nativeName,
                 icon = null,
-                items = Language.entries.sortedBy { it.displayName() }.map { l -> l.label() to { if (l != language) onLanguage(l) } },
+                items = emptyList(),
+                menu = { close -> LanguageMenuItems(language, favorites, onLanguage, onToggleFavorite, close) },
             )
         }
         IconButton(onClick = onOpenSettings) {
@@ -278,6 +290,8 @@ private fun PillMenu(
     items: List<Pair<String, () -> Unit>>,
     modifier: Modifier = Modifier,
     emphasized: Boolean = false,
+    /** Menu content in place of [items]; gets a function that closes the menu. */
+    menu: (@Composable (close: () -> Unit) -> Unit)? = null,
 ) {
     var open by remember { mutableStateOf(false) }
     Box(modifier) {
@@ -299,6 +313,7 @@ private fun PillMenu(
             }
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            menu?.invoke { open = false }
             for ((name, action) in items) {
                 DropdownMenuItem(
                     text = { Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis) },
@@ -530,6 +545,43 @@ private fun PlaybackChips(speed: Float, delayMs: Long, autoClearAfter: Int, onCl
     }
 }
 
+/** Time left on the sleep timer, ticking each second; a tap opens the playback settings. */
+@Composable
+private fun SleepCountdown(at: Long, onClick: () -> Unit) {
+    var now by remember { mutableLongStateOf(SystemClock.elapsedRealtime()) }
+    LaunchedEffect(at) {
+        while (true) {
+            now = SystemClock.elapsedRealtime()
+            delay(1000)
+        }
+    }
+    val left = maxOf(0L, (at - now + 999) / 1000)
+    TextButton(onClick = onClick) {
+        Icon(painterResource(R.drawable.ic_bedtime), contentDescription = null, Modifier.size(16.dp))
+        Spacer(Modifier.width(6.dp))
+        Text(
+            stringResource(R.string.sleep_stops_in, "%d:%02d".format(left / 60, left % 60)),
+            style = MaterialTheme.typography.labelLarge,
+        )
+    }
+}
+
+/** Pauses playback after a while, for listening in bed. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SleepTimerSettings(minutes: Int, onMinutes: (Int) -> Unit) {
+    Text(stringResource(R.string.sleep_timer), style = MaterialTheme.typography.labelLarge)
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        for (m in listOf(0, 10, 15, 30, 45, 60)) {
+            FilterChip(
+                selected = m == minutes,
+                onClick = { onMinutes(m) },
+                label = { Text(if (m == 0) stringResource(R.string.off) else stringResource(R.string.minutes_short, m)) },
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PlaybackSettings(
@@ -632,10 +684,25 @@ private fun ActionButtons(onClear: () -> Unit, onSkip: () -> Unit, onBlacklist: 
 }
 
 /**
+ * A bottom sheet that Back closes (the sheet's own Back handling leaves a tall sheet open), kept
+ * clear of the navigation bar.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun Sheet(onDismiss: () -> Unit, content: @Composable () -> Unit) {
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        BackHandler { scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() } }
+        Box(Modifier.navigationBarsPadding()) { content() }
+    }
+}
+
+/**
  * A tapped word: how it counts, buttons to mark it known or ignored, and what the installed
  * dictionaries say about it (frequency, definitions, its kanji).
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun WordSheet(word: TappableWord, practice: PracticeController, onDismiss: () -> Unit) {
     val installed by practice.installedDictionaries.collectAsStateWithLifecycle()
@@ -644,11 +711,7 @@ private fun WordSheet(word: TappableWord, practice: PracticeController, onDismis
     LaunchedEffect(word) { result = runCatching { practice.lookup(word.span) }.getOrDefault(LookupResult()) }
     val tagColor = MaterialTheme.colorScheme.tertiary
 
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
-        // The sheet's own Back handling leaves this (tall, scrolling) sheet open; close it here.
-        BackHandler { scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() } }
+    Sheet(onDismiss = onDismiss) {
         Column(
             Modifier
                 .padding(horizontal = 24.dp)

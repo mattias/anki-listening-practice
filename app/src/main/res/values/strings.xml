@@ -220,4 +220,9 @@
     <string name="field_preset">Field preset</string>
     <string name="presets_note">A preset only fills in the field names below. Cards of any note type that has the sentence and audio fields are used, whatever the note type is called.</string>
     <string name="no_notes_fields">No cards with a \"%1$s\" field and sentence audio in a \"%2$s\" field. Check the field names under Field preset, and that the export included media.</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="sleep_stops_in">Stops in %1$s</string>
+    <string name="favorite_add">Add to favorites</string>
+    <string name="favorite_remove">Remove from favorites</string>
 </resources>

@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">Ustavi se čez %1$s</string>
     <string name="favorite_add">Dodaj med priljubljene</string>
     <string name="favorite_remove">Odstrani iz priljubljenih</string>
+    <string name="headset_double_tap">Dvojni dotik na slušalkah</string>
 </resources>

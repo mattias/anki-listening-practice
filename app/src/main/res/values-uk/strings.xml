@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">Зупиниться через %1$s</string>
     <string name="favorite_add">Додати до вибраного</string>
     <string name="favorite_remove">Прибрати з вибраного</string>
+    <string name="headset_double_tap">Подвійне натискання на гарнітурі</string>
 </resources>

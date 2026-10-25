@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">Stopper om %1$s</string>
     <string name="favorite_add">Føj til favoritter</string>
     <string name="favorite_remove">Fjern fra favoritter</string>
+    <string name="headset_double_tap">Dobbelttryk på headsettet</string>
 </resources>

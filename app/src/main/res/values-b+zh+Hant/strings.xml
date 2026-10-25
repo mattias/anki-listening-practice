@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">%1$s 後停止</string>
     <string name="favorite_add">加入收藏</string>
     <string name="favorite_remove">取消收藏</string>
+    <string name="headset_double_tap">耳機雙擊</string>
 </resources>

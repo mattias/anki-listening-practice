@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">หยุดในอีก %1$s</string>
     <string name="favorite_add">เพิ่มในรายการโปรด</string>
     <string name="favorite_remove">นำออกจากรายการโปรด</string>
+    <string name="headset_double_tap">แตะสองครั้งที่หูฟัง</string>
 </resources>

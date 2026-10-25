@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">Berhenti dalam %1$s</string>
     <string name="favorite_add">Tambahkan ke favorit</string>
     <string name="favorite_remove">Hapus dari favorit</string>
+    <string name="headset_double_tap">Ketuk dua kali di headset</string>
 </resources>

@@ -87,14 +87,15 @@ class PracticeController @Inject constructor(
     val player = LoopPlayer(context)
 
     /**
-     * The player the media session sees. "Next" (also a double tap on the headset button) skips
-     * the sentence and "previous" plays it again; the playlist's silent gaps stay out of sight.
+     * The player the media session sees. "Next" skips the sentence (a double tap on the headset
+     * button can mark it Crystal Clear instead) and "previous" plays it again; the playlist's
+     * silent gaps stay out of sight.
      */
     val sessionPlayer: Player = object : ForwardingPlayer(player.player) {
         override fun play() = player.play()
         override fun pause() = player.pause()
-        override fun seekToNext() = skip()
-        override fun seekToNextMediaItem() = skip()
+        override fun seekToNext() = onNext()
+        override fun seekToNextMediaItem() = onNext()
         override fun seekToPrevious() = player.restart()
         override fun seekToPreviousMediaItem() = player.restart()
     }
@@ -187,6 +188,7 @@ class PracticeController @Inject constructor(
             setDelay(s.delayMs, persist = false)
             setAutoClearAfter(s.autoClearAfter, persist = false)
             _autoAdvanceSkip.value = s.autoAdvanceSkip
+            _headsetDoubleTapClear.value = s.headsetDoubleTapClear
         }
         scope.launch {
             // Initial load, and again whenever the collection, mapping or known words change.
@@ -240,6 +242,29 @@ class PracticeController @Inject constructor(
     fun setAutoAdvanceSkip(skip: Boolean) {
         _autoAdvanceSkip.value = skip
         scope.launch { settings.setAutoAdvanceSkip(skip) }
+    }
+
+    private val _headsetDoubleTapClear = MutableStateFlow(false)
+    /** A double tap on the headset button marks Crystal Clear instead of skipping. */
+    val headsetDoubleTapClear: StateFlow<Boolean> = _headsetDoubleTapClear.asStateFlow()
+
+    fun setHeadsetDoubleTapClear(clear: Boolean) {
+        _headsetDoubleTapClear.value = clear
+        scope.launch { settings.setHeadsetDoubleTapClear(clear) }
+    }
+
+    /** When a headset press last arrived: a "next" right after it (or with it) comes from the headset. */
+    private var headsetPressAt = 0L
+
+    /** Called for each play/pause or next press from a headset. */
+    fun onHeadsetButton() {
+        headsetPressAt = SystemClock.uptimeMillis()
+    }
+
+    /** "Next": skip, or Crystal Clear when it comes from the headset (its double tap) and that's the setting. */
+    private fun onNext() {
+        val fromHeadset = SystemClock.uptimeMillis() - headsetPressAt < HEADSET_WINDOW_MS
+        if (fromHeadset && _headsetDoubleTapClear.value) crystalClear() else skip()
     }
 
     private val _sleepAt = MutableStateFlow<Long?>(null)
@@ -363,5 +388,8 @@ class PracticeController @Inject constructor(
 
     private companion object {
         const val MAX_UNDO = 50
+
+        // A headset's "next" reaches the player right after its press arrives; this leaves room to spare.
+        const val HEADSET_WINDOW_MS = 1000L
     }
 }

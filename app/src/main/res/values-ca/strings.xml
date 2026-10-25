@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">S\'atura d\'aquí a %1$s</string>
     <string name="favorite_add">Afegeix als preferits</string>
     <string name="favorite_remove">Treu dels preferits</string>
+    <string name="headset_double_tap">Doble toc als auriculars</string>
 </resources>

@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">Pysähtyy: %1$s</string>
     <string name="favorite_add">Lisää suosikkeihin</string>
     <string name="favorite_remove">Poista suosikeista</string>
+    <string name="headset_double_tap">Kaksoisnapautus kuulokkeissa</string>
 </resources>

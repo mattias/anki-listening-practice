@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">Stoppt in %1$s</string>
     <string name="favorite_add">Zu Favoriten hinzufügen</string>
     <string name="favorite_remove">Aus Favoriten entfernen</string>
+    <string name="headset_double_tap">Doppeltippen am Headset</string>
 </resources>

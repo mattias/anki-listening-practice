@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">توقف پس از %1$s</string>
     <string name="favorite_add">افزودن به برگزیده‌ها</string>
     <string name="favorite_remove">حذف از برگزیده‌ها</string>
+    <string name="headset_double_tap">دو ضربه روی هدست</string>
 </resources>

@@ -49,6 +49,8 @@ data class Settings(
     val autoAdvanceSkip: Boolean,
     /** The first-run setup was finished or skipped. */
     val onboardingDone: Boolean,
+    /** A double tap on the headset button marks Crystal Clear instead of skipping. */
+    val headsetDoubleTapClear: Boolean = false,
     /** Languages starred in the language menus; they're listed first. */
     val favoriteLanguages: Set<Language> = emptySet(),
 )
@@ -70,6 +72,7 @@ class SettingsRepository @Inject constructor(
         val autoAdvanceSkip = booleanPreferencesKey("auto_advance_skip")
         val onboardingDone = booleanPreferencesKey("setup_guide_seen")
         val favoriteLanguages = stringSetPreferencesKey("favorite_languages")
+        val headsetDoubleTapClear = booleanPreferencesKey("headset_double_tap_clear")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -108,9 +111,12 @@ class SettingsRepository @Inject constructor(
             maxUnknownWords = (prefs[Keys.maxUnknownWords] ?: 0).coerceIn(0, MAX_UNKNOWN_WORDS),
             autoAdvanceSkip = prefs[Keys.autoAdvanceSkip] ?: false,
             onboardingDone = prefs[Keys.onboardingDone] ?: false,
+            headsetDoubleTapClear = prefs[Keys.headsetDoubleTapClear] ?: false,
             favoriteLanguages = prefs[Keys.favoriteLanguages].orEmpty().mapNotNull { code -> Language.entries.firstOrNull { it.code == code } }.toSet(),
         )
     }
+
+    suspend fun setHeadsetDoubleTapClear(clear: Boolean) = context.dataStore.edit { it[Keys.headsetDoubleTapClear] = clear }
 
     /** Stars or unstars a language in the language menus. */
     suspend fun toggleFavoriteLanguage(l: Language) = context.dataStore.edit {

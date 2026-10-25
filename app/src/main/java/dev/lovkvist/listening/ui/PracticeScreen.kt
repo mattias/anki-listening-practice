@@ -129,6 +129,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     val favorites by practice.favoriteLanguages.collectAsStateWithLifecycle()
     val sleepAt by practice.sleepAt.collectAsStateWithLifecycle()
     val sleepMinutes by practice.sleepMinutes.collectAsStateWithLifecycle()
+    val headsetDoubleTapClear by practice.headsetDoubleTapClear.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
         Column(
@@ -222,6 +223,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                     autoAdvanceSkip = autoAdvanceSkip,
                     onAutoAdvanceSkip = practice::setAutoAdvanceSkip,
                 )
+                HeadsetSettings(headsetDoubleTapClear, practice::setHeadsetDoubleTapClear)
                 SleepTimerSettings(sleepMinutes, practice::setSleepTimer)
             }
         }
@@ -563,6 +565,17 @@ private fun SleepCountdown(at: Long, onClick: () -> Unit) {
             stringResource(R.string.sleep_stops_in, "%d:%02d".format(left / 60, left % 60)),
             style = MaterialTheme.typography.labelLarge,
         )
+    }
+}
+
+/** What a double tap on the headset button does: skip, or mark Crystal Clear. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun HeadsetSettings(clear: Boolean, onClear: (Boolean) -> Unit) {
+    Text(stringResource(R.string.headset_double_tap), style = MaterialTheme.typography.labelLarge)
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FilterChip(selected = !clear, onClick = { onClear(false) }, label = { Text(stringResource(R.string.skip)) })
+        FilterChip(selected = clear, onClick = { onClear(true) }, label = { Text(stringResource(R.string.crystal_clear)) })
     }
 }
 

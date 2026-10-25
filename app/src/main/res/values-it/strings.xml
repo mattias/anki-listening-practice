@@ -214,4 +214,5 @@
     <string name="sleep_stops_in">Si ferma tra %1$s</string>
     <string name="favorite_add">Aggiungi ai preferiti</string>
     <string name="favorite_remove">Rimuovi dai preferiti</string>
+    <string name="headset_double_tap">Doppio tocco sulle cuffie</string>
 </resources>

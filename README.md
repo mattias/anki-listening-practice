@@ -83,7 +83,8 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
 - **Sleep timer** — pause playback after 10 to 60 minutes, from the playback settings (the
   chips under the sentence); the time left shows under the play button.
 - **Headset and notification controls** — play/pause from your headset button; double-tap it
-  (or press *next*) to skip, *previous* plays the sentence again. While audio plays, a media
+  (or press *next*) to skip, *previous* plays the sentence again. The double tap can mark the
+  sentence Crystal Clear instead (in the playback settings). While audio plays, a media
   notification has play/pause, replay, skip and Crystal Clear, and practice keeps going with the
   screen off.
 - **Pauses for calls** — audio pauses while the phone rings or you're in a call (also app calls)

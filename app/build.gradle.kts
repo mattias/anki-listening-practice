@@ -16,8 +16,8 @@ android {
         applicationId = "dev.lovkvist.listening"
         minSdk = 26
         targetSdk = 35
-        versionCode = 17
-        versionName = "0.8.0"
+        versionCode = 18
+        versionName = "0.8.1"
         // The bundled Python runtime is large per ABI; virtually all current phones are arm64.
         ndk { abiFilters += listOf("arm64-v8a") }
     }
@@ -105,6 +105,8 @@ dependencies {
 
     // yt-dlp with its own Python runtime and QuickJS, for YouTube audio and subtitles
     implementation(libs.youtubedl.android)
+    // Offline language guess for search results (the model is bundled; nothing is sent anywhere).
+    implementation(libs.mlkit.language.id)
 
     // Yomitan dictionaries: streaming JSON (term banks reach tens of MB) and scheduled update checks
     implementation(libs.gson)

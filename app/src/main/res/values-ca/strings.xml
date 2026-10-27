@@ -223,4 +223,19 @@
     <string name="words">Paraules</string>
     <string name="chain_shrink">Treu l\'última línia de la cadena</string>
     <string name="chain_off">Desactiva la cadena</string>
+    <string name="search_youtube">Cerca a YouTube</string>
+    <string name="search_youtube_label">Cerca vídeos</string>
+    <string name="search_youtube_help">Vídeos amb subtítols. Es comprova cada resultat per veure si té parla i subtítols en %1$s; toca\'n un per baixar-lo.</string>
+    <string name="subs_manual">Subtítols</string>
+    <string name="subs_auto">Subtítols automàtics</string>
+    <string name="subs_none">Sense subtítols</string>
+    <string name="no_videos_found">No s\'ha trobat cap vídeo.</string>
+    <string name="search_failed">La cerca ha fallat: %1$s</string>
+    <string name="youtube_limited">YouTube està limitant les sol·licituds ara mateix. Torna-ho a provar més tard.</string>
+    <string name="search_limited">YouTube està limitant les sol·licituds ara mateix, així que no s\'ha comprovat la resta de vídeos. Tot i així pots tocar-ne un per baixar-lo, o tornar-ho a provar més tard.</string>
+    <string name="search_language_tip">YouTube no pot cercar per llengua. Fes servir paraules en %1$s a la cerca per trobar més vídeos en %1$s.</string>
+    <string name="show_other_languages">Probablement altres llengües: %1$d</string>
+    <string name="hide_other_languages">Amaga els vídeos en altres llengües</string>
+    <string name="subs_other_language">Una altra llengua</string>
+    <string name="subs_no_speech">No s\'ha trobat parla</string>
 </resources>

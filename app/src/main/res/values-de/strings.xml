@@ -223,4 +223,19 @@
     <string name="words">Wörter</string>
     <string name="chain_shrink">Letzte Zeile der Kette entfernen</string>
     <string name="chain_off">Kette ausschalten</string>
+    <string name="search_youtube">YouTube durchsuchen</string>
+    <string name="search_youtube_label">Nach Videos suchen</string>
+    <string name="search_youtube_help">Videos mit Untertiteln. Jedes Ergebnis wird auf gesprochenes %1$s und Untertitel geprüft; tippe eines an, um es herunterzuladen.</string>
+    <string name="subs_manual">Untertitel</string>
+    <string name="subs_auto">Auto-Untertitel</string>
+    <string name="subs_none">Keine Untertitel</string>
+    <string name="no_videos_found">Keine Videos gefunden.</string>
+    <string name="search_failed">Suche fehlgeschlagen: %1$s</string>
+    <string name="youtube_limited">YouTube begrenzt gerade die Anfragen. Versuche es später erneut.</string>
+    <string name="search_limited">YouTube begrenzt gerade die Anfragen, daher wurden die übrigen Videos nicht geprüft. Du kannst trotzdem eines antippen, um es herunterzuladen, oder es später erneut versuchen.</string>
+    <string name="search_language_tip">YouTube kann nicht nach Sprache suchen. Verwende in der Suche Wörter auf %1$s, um mehr Videos auf %1$s zu finden.</string>
+    <string name="show_other_languages">Wahrscheinlich andere Sprachen: %1$d</string>
+    <string name="hide_other_languages">Videos in anderen Sprachen ausblenden</string>
+    <string name="subs_other_language">Andere Sprache</string>
+    <string name="subs_no_speech">Keine Sprache gefunden</string>
 </resources>

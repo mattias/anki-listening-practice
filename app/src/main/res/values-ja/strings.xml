@@ -223,4 +223,19 @@
     <string name="words">単語</string>
     <string name="chain_shrink">連結の最後の行を外す</string>
     <string name="chain_off">連結をオフにする</string>
+    <string name="search_youtube">YouTubeを検索</string>
+    <string name="search_youtube_label">動画を検索</string>
+    <string name="search_youtube_help">字幕付きの動画です。各結果に%1$sの音声と字幕があるか確認します。タップするとダウンロードします。</string>
+    <string name="subs_manual">字幕</string>
+    <string name="subs_auto">自動字幕</string>
+    <string name="subs_none">字幕なし</string>
+    <string name="no_videos_found">動画が見つかりませんでした。</string>
+    <string name="search_failed">検索に失敗しました: %1$s</string>
+    <string name="youtube_limited">YouTubeが現在リクエストを制限しています。後でもう一度お試しください。</string>
+    <string name="search_limited">YouTubeが現在リクエストを制限しているため、残りの動画は確認されませんでした。動画をタップしてダウンロードするか、後でもう一度お試しください。</string>
+    <string name="search_language_tip">YouTubeでは言語で検索できません。検索には%1$sの単語を使うと、%1$sの動画が見つかりやすくなります。</string>
+    <string name="show_other_languages">おそらく他の言語: %1$d件</string>
+    <string name="hide_other_languages">他の言語の動画を隠す</string>
+    <string name="subs_other_language">別の言語</string>
+    <string name="subs_no_speech">音声が見つかりません</string>
 </resources>

@@ -1,36 +1,20 @@
 package dev.lovkvist.listening.ui
 
+import android.net.Uri
 import android.os.Build
+import android.provider.OpenableColumns
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import dev.lovkvist.listening.ui.theme.DarkMode
-import dev.lovkvist.listening.ui.theme.Palette
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -38,9 +22,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -50,15 +40,23 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,21 +65,29 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.lovkvist.listening.R
-import android.provider.OpenableColumns
 import dev.lovkvist.listening.data.anki.FieldMapping
+import dev.lovkvist.listening.data.anki.ImportedDeck
+import dev.lovkvist.listening.data.anki.Preset
 import dev.lovkvist.listening.data.dict.InstallProgress
 import dev.lovkvist.listening.data.dict.InstalledDictionary
 import dev.lovkvist.listening.data.dict.RecommendedDictionary
 import dev.lovkvist.listening.data.dict.WiktionaryCatalog
 import dev.lovkvist.listening.data.local.WordStatus
-import dev.lovkvist.listening.data.anki.ImportedDeck
-import dev.lovkvist.listening.data.anki.Preset
+import dev.lovkvist.listening.data.media.LikelyLanguage
 import dev.lovkvist.listening.data.media.MediaEntry
+import dev.lovkvist.listening.data.media.SubtitleStatus
+import dev.lovkvist.listening.data.media.VideoResult
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.data.update.UpdateState
 import dev.lovkvist.listening.l10n.AppLanguage
@@ -89,6 +95,8 @@ import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.l10n.label
 import dev.lovkvist.listening.text.Language
 import dev.lovkvist.listening.text.Reading
+import dev.lovkvist.listening.ui.theme.DarkMode
+import dev.lovkvist.listening.ui.theme.Palette
 import java.text.DateFormat
 import java.util.Date
 
@@ -583,6 +591,122 @@ private fun TranslationPicker(current: Language?, onSelect: (Language?) -> Unit)
     }
 }
 
+/**
+ * Search YouTube for videos with subtitles; a tap downloads one like a pasted link would. YouTube
+ * can't search by language, so results whose titles are clearly in another language are folded
+ * away (and not checked), and the rest are checked for subtitles in the study language.
+ */
+@Composable
+private fun YouTubeSearchSection(vm: SettingsViewModel, language: Language) {
+    val search by vm.ytSearch.collectAsStateWithLifecycle()
+    val subtitles by vm.ytSubtitles.collectAsStateWithLifecycle()
+    val likely by vm.ytLikely.collectAsStateWithLifecycle()
+    val checking by vm.ytChecking.collectAsStateWithLifecycle()
+    var query by rememberSaveable { mutableStateOf("") }
+    var showOthers by rememberSaveable { mutableStateOf(false) }
+    Text(stringResource(R.string.search_youtube), style = MaterialTheme.typography.titleMedium)
+    OutlinedTextField(
+        value = query,
+        onValueChange = { query = it },
+        label = { Text(stringResource(R.string.search_youtube_label)) },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { vm.searchYouTube(query) }),
+        trailingIcon = {
+            IconButton(onClick = { vm.searchYouTube(query) }, enabled = query.isNotBlank() && !search.searching) {
+                Icon(painterResource(R.drawable.ic_search), contentDescription = stringResource(R.string.search))
+            }
+        },
+        modifier = Modifier.fillMaxWidth(),
+    )
+    Text(
+        stringResource(R.string.search_youtube_help, language.displayName()),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    when {
+        search.searching -> CircularProgressIndicator(Modifier.size(24.dp))
+        search.error != null -> Text(
+            stringResource(R.string.search_failed, search.error.orEmpty()),
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall,
+        )
+        search.searched && search.results.isEmpty() -> Text(stringResource(R.string.no_videos_found))
+    }
+    val (others, mine) = search.results.partition { likely[it.id] == LikelyLanguage.OTHER }
+    for (r in mine) VideoRow(r, subtitles[r.id], r.id in checking) { vm.importYouTube(r.url) }
+    if (search.limited) {
+        Text(
+            stringResource(R.string.search_limited),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+        )
+    }
+    if (others.isNotEmpty()) {
+        if (mine.isEmpty()) {
+            Text(
+                stringResource(R.string.search_language_tip, language.displayName()),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        TextButton(onClick = { showOthers = !showOthers }) {
+            Text(stringResource(if (showOthers) R.string.hide_other_languages else R.string.show_other_languages, others.size))
+        }
+        if (showOthers) {
+            // Not checked, so nothing is known about their subtitles: a tap tries the download.
+            for (r in others) VideoRow(r, null, false) { vm.importYouTube(r.url) }
+        }
+    }
+}
+
+private val DIMMED = setOf(SubtitleStatus.NONE, SubtitleStatus.OTHER_LANGUAGE, SubtitleStatus.NO_SPEECH)
+
+/** One search result: title, channel and length, and what is known about its subtitles. */
+@Composable
+private fun VideoRow(video: VideoResult, status: SubtitleStatus?, checking: Boolean, onClick: () -> Unit) {
+    // Nothing to practice: no subtitles, or spoken in another language. "No speech found" is only a hint
+    // (YouTube makes no speech recognition for some languages), so those stay open to a tap.
+    val usable = status != SubtitleStatus.NONE && status != SubtitleStatus.OTHER_LANGUAGE
+    val dimmed = status in DIMMED
+    Surface(
+        onClick = onClick,
+        enabled = usable,
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        modifier = Modifier.fillMaxWidth().alpha(if (dimmed) 0.5f else 1f),
+    ) {
+        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(Modifier.weight(1f)) {
+                Text(video.title, style = MaterialTheme.typography.bodyLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    listOfNotNull(video.channel.ifBlank { null }, video.durationSeconds?.let(::formatDuration)).joinToString(" · "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            when {
+                status == SubtitleStatus.MANUAL -> Text(stringResource(R.string.subs_manual), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                status == SubtitleStatus.AUTO -> Text(stringResource(R.string.subs_auto), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.tertiary)
+                status == SubtitleStatus.NONE -> Text(stringResource(R.string.subs_none), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                status == SubtitleStatus.OTHER_LANGUAGE -> Text(stringResource(R.string.subs_other_language), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                status == SubtitleStatus.NO_SPEECH -> Text(stringResource(R.string.subs_no_speech), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                status == null && checking -> CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+            }
+        }
+    }
+}
+
+/** 1460 -> "24:20", 3725 -> "1:02:05". */
+private fun formatDuration(seconds: Long): String {
+    val h = seconds / 3600
+    val m = seconds % 3600 / 60
+    val s = seconds % 60
+    return if (h > 0) "%d:%02d:%02d".format(h, m, s) else "%d:%02d".format(m, s)
+}
+
 /** Blacklisted sentences, each with a button to bring it back into practice. */
 @Composable
 private fun Blacklist(vm: SettingsViewModel) {
@@ -680,6 +804,8 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
     val busy by vm.mediaBusy.collectAsStateWithLifecycle()
     var pickedMedia by remember { mutableStateOf<Uri?>(null) }
     var confirmRemove by remember { mutableStateOf<MediaEntry?>(null) }
+    // Leaving the page ends the search: no checking goes on in the background, and the results are forgotten.
+    DisposableEffect(Unit) { onDispose { vm.clearYouTubeSearch() } }
 
     // Two steps: the video/audio first, then its subtitle file.
     val pickSubtitles = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -722,6 +848,9 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
         }
     } else {
         Button(onClick = { pickMedia.launch(arrayOf("video/*", "audio/*")) }) { Text(stringResource(R.string.add_media)) }
+        HorizontalDivider()
+        YouTubeSearchSection(vm, language)
+        HorizontalDivider()
         var url by rememberSaveable { mutableStateOf("") }
         OutlinedTextField(
             value = url,

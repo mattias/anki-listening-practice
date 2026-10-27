@@ -223,4 +223,19 @@
     <string name="words">Palavras</string>
     <string name="chain_shrink">Remover a última linha da cadeia</string>
     <string name="chain_off">Desativar a cadeia</string>
+    <string name="search_youtube">Pesquisar no YouTube</string>
+    <string name="search_youtube_label">Pesquisar vídeos</string>
+    <string name="search_youtube_help">Vídeos com legendas. Cada resultado é verificado para fala e legendas em %1$s; toque em um para baixá-lo.</string>
+    <string name="subs_manual">Legendas</string>
+    <string name="subs_auto">Legendas automáticas</string>
+    <string name="subs_none">Sem legendas</string>
+    <string name="no_videos_found">Nenhum vídeo encontrado.</string>
+    <string name="search_failed">A pesquisa falhou: %1$s</string>
+    <string name="youtube_limited">O YouTube está limitando as solicitações agora. Tente novamente mais tarde.</string>
+    <string name="search_limited">O YouTube está limitando as solicitações agora, então o resto dos vídeos não foi verificado. Você ainda pode tocar em um para baixá-lo, ou tentar mais tarde.</string>
+    <string name="search_language_tip">O YouTube não consegue pesquisar por idioma. Use palavras em %1$s na pesquisa para encontrar mais vídeos em %1$s.</string>
+    <string name="show_other_languages">Provavelmente outros idiomas: %1$d</string>
+    <string name="hide_other_languages">Ocultar os vídeos em outros idiomas</string>
+    <string name="subs_other_language">Outro idioma</string>
+    <string name="subs_no_speech">Nenhuma fala encontrada</string>
 </resources>

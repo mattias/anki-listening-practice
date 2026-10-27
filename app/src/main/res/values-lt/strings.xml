@@ -223,4 +223,19 @@
     <string name="words">Žodžiai</string>
     <string name="chain_shrink">Pašalinti paskutinę grandinės eilutę</string>
     <string name="chain_off">Išjungti grandinę</string>
+    <string name="search_youtube">Ieškoti „YouTube“</string>
+    <string name="search_youtube_label">Ieškoti vaizdo įrašų</string>
+    <string name="search_youtube_help">Vaizdo įrašai su subtitrais. Kiekvienas rezultatas tikrinamas dėl %1$s kalbos ir subtitrų; bakstelėkite įrašą, kad jį atsisiųstumėte.</string>
+    <string name="subs_manual">Subtitrai</string>
+    <string name="subs_auto">Automatiniai subtitrai</string>
+    <string name="subs_none">Nėra subtitrų</string>
+    <string name="no_videos_found">Vaizdo įrašų nerasta.</string>
+    <string name="search_failed">Paieška nepavyko: %1$s</string>
+    <string name="youtube_limited">„YouTube“ šiuo metu riboja užklausas. Pabandykite vėliau.</string>
+    <string name="search_limited">„YouTube“ šiuo metu riboja užklausas, todėl likę vaizdo įrašai nebuvo patikrinti. Vis tiek galite bakstelėti įrašą, kad jį atsisiųstumėte, arba pabandyti vėliau.</string>
+    <string name="search_language_tip">„YouTube“ negali ieškoti pagal kalbą. Naudokite paieškoje %1$s kalbos žodžius, kad rastumėte daugiau vaizdo įrašų šia kalba.</string>
+    <string name="show_other_languages">Greičiausiai kitos kalbos: %1$d</string>
+    <string name="hide_other_languages">Slėpti vaizdo įrašus kitomis kalbomis</string>
+    <string name="subs_other_language">Kita kalba</string>
+    <string name="subs_no_speech">Kalbos nerasta</string>
 </resources>

@@ -223,4 +223,19 @@
     <string name="words">Kelimeler</string>
     <string name="chain_shrink">Zincirin son satırını kaldır</string>
     <string name="chain_off">Zinciri kapat</string>
+    <string name="search_youtube">YouTube\'da ara</string>
+    <string name="search_youtube_label">Video ara</string>
+    <string name="search_youtube_help">Altyazılı videolar. Her sonuç, %1$s konuşma ve altyazı için kontrol edilir; indirmek için birine dokun.</string>
+    <string name="subs_manual">Altyazı</string>
+    <string name="subs_auto">Otomatik altyazı</string>
+    <string name="subs_none">Altyazı yok</string>
+    <string name="no_videos_found">Video bulunamadı.</string>
+    <string name="search_failed">Arama başarısız: %1$s</string>
+    <string name="youtube_limited">YouTube şu anda istekleri sınırlıyor. Daha sonra tekrar dene.</string>
+    <string name="search_limited">YouTube şu anda istekleri sınırlıyor, bu yüzden kalan videolar kontrol edilmedi. Yine de indirmek için birine dokunabilir veya daha sonra tekrar deneyebilirsin.</string>
+    <string name="search_language_tip">YouTube dile göre arama yapamaz. %1$s dilinde daha fazla video bulmak için aramada %1$s kelimeler kullan.</string>
+    <string name="show_other_languages">Muhtemelen başka diller: %1$d</string>
+    <string name="hide_other_languages">Başka dillerdeki videoları gizle</string>
+    <string name="subs_other_language">Başka dil</string>
+    <string name="subs_no_speech">Konuşma bulunamadı</string>
 </resources>

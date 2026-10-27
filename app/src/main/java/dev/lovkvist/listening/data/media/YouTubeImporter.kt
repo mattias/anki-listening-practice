@@ -1,6 +1,7 @@
 package dev.lovkvist.listening.data.media
 
 import android.content.Context
+import android.net.Uri
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -8,15 +9,53 @@ import dev.lovkvist.listening.R
 import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.text.Language
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+
+/** A video found by [YouTubeImporter.search]. */
+data class VideoResult(
+    val id: String,
+    val title: String,
+    val channel: String,
+    /** Null for live streams and when YouTube gives none. */
+    val durationSeconds: Long?,
+    val url: String,
+)
+
+/** YouTube is limiting the requests, so asking for more now only makes it worse. */
+class RateLimitedException(message: String, cause: Throwable? = null) : IOException(message, cause)
+
+/**
+ * Whether a video is something to practice listening with in the study language. YouTube
+ * translates titles and subtitles and even dubs audio by machine, so none of those say what is
+ * really spoken; the speech-recognition track ("<code>-orig", only made when someone speaks) does.
+ */
+enum class SubtitleStatus {
+    /** Spoken in the study language, with subtitles made by people. */
+    MANUAL,
+    /** Spoken in the study language, with speech-recognition captions. */
+    AUTO,
+    /** Spoken in another language (any titles, dubs and subtitles in this one are translations). */
+    OTHER_LANGUAGE,
+    /** Subtitles, but nobody is recognized speaking: a music video with captions, say. */
+    NO_SPEECH,
+    /** No subtitles in the study language. */
+    NONE,
+    /** The check itself failed (e.g. offline); the video may still work. */
+    UNKNOWN,
+}
 
 /**
  * Downloads a YouTube video's audio and subtitles in the study language with yt-dlp (via youtubedl-android)
@@ -31,6 +70,43 @@ class YouTubeImporter @Inject constructor(
 ) {
     private val setupLock = Mutex()
     private var ready = false
+
+    /**
+     * Searches YouTube for [query], limited to videos that have captions (YouTube's "Subtitles/CC"
+     * filter, which doesn't say in which language: see [subtitleStatus]). Nothing is downloaded.
+     */
+    suspend fun search(query: String, limit: Int = SEARCH_LIMIT): List<VideoResult> {
+        setUp {}
+        // The filter's parameter goes in double-encoded, as YouTube writes it in its own links.
+        val url = "https://www.youtube.com/results?search_query=${Uri.encode(query.trim())}&sp=$CAPTIONS_FILTER"
+        return parseSearchResults(runCancellable("search", YoutubeDLRequest(url).apply {
+            addOption("--flat-playlist")
+            addOption("--dump-single-json")
+            addOption("--playlist-end", limit.toString())
+        }))
+    }
+
+    /**
+     * Whether the video at [url] has subtitles in [language] ([SubtitleStatus.UNKNOWN] if it can't
+     * be told). Throws [RateLimitedException] when YouTube starts refusing requests, so the caller
+     * can stop asking. Cancelling stops the yt-dlp process too.
+     */
+    suspend fun subtitleStatus(url: String, language: Language): SubtitleStatus =
+        try {
+            setUp {}
+            val info = JSONObject(runCancellable("subs-${url.hashCode()}", YoutubeDLRequest(url).apply {
+                addOption("--dump-single-json")
+                addOption("--skip-download")
+                addOption("--no-playlist")
+            }))
+            subtitleStatus(info, language)
+        } catch (e: RateLimitedException) {
+            throw e
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            SubtitleStatus.UNKNOWN
+        }
 
     suspend fun import(
         url: String,
@@ -47,8 +123,9 @@ class YouTubeImporter @Inject constructor(
             addOption("--no-playlist")
         }))
         val title = info.optString("title").ifBlank { "YouTube video" }
-        fun keys(name: String) = info.optJSONObject(name)?.keys()?.asSequence()?.toList().orEmpty()
-        val track = pickTrack(keys("subtitles"), keys("automatic_captions"), language)
+        fun keys(name: String) = trackNames(info, name)
+        // Only subtitles of what is spoken: a machine translation is no use as the sentences to practice.
+        val track = pickTrack(keys("subtitles"), keys("automatic_captions"), language, allowTranslated = false)
             ?: throw IOException(strings(R.string.yt_no_subtitles, title, language.displayName()))
         // The chosen translation language, else English; YouTube's machine translations count.
         val translation = listOfNotNull(translationLanguage, Language.ENGLISH.takeIf { translationLanguage != null })
@@ -117,12 +194,85 @@ class YouTubeImporter @Inject constructor(
         ready = true
     }
 
-    private fun run(request: YoutubeDLRequest, onProgress: (Float) -> Unit = {}): String =
+    companion object {
+        const val SEARCH_LIMIT = 20
+
+        /** YouTube refusing requests for a while: it wants a sign-in ("not a bot") or answers 429. */
+        internal fun isRateLimit(message: String?): Boolean {
+            val m = message.orEmpty().lowercase()
+            return "not a bot" in m || "429" in m || "too many requests" in m || "rate-limit" in m || "rate limit" in m
+        }
+        private const val CAPTIONS_FILTER = "EgIoAQ%253D%253D"
+
+        private fun trackNames(info: JSONObject, name: String) =
+            info.optJSONObject(name)?.keys()?.asSequence()?.toList().orEmpty()
+
+        /** The videos in yt-dlp's flat search result (a playlist with an "entries" array). */
+        fun parseSearchResults(json: String): List<VideoResult> {
+            val entries = JSONObject(json).optJSONArray("entries") ?: return emptyList()
+            return (0 until entries.length()).mapNotNull { i ->
+                val e = entries.optJSONObject(i) ?: return@mapNotNull null
+                val id = e.optString("id")
+                val title = e.optString("title")
+                if (id.isBlank() || title.isBlank()) return@mapNotNull null
+                VideoResult(
+                    id = id,
+                    title = title,
+                    channel = e.optString("channel").ifBlank { e.optString("uploader") },
+                    durationSeconds = e.optDouble("duration", 0.0).toLong().takeIf { it > 0 },
+                    url = e.optString("url").ifBlank { "https://www.youtube.com/watch?v=$id" },
+                )
+            }
+        }
+
+        /**
+         * Subtitle status from a video's yt-dlp info JSON. YouTube translates titles and
+         * subtitles and even dubs audio by machine, so those say nothing about what is really
+         * spoken. What does: the "-orig" speech-recognition track (it exists only where there is
+         * speech, and is for the original audio), and the video's own "language" (its original
+         * audio track). A dubbed video keeps both in its original language; a music video with
+         * captions has neither, only lots of translated subtitle tracks.
+         */
+        internal fun subtitleStatus(info: JSONObject, language: Language): SubtitleStatus {
+            val automatic = trackNames(info, "automatic_captions")
+            val spoken = automatic.filter { it.endsWith("-orig", ignoreCase = true) }.map { it.dropLast(5) } +
+                listOfNotNull(info.optString("language").takeIf { it.isNotBlank() && it != "null" })
+            val studyManual = pickTrack(trackNames(info, "subtitles"), emptyList(), language)
+            if (spoken.isNotEmpty()) {
+                if (spoken.none { language.isCaptionCode(it) }) return SubtitleStatus.OTHER_LANGUAGE
+                return if (studyManual != null) SubtitleStatus.MANUAL else SubtitleStatus.AUTO
+            }
+            return if (studyManual != null) SubtitleStatus.NO_SPEECH else SubtitleStatus.NONE
+        }
+    }
+
+    /**
+     * Runs [request] as process [processId] on the IO thread. A cancelled coroutine can't stop the
+     * blocking yt-dlp call by itself, so cancelling also kills the process.
+     */
+    private suspend fun runCancellable(processId: String, request: YoutubeDLRequest): String = coroutineScope {
+        val killer = launch(start = CoroutineStart.UNDISPATCHED) {
+            try {
+                awaitCancellation()
+            } finally {
+                // Harmless when the process has finished already.
+                YoutubeDL.getInstance().destroyProcessById(processId)
+            }
+        }
         try {
-            YoutubeDL.getInstance().execute(request, null) { progress, _, _ -> onProgress(progress) }.out
+            withContext(Dispatchers.IO) { run(request, processId = processId) }
+        } finally {
+            killer.cancel()
+        }
+    }
+
+    private fun run(request: YoutubeDLRequest, processId: String? = null, onProgress: (Float) -> Unit = {}): String =
+        try {
+            YoutubeDL.getInstance().execute(request, processId) { progress, _, _ -> onProgress(progress) }.out
         } catch (e: Exception) {
             // yt-dlp's last error line is the useful part of its output.
             val reason = e.message.orEmpty().lines().lastOrNull { it.contains("ERROR") } ?: e.message
+            if (isRateLimit(reason)) throw RateLimitedException(reason.orEmpty(), e)
             throw IOException(reason ?: "yt-dlp failed", e)
         }
 }

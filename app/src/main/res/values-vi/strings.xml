@@ -223,4 +223,19 @@
     <string name="words">Từ</string>
     <string name="chain_shrink">Xóa dòng cuối của chuỗi</string>
     <string name="chain_off">Tắt chuỗi</string>
+    <string name="search_youtube">Tìm trên YouTube</string>
+    <string name="search_youtube_label">Tìm video</string>
+    <string name="search_youtube_help">Video có phụ đề. Mỗi kết quả được kiểm tra xem có lời nói và phụ đề %1$s không; chạm vào một video để tải về.</string>
+    <string name="subs_manual">Phụ đề</string>
+    <string name="subs_auto">Phụ đề tự động</string>
+    <string name="subs_none">Không có phụ đề</string>
+    <string name="no_videos_found">Không tìm thấy video.</string>
+    <string name="search_failed">Tìm kiếm thất bại: %1$s</string>
+    <string name="youtube_limited">YouTube đang giới hạn yêu cầu. Hãy thử lại sau.</string>
+    <string name="search_limited">YouTube đang giới hạn yêu cầu nên các video còn lại chưa được kiểm tra. Bạn vẫn có thể chạm vào một video để tải về, hoặc thử lại sau.</string>
+    <string name="search_language_tip">YouTube không thể tìm theo ngôn ngữ. Hãy dùng từ tiếng %1$s trong tìm kiếm để tìm thêm video tiếng %1$s.</string>
+    <string name="show_other_languages">Có thể là ngôn ngữ khác: %1$d</string>
+    <string name="hide_other_languages">Ẩn các video ngôn ngữ khác</string>
+    <string name="subs_other_language">Ngôn ngữ khác</string>
+    <string name="subs_no_speech">Không có lời nói</string>
 </resources>

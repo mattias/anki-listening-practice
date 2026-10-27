@@ -223,4 +223,19 @@
     <string name="words">Szavak</string>
     <string name="chain_shrink">A lánc utolsó sorának eltávolítása</string>
     <string name="chain_off">Lánc kikapcsolása</string>
+    <string name="search_youtube">Keresés a YouTube-on</string>
+    <string name="search_youtube_label">Videók keresése</string>
+    <string name="search_youtube_help">Feliratos videók. Minden találatnál ellenőrizzük, hogy van-e %1$s beszéd és felirat; koppints egyre a letöltéséhez.</string>
+    <string name="subs_manual">Felirat</string>
+    <string name="subs_auto">Automatikus felirat</string>
+    <string name="subs_none">Nincs felirat</string>
+    <string name="no_videos_found">Nem található videó.</string>
+    <string name="search_failed">A keresés sikertelen: %1$s</string>
+    <string name="youtube_limited">A YouTube jelenleg korlátozza a kéréseket. Próbáld újra később.</string>
+    <string name="search_limited">A YouTube jelenleg korlátozza a kéréseket, ezért a többi videót nem ellenőriztük. Továbbra is koppinthatsz egyre a letöltéséhez, vagy megpróbálhatod később.</string>
+    <string name="search_language_tip">A YouTube nem tud nyelv szerint keresni. Használj a keresésben %1$s szavakat, hogy több %1$s videót találj.</string>
+    <string name="show_other_languages">Valószínűleg más nyelvek: %1$d</string>
+    <string name="hide_other_languages">Más nyelvű videók elrejtése</string>
+    <string name="subs_other_language">Másik nyelv</string>
+    <string name="subs_no_speech">Nincs beszéd</string>
 </resources>

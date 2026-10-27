@@ -223,4 +223,19 @@
     <string name="words">Cuvinte</string>
     <string name="chain_shrink">Elimină ultimul rând al lanțului</string>
     <string name="chain_off">Dezactivează lanțul</string>
+    <string name="search_youtube">Caută pe YouTube</string>
+    <string name="search_youtube_label">Caută videoclipuri</string>
+    <string name="search_youtube_help">Videoclipuri cu subtitrări. Fiecare rezultat este verificat pentru vorbire și subtitrări în %1$s; atinge unul ca să-l descarci.</string>
+    <string name="subs_manual">Subtitrări</string>
+    <string name="subs_auto">Subtitrări automate</string>
+    <string name="subs_none">Fără subtitrări</string>
+    <string name="no_videos_found">Nu s-au găsit videoclipuri.</string>
+    <string name="search_failed">Căutarea a eșuat: %1$s</string>
+    <string name="youtube_limited">YouTube limitează momentan cererile. Încearcă din nou mai târziu.</string>
+    <string name="search_limited">YouTube limitează momentan cererile, așa că restul videoclipurilor nu au fost verificate. Poți totuși atinge unul ca să-l descarci, sau poți încerca mai târziu.</string>
+    <string name="search_language_tip">YouTube nu poate căuta după limbă. Folosește cuvinte în %1$s în căutare ca să găsești mai multe videoclipuri în %1$s.</string>
+    <string name="show_other_languages">Probabil alte limbi: %1$d</string>
+    <string name="hide_other_languages">Ascunde videoclipurile în alte limbi</string>
+    <string name="subs_other_language">Altă limbă</string>
+    <string name="subs_no_speech">Nu s-a găsit vorbire</string>
 </resources>

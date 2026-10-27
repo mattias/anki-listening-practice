@@ -223,4 +223,19 @@
     <string name="words">Mga salita</string>
     <string name="chain_shrink">Alisin ang huling linya ng chain</string>
     <string name="chain_off">I-off ang chain</string>
+    <string name="search_youtube">Maghanap sa YouTube</string>
+    <string name="search_youtube_label">Maghanap ng mga video</string>
+    <string name="search_youtube_help">Mga video na may subtitle. Sinusuri ang bawat resulta para sa pagsasalita at mga subtitle sa %1$s; i-tap ang isa para i-download ito.</string>
+    <string name="subs_manual">Mga subtitle</string>
+    <string name="subs_auto">Auto na subtitle</string>
+    <string name="subs_none">Walang subtitle</string>
+    <string name="no_videos_found">Walang nahanap na video.</string>
+    <string name="search_failed">Nabigo ang paghahanap: %1$s</string>
+    <string name="youtube_limited">Nililimitahan ng YouTube ang mga request ngayon. Subukan muli mamaya.</string>
+    <string name="search_limited">Nililimitahan ng YouTube ang mga request ngayon, kaya hindi nasuri ang natitirang mga video. Puwede mo pa ring i-tap ang isa para i-download ito, o subukan muli mamaya.</string>
+    <string name="search_language_tip">Hindi kayang maghanap ng YouTube ayon sa wika. Gumamit ng mga salita sa %1$s sa paghahanap para makahanap ng mas maraming video sa %1$s.</string>
+    <string name="show_other_languages">Malamang ibang wika: %1$d</string>
+    <string name="hide_other_languages">Itago ang mga video sa ibang wika</string>
+    <string name="subs_other_language">Ibang wika</string>
+    <string name="subs_no_speech">Walang nahanap na pagsasalita</string>
 </resources>

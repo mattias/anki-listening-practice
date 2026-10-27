@@ -223,4 +223,19 @@
     <string name="words">Sanat</string>
     <string name="chain_shrink">Poista ketjun viimeinen rivi</string>
     <string name="chain_off">Sammuta ketju</string>
+    <string name="search_youtube">Hae YouTubesta</string>
+    <string name="search_youtube_label">Hae videoita</string>
+    <string name="search_youtube_help">Videoita, joissa on tekstitys. Jokaisesta tuloksesta tarkistetaan puhe ja tekstitys kielellä %1$s; lataa video napauttamalla sitä.</string>
+    <string name="subs_manual">Tekstitys</string>
+    <string name="subs_auto">Automaattinen tekstitys</string>
+    <string name="subs_none">Ei tekstitystä</string>
+    <string name="no_videos_found">Videoita ei löytynyt.</string>
+    <string name="search_failed">Haku epäonnistui: %1$s</string>
+    <string name="youtube_limited">YouTube rajoittaa pyyntöjä juuri nyt. Yritä myöhemmin uudelleen.</string>
+    <string name="search_limited">YouTube rajoittaa pyyntöjä juuri nyt, joten loppuja videoita ei tarkistettu. Voit silti napauttaa jotakin ladataksesi sen tai yrittää myöhemmin uudelleen.</string>
+    <string name="search_language_tip">YouTube ei voi hakea kielen mukaan. Käytä haussa sanoja kielellä %1$s löytääksesi lisää videoita kielellä %1$s.</string>
+    <string name="show_other_languages">Todennäköisesti muita kieliä: %1$d</string>
+    <string name="hide_other_languages">Piilota muunkieliset videot</string>
+    <string name="subs_other_language">Toinen kieli</string>
+    <string name="subs_no_speech">Puhetta ei löytynyt</string>
 </resources>

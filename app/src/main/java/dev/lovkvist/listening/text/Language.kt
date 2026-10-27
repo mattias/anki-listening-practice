@@ -95,6 +95,10 @@ enum class Language(
     /** The language is written and read from right to left. */
     val rightToLeft: Boolean get() = this == ARABIC || this == PERSIAN || this == HEBREW
 
+    /** True if [code], a YouTube caption language code (such as "sv", "pt-BR"), is this language. */
+    fun isCaptionCode(code: String): Boolean =
+        captionCodes.any { c -> code.equals(c, ignoreCase = true) || code.startsWith("$c-", ignoreCase = true) }
+
     /** True if a note's Language field value (e.g. "zh-Hans") is this language. */
     fun matchesTag(tag: String): Boolean {
         val t = tag.trim()

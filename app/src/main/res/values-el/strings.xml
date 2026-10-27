@@ -223,4 +223,19 @@
     <string name="words">Λέξεις</string>
     <string name="chain_shrink">Αφαίρεση της τελευταίας γραμμής της αλυσίδας</string>
     <string name="chain_off">Απενεργοποίηση της αλυσίδας</string>
+    <string name="search_youtube">Αναζήτηση στο YouTube</string>
+    <string name="search_youtube_label">Αναζήτηση βίντεο</string>
+    <string name="search_youtube_help">Βίντεο με υπότιτλους. Κάθε αποτέλεσμα ελέγχεται για ομιλία και υπότιτλους στα %1$s· πάτησε ένα για να το κατεβάσεις.</string>
+    <string name="subs_manual">Υπότιτλοι</string>
+    <string name="subs_auto">Αυτόματοι υπότιτλοι</string>
+    <string name="subs_none">Χωρίς υπότιτλους</string>
+    <string name="no_videos_found">Δεν βρέθηκαν βίντεο.</string>
+    <string name="search_failed">Η αναζήτηση απέτυχε: %1$s</string>
+    <string name="youtube_limited">Το YouTube περιορίζει αυτή τη στιγμή τα αιτήματα. Δοκίμασε ξανά αργότερα.</string>
+    <string name="search_limited">Το YouTube περιορίζει αυτή τη στιγμή τα αιτήματα, οπότε τα υπόλοιπα βίντεο δεν ελέγχθηκαν. Μπορείς πάντως να πατήσεις ένα για να το κατεβάσεις ή να δοκιμάσεις αργότερα.</string>
+    <string name="search_language_tip">Το YouTube δεν μπορεί να αναζητήσει ανά γλώσσα. Χρησιμοποίησε λέξεις στα %1$s στην αναζήτηση για να βρεις περισσότερα βίντεο στα %1$s.</string>
+    <string name="show_other_languages">Πιθανώς άλλες γλώσσες: %1$d</string>
+    <string name="hide_other_languages">Απόκρυψη βίντεο σε άλλες γλώσσες</string>
+    <string name="subs_other_language">Άλλη γλώσσα</string>
+    <string name="subs_no_speech">Δεν βρέθηκε ομιλία</string>
 </resources>

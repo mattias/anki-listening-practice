@@ -35,7 +35,12 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
 - **Videos and audio with subtitles** — pick a video or audio file plus subtitles in the language
   you study (`.srt`, `.vtt`, `.ass`). Each subtitle line is one sentence, played in order through
   the file. For Japanese, furigana is generated automatically.
-- **YouTube** — paste a link; the app checks for subtitles in your language (manual first, then
+- **YouTube** — search for videos in the app (only ones with captions). YouTube can't search by
+  language, so results whose titles are clearly in another language are folded away, and the rest are
+  checked and marked: only videos where the language is actually *spoken* count (YouTube translates
+  titles and subtitles and dubs audio by machine, so those say nothing; the speech recognition track
+  does). Videos spoken in another language, or with captions but no speech, are dimmed. At most ten
+  checks per search, one at a time, remembered for a month, to go easy on YouTube. Or paste a link; the app checks for subtitles in your language (manual first, then
   auto-generated), downloads just the audio and subtitles with
   [yt-dlp](https://github.com/yt-dlp/yt-dlp), and adds it like a local file. Subtitles in a second
   language (English by default, with English as the fallback; YouTube's machine translations
@@ -150,8 +155,8 @@ copy.
 ### Videos, audio and YouTube
 
 Under **Settings → Videos & audio**, either tap **Add video/audio + subtitles** and pick the
-media file and then its subtitle file, or paste a **YouTube link** and tap **Download from
-YouTube**. Then choose the video from the menu at the top of the practice screen. Sentences come
+media file and then its subtitle file, or search YouTube (the results show which videos have subtitles in your language; tap one to download it), or
+paste a **YouTube link** and tap **Download from YouTube**. Then choose the video from the menu at the top of the practice screen. Sentences come
 in the order they're spoken; ones with unknown words are skipped.
 
 YouTube downloads also fetch subtitles in the language under **Translations from** (English by

@@ -223,4 +223,19 @@
     <string name="words">واژه‌ها</string>
     <string name="chain_shrink">حذف آخرین سطر زنجیره</string>
     <string name="chain_off">خاموش کردن زنجیره</string>
+    <string name="search_youtube">جست‌وجو در YouTube</string>
+    <string name="search_youtube_label">جست‌وجوی ویدیو</string>
+    <string name="search_youtube_help">ویدیوهای دارای زیرنویس. هر نتیجه از نظر گفتار و زیرنویس %1$s بررسی می‌شود؛ برای بارگیری روی یکی بزنید.</string>
+    <string name="subs_manual">زیرنویس</string>
+    <string name="subs_auto">زیرنویس خودکار</string>
+    <string name="subs_none">بدون زیرنویس</string>
+    <string name="no_videos_found">ویدیویی پیدا نشد.</string>
+    <string name="search_failed">جست‌وجو ناموفق بود: %1$s</string>
+    <string name="youtube_limited">YouTube در حال حاضر درخواست‌ها را محدود می‌کند. بعداً دوباره امتحان کنید.</string>
+    <string name="search_limited">YouTube در حال حاضر درخواست‌ها را محدود می‌کند، پس بقیهٔ ویدیوها بررسی نشدند. همچنان می‌توانید روی یکی بزنید تا بارگیری شود، یا بعداً دوباره امتحان کنید.</string>
+    <string name="search_language_tip">YouTube نمی‌تواند بر اساس زبان جست‌وجو کند. در جست‌وجو از واژه‌های %1$s استفاده کنید تا ویدیوهای بیشتری به این زبان پیدا کنید.</string>
+    <string name="show_other_languages">احتمالاً زبان‌های دیگر: %1$d</string>
+    <string name="hide_other_languages">پنهان کردن ویدیوها به زبان‌های دیگر</string>
+    <string name="subs_other_language">زبان دیگر</string>
+    <string name="subs_no_speech">گفتاری پیدا نشد</string>
 </resources>

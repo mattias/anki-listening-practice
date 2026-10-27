@@ -223,4 +223,19 @@
     <string name="words">Słowa</string>
     <string name="chain_shrink">Usuń ostatnią linijkę łańcucha</string>
     <string name="chain_off">Wyłącz łańcuch</string>
+    <string name="search_youtube">Szukaj w YouTube</string>
+    <string name="search_youtube_label">Szukaj filmów</string>
+    <string name="search_youtube_help">Filmy z napisami. Każdy wynik jest sprawdzany pod kątem mowy i napisów w języku %1$s; dotknij filmu, aby go pobrać.</string>
+    <string name="subs_manual">Napisy</string>
+    <string name="subs_auto">Napisy automatyczne</string>
+    <string name="subs_none">Brak napisów</string>
+    <string name="no_videos_found">Nie znaleziono filmów.</string>
+    <string name="search_failed">Wyszukiwanie nie powiodło się: %1$s</string>
+    <string name="youtube_limited">YouTube ogranicza teraz liczbę zapytań. Spróbuj ponownie później.</string>
+    <string name="search_limited">YouTube ogranicza teraz liczbę zapytań, więc pozostałe filmy nie zostały sprawdzone. Nadal możesz dotknąć filmu, aby go pobrać, lub spróbować później.</string>
+    <string name="search_language_tip">YouTube nie potrafi wyszukiwać według języka. Użyj w wyszukiwaniu słów w języku %1$s, aby znaleźć więcej filmów w tym języku.</string>
+    <string name="show_other_languages">Prawdopodobnie inne języki: %1$d</string>
+    <string name="hide_other_languages">Ukryj filmy w innych językach</string>
+    <string name="subs_other_language">Inny język</string>
+    <string name="subs_no_speech">Nie znaleziono mowy</string>
 </resources>

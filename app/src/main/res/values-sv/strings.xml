@@ -223,4 +223,19 @@
     <string name="words">Ord</string>
     <string name="chain_shrink">Ta bort kedjans sista rad</string>
     <string name="chain_off">Stäng av kedjan</string>
+    <string name="search_youtube">Sök på YouTube</string>
+    <string name="search_youtube_label">Sök efter videor</string>
+    <string name="search_youtube_help">Videor med undertexter. Varje resultat kontrolleras för tal och undertexter på %1$s; tryck på ett för att ladda ner det.</string>
+    <string name="subs_manual">Undertexter</string>
+    <string name="subs_auto">Autoundertexter</string>
+    <string name="subs_none">Inga undertexter</string>
+    <string name="no_videos_found">Inga videor hittades.</string>
+    <string name="search_failed">Sökningen misslyckades: %1$s</string>
+    <string name="youtube_limited">YouTube begränsar förfrågningar just nu. Försök igen senare.</string>
+    <string name="search_limited">YouTube begränsar förfrågningar just nu, så resten av videorna kontrollerades inte. Du kan ändå trycka på en för att ladda ner den, eller försöka igen senare.</string>
+    <string name="search_language_tip">YouTube kan inte söka på språk. Använd ord på %1$s i sökningen för att hitta fler videor på %1$s.</string>
+    <string name="show_other_languages">Troligen andra språk: %1$d</string>
+    <string name="hide_other_languages">Dölj videorna på andra språk</string>
+    <string name="subs_other_language">Annat språk</string>
+    <string name="subs_no_speech">Inget tal hittades</string>
 </resources>

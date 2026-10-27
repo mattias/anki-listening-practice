@@ -223,4 +223,19 @@
     <string name="words">מילים</string>
     <string name="chain_shrink">הסרת השורה האחרונה בשרשרת</string>
     <string name="chain_off">כיבוי השרשרת</string>
+    <string name="search_youtube">חיפוש ב-YouTube</string>
+    <string name="search_youtube_label">חיפוש סרטונים</string>
+    <string name="search_youtube_help">סרטונים עם כתוביות. כל תוצאה נבדקת לגבי דיבור וכתוביות ב%1$s; הקישו על סרטון כדי להוריד אותו.</string>
+    <string name="subs_manual">כתוביות</string>
+    <string name="subs_auto">כתוביות אוטומטיות</string>
+    <string name="subs_none">אין כתוביות</string>
+    <string name="no_videos_found">לא נמצאו סרטונים.</string>
+    <string name="search_failed">החיפוש נכשל: %1$s</string>
+    <string name="youtube_limited">YouTube מגביל כרגע בקשות. נסו שוב מאוחר יותר.</string>
+    <string name="search_limited">YouTube מגביל כרגע בקשות, ולכן שאר הסרטונים לא נבדקו. עדיין אפשר להקיש על סרטון כדי להוריד אותו, או לנסות שוב מאוחר יותר.</string>
+    <string name="search_language_tip">YouTube לא יכול לחפש לפי שפה. השתמשו בחיפוש במילים ב%1$s כדי למצוא עוד סרטונים ב%1$s.</string>
+    <string name="show_other_languages">כנראה שפות אחרות: %1$d</string>
+    <string name="hide_other_languages">הסתרת סרטונים בשפות אחרות</string>
+    <string name="subs_other_language">שפה אחרת</string>
+    <string name="subs_no_speech">לא נמצא דיבור</string>
 </resources>

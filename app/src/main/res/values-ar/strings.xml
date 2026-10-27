@@ -223,4 +223,19 @@
     <string name="words">الكلمات</string>
     <string name="chain_shrink">إزالة آخر سطر من السلسلة</string>
     <string name="chain_off">إيقاف السلسلة</string>
+    <string name="search_youtube">البحث في YouTube</string>
+    <string name="search_youtube_label">ابحث عن فيديوهات</string>
+    <string name="search_youtube_help">فيديوهات مع ترجمات. يُفحص كل نتيجة بحثًا عن كلام وترجمات بلغة %1$s؛ انقر على فيديو لتنزيله.</string>
+    <string name="subs_manual">ترجمة</string>
+    <string name="subs_auto">ترجمة تلقائية</string>
+    <string name="subs_none">لا توجد ترجمة</string>
+    <string name="no_videos_found">لم يُعثر على فيديوهات.</string>
+    <string name="search_failed">فشل البحث: %1$s</string>
+    <string name="youtube_limited">يقيّد YouTube الطلبات حاليًا. حاول مرة أخرى لاحقًا.</string>
+    <string name="search_limited">يقيّد YouTube الطلبات حاليًا، لذا لم يُفحص باقي الفيديوهات. لا يزال بإمكانك النقر على فيديو لتنزيله، أو المحاولة لاحقًا.</string>
+    <string name="search_language_tip">لا يستطيع YouTube البحث حسب اللغة. استخدم كلمات بلغة %1$s في بحثك للعثور على مزيد من الفيديوهات بهذه اللغة.</string>
+    <string name="show_other_languages">ربما بلغات أخرى: %1$d</string>
+    <string name="hide_other_languages">إخفاء الفيديوهات بلغات أخرى</string>
+    <string name="subs_other_language">لغة أخرى</string>
+    <string name="subs_no_speech">لم يُعثر على كلام</string>
 </resources>

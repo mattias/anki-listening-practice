@@ -223,4 +223,19 @@
     <string name="words">单词</string>
     <string name="chain_shrink">移除连播的最后一句</string>
     <string name="chain_off">关闭连播</string>
+    <string name="search_youtube">搜索 YouTube</string>
+    <string name="search_youtube_label">搜索视频</string>
+    <string name="search_youtube_help">带字幕的视频。会检查每个结果是否有%1$s语音和字幕；点按即可下载。</string>
+    <string name="subs_manual">字幕</string>
+    <string name="subs_auto">自动字幕</string>
+    <string name="subs_none">无字幕</string>
+    <string name="no_videos_found">未找到视频。</string>
+    <string name="search_failed">搜索失败：%1$s</string>
+    <string name="youtube_limited">YouTube 目前正在限制请求。请稍后再试。</string>
+    <string name="search_limited">YouTube 目前正在限制请求，所以其余视频没有检查。你仍然可以点按其中一个来下载，或稍后再试。</string>
+    <string name="search_language_tip">YouTube 无法按语言搜索。在搜索中使用%1$s的词语，可以找到更多%1$s视频。</string>
+    <string name="show_other_languages">可能是其他语言：%1$d 个</string>
+    <string name="hide_other_languages">隐藏其他语言的视频</string>
+    <string name="subs_other_language">其他语言</string>
+    <string name="subs_no_speech">未发现语音</string>
 </resources>

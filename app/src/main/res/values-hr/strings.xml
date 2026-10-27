@@ -223,4 +223,19 @@
     <string name="words">Riječi</string>
     <string name="chain_shrink">Ukloni zadnji redak lanca</string>
     <string name="chain_off">Isključi lanac</string>
+    <string name="search_youtube">Pretraži YouTube</string>
+    <string name="search_youtube_label">Traži videozapise</string>
+    <string name="search_youtube_help">Videozapisi s titlovima. Svaki se rezultat provjerava ima li govora i titlova na jeziku %1$s; dodirni videozapis da ga preuzmeš.</string>
+    <string name="subs_manual">Titlovi</string>
+    <string name="subs_auto">Automatski titlovi</string>
+    <string name="subs_none">Nema titlova</string>
+    <string name="no_videos_found">Nema pronađenih videozapisa.</string>
+    <string name="search_failed">Pretraga nije uspjela: %1$s</string>
+    <string name="youtube_limited">YouTube trenutačno ograničava zahtjeve. Pokušaj ponovo kasnije.</string>
+    <string name="search_limited">YouTube trenutačno ograničava zahtjeve, pa ostali videozapisi nisu provjereni. I dalje možeš dodirnuti jedan da ga preuzmeš ili pokušati kasnije.</string>
+    <string name="search_language_tip">YouTube ne može pretraživati po jeziku. Koristi riječi na jeziku %1$s u pretrazi kako bi pronašao više videozapisa na tom jeziku.</string>
+    <string name="show_other_languages">Vjerojatno drugi jezici: %1$d</string>
+    <string name="hide_other_languages">Sakrij videozapise na drugim jezicima</string>
+    <string name="subs_other_language">Drugi jezik</string>
+    <string name="subs_no_speech">Govor nije pronađen</string>
 </resources>

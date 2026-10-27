@@ -223,4 +223,19 @@
     <string name="words">Kata</string>
     <string name="chain_shrink">Hapus baris terakhir rantai</string>
     <string name="chain_off">Matikan rantai</string>
+    <string name="search_youtube">Cari di YouTube</string>
+    <string name="search_youtube_label">Cari video</string>
+    <string name="search_youtube_help">Video dengan subtitel. Setiap hasil diperiksa untuk ucapan dan subtitel %1$s; ketuk salah satu untuk mengunduhnya.</string>
+    <string name="subs_manual">Subtitel</string>
+    <string name="subs_auto">Subtitel otomatis</string>
+    <string name="subs_none">Tanpa subtitel</string>
+    <string name="no_videos_found">Tidak ada video ditemukan.</string>
+    <string name="search_failed">Pencarian gagal: %1$s</string>
+    <string name="youtube_limited">YouTube sedang membatasi permintaan. Coba lagi nanti.</string>
+    <string name="search_limited">YouTube sedang membatasi permintaan, jadi video lainnya tidak diperiksa. Anda tetap bisa mengetuk salah satu untuk mengunduhnya, atau coba lagi nanti.</string>
+    <string name="search_language_tip">YouTube tidak bisa mencari berdasarkan bahasa. Gunakan kata dalam bahasa %1$s pada pencarian untuk menemukan lebih banyak video berbahasa %1$s.</string>
+    <string name="show_other_languages">Kemungkinan bahasa lain: %1$d</string>
+    <string name="hide_other_languages">Sembunyikan video berbahasa lain</string>
+    <string name="subs_other_language">Bahasa lain</string>
+    <string name="subs_no_speech">Tidak ada ucapan</string>
 </resources>

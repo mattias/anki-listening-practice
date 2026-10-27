@@ -223,4 +223,19 @@
     <string name="words">Ord</string>
     <string name="chain_shrink">Fjern kjedens siste linje</string>
     <string name="chain_off">Slå av kjeden</string>
+    <string name="search_youtube">Søk på YouTube</string>
+    <string name="search_youtube_label">Søk etter videoer</string>
+    <string name="search_youtube_help">Videoer med undertekster. Hvert resultat sjekkes for tale og undertekster på %1$s; trykk på ett for å laste det ned.</string>
+    <string name="subs_manual">Undertekster</string>
+    <string name="subs_auto">Autoundertekster</string>
+    <string name="subs_none">Ingen undertekster</string>
+    <string name="no_videos_found">Fant ingen videoer.</string>
+    <string name="search_failed">Søket mislyktes: %1$s</string>
+    <string name="youtube_limited">YouTube begrenser forespørsler akkurat nå. Prøv igjen senere.</string>
+    <string name="search_limited">YouTube begrenser forespørsler akkurat nå, så resten av videoene ble ikke sjekket. Du kan likevel trykke på en for å laste den ned, eller prøve igjen senere.</string>
+    <string name="search_language_tip">YouTube kan ikke søke etter språk. Bruk ord på %1$s i søket for å finne flere videoer på %1$s.</string>
+    <string name="show_other_languages">Sannsynligvis andre språk: %1$d</string>
+    <string name="hide_other_languages">Skjul videoene på andre språk</string>
+    <string name="subs_other_language">Annet språk</string>
+    <string name="subs_no_speech">Fant ikke tale</string>
 </resources>

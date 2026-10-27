@@ -234,4 +234,19 @@
     <string name="words">Words</string>
     <string name="chain_shrink">Remove the last line of the chain</string>
     <string name="chain_off">Turn the chain off</string>
+    <string name="search_youtube">Search YouTube</string>
+    <string name="search_youtube_label">Search for videos</string>
+    <string name="search_youtube_help">Videos with subtitles. Each result is checked for %1$s speech and subtitles; tap one to download it.</string>
+    <string name="subs_manual">Subtitles</string>
+    <string name="subs_auto">Auto subtitles</string>
+    <string name="subs_none">No subtitles</string>
+    <string name="no_videos_found">No videos found.</string>
+    <string name="search_failed">Search failed: %1$s</string>
+    <string name="youtube_limited">YouTube is limiting requests right now. Try again later.</string>
+    <string name="search_limited">YouTube is limiting requests right now, so the rest of the videos weren\'t checked. You can still tap one to download it, or try again later.</string>
+    <string name="search_language_tip">YouTube can\'t search by language. Use words in %1$s in your search to find videos in %1$s.</string>
+    <string name="show_other_languages">Probably other languages: %1$d</string>
+    <string name="hide_other_languages">Hide the videos in other languages</string>
+    <string name="subs_other_language">Another language</string>
+    <string name="subs_no_speech">No speech found</string>
 </resources>

@@ -223,4 +223,19 @@
     <string name="words">คำ</string>
     <string name="chain_shrink">ลบบรรทัดสุดท้ายของโซ่</string>
     <string name="chain_off">ปิดโซ่</string>
+    <string name="search_youtube">ค้นหาใน YouTube</string>
+    <string name="search_youtube_label">ค้นหาวิดีโอ</string>
+    <string name="search_youtube_help">วิดีโอที่มีคำบรรยาย ระบบจะตรวจสอบแต่ละผลลัพธ์ว่ามีเสียงพูดและคำบรรยายภาษา%1$s หรือไม่ แตะวิดีโอเพื่อดาวน์โหลด</string>
+    <string name="subs_manual">คำบรรยาย</string>
+    <string name="subs_auto">คำบรรยายอัตโนมัติ</string>
+    <string name="subs_none">ไม่มีคำบรรยาย</string>
+    <string name="no_videos_found">ไม่พบวิดีโอ</string>
+    <string name="search_failed">ค้นหาไม่สำเร็จ: %1$s</string>
+    <string name="youtube_limited">ขณะนี้ YouTube กำลังจำกัดคำขอ ลองใหม่ภายหลัง</string>
+    <string name="search_limited">ขณะนี้ YouTube กำลังจำกัดคำขอ จึงไม่ได้ตรวจสอบวิดีโอที่เหลือ คุณยังแตะวิดีโอเพื่อดาวน์โหลดได้ หรือลองใหม่ภายหลัง</string>
+    <string name="search_language_tip">YouTube ค้นหาตามภาษาไม่ได้ ใช้คำภาษา%1$s ในการค้นหาเพื่อหาวิดีโอภาษา%1$s เพิ่มขึ้น</string>
+    <string name="show_other_languages">น่าจะเป็นภาษาอื่น: %1$d</string>
+    <string name="hide_other_languages">ซ่อนวิดีโอภาษาอื่น</string>
+    <string name="subs_other_language">ภาษาอื่น</string>
+    <string name="subs_no_speech">ไม่พบเสียงพูด</string>
 </resources>

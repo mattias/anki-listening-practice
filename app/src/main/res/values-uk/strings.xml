@@ -223,4 +223,19 @@
     <string name="words">Слова</string>
     <string name="chain_shrink">Прибрати останній рядок ланцюжка</string>
     <string name="chain_off">Вимкнути ланцюжок</string>
+    <string name="search_youtube">Пошук на YouTube</string>
+    <string name="search_youtube_label">Шукати відео</string>
+    <string name="search_youtube_help">Відео із субтитрами. Кожен результат перевіряється на наявність мовлення та субтитрів мовою «%1$s»; торкніться відео, щоб завантажити його.</string>
+    <string name="subs_manual">Субтитри</string>
+    <string name="subs_auto">Автосубтитри</string>
+    <string name="subs_none">Немає субтитрів</string>
+    <string name="no_videos_found">Відео не знайдено.</string>
+    <string name="search_failed">Пошук не вдався: %1$s</string>
+    <string name="youtube_limited">YouTube зараз обмежує запити. Спробуйте пізніше.</string>
+    <string name="search_limited">YouTube зараз обмежує запити, тому решту відео не перевірено. Ви все одно можете торкнутися відео, щоб завантажити його, або спробувати пізніше.</string>
+    <string name="search_language_tip">YouTube не вміє шукати за мовою. Використовуйте в запиті слова мовою «%1$s», щоб знайти більше відео цією мовою.</string>
+    <string name="show_other_languages">Ймовірно, інші мови: %1$d</string>
+    <string name="hide_other_languages">Сховати відео іншими мовами</string>
+    <string name="subs_other_language">Інша мова</string>
+    <string name="subs_no_speech">Мовлення не знайдено</string>
 </resources>

@@ -223,4 +223,19 @@
     <string name="words">Besede</string>
     <string name="chain_shrink">Odstrani zadnjo vrstico verige</string>
     <string name="chain_off">Izklopi verigo</string>
+    <string name="search_youtube">Išči po YouTubu</string>
+    <string name="search_youtube_label">Išči videoposnetke</string>
+    <string name="search_youtube_help">Videoposnetki s podnapisi. Vsak rezultat se preveri za govor in podnapise v jeziku %1$s; tapni posnetek, da ga prenesem.</string>
+    <string name="subs_manual">Podnapisi</string>
+    <string name="subs_auto">Samodejni podnapisi</string>
+    <string name="subs_none">Brez podnapisov</string>
+    <string name="no_videos_found">Ni najdenih videoposnetkov.</string>
+    <string name="search_failed">Iskanje ni uspelo: %1$s</string>
+    <string name="youtube_limited">YouTube trenutno omejuje zahteve. Poskusi znova pozneje.</string>
+    <string name="search_limited">YouTube trenutno omejuje zahteve, zato preostali videoposnetki niso bili preverjeni. Še vedno lahko tapneš posnetek, da ga prenesem, ali poskusiš pozneje.</string>
+    <string name="search_language_tip">YouTube ne more iskati po jeziku. V iskanju uporabi besede v jeziku %1$s, da najdeš več videoposnetkov v tem jeziku.</string>
+    <string name="show_other_languages">Verjetno drugi jeziki: %1$d</string>
+    <string name="hide_other_languages">Skrij videoposnetke v drugih jezikih</string>
+    <string name="subs_other_language">Drug jezik</string>
+    <string name="subs_no_speech">Govora ni bilo najti</string>
 </resources>

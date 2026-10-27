@@ -223,4 +223,19 @@
     <string name="words">Woorden</string>
     <string name="chain_shrink">Laatste regel van de keten verwijderen</string>
     <string name="chain_off">Keten uitschakelen</string>
+    <string name="search_youtube">Zoeken op YouTube</string>
+    <string name="search_youtube_label">Video\'s zoeken</string>
+    <string name="search_youtube_help">Video\'s met ondertitels. Elk resultaat wordt gecontroleerd op gesproken %1$s en ondertitels; tik op een video om hem te downloaden.</string>
+    <string name="subs_manual">Ondertitels</string>
+    <string name="subs_auto">Automatische ondertitels</string>
+    <string name="subs_none">Geen ondertitels</string>
+    <string name="no_videos_found">Geen video\'s gevonden.</string>
+    <string name="search_failed">Zoeken mislukt: %1$s</string>
+    <string name="youtube_limited">YouTube beperkt op dit moment verzoeken. Probeer het later opnieuw.</string>
+    <string name="search_limited">YouTube beperkt op dit moment verzoeken, dus de rest van de video\'s is niet gecontroleerd. Je kunt er nog steeds een aantikken om hem te downloaden, of het later opnieuw proberen.</string>
+    <string name="search_language_tip">YouTube kan niet op taal zoeken. Gebruik woorden in het %1$s in je zoekopdracht om meer video\'s in het %1$s te vinden.</string>
+    <string name="show_other_languages">Waarschijnlijk andere talen: %1$d</string>
+    <string name="hide_other_languages">Video\'s in andere talen verbergen</string>
+    <string name="subs_other_language">Andere taal</string>
+    <string name="subs_no_speech">Geen spraak gevonden</string>
 </resources>

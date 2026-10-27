@@ -2,24 +2,10 @@ package dev.lovkvist.listening.ui
 
 import android.content.Context
 import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dev.lovkvist.listening.data.dict.DictionaryRepository
-import dev.lovkvist.listening.data.dict.InstallProgress
-import dev.lovkvist.listening.data.dict.InstalledDictionary
-import dev.lovkvist.listening.data.dict.RecommendedDictionary
-import dev.lovkvist.listening.playback.PracticeController
-import dev.lovkvist.listening.data.dict.WiktionaryCatalog
-import dev.lovkvist.listening.data.known.MyWords
-import dev.lovkvist.listening.data.local.WordStatus
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.lovkvist.listening.R
 import dev.lovkvist.listening.data.PracticeSource
 import dev.lovkvist.listening.data.SentenceRepository
@@ -27,25 +13,63 @@ import dev.lovkvist.listening.data.anki.DeckLibrary
 import dev.lovkvist.listening.data.anki.FieldMapping
 import dev.lovkvist.listening.data.anki.ImportedDeck
 import dev.lovkvist.listening.data.anki.Preset
+import dev.lovkvist.listening.data.dict.DictionaryRepository
+import dev.lovkvist.listening.data.dict.InstallProgress
+import dev.lovkvist.listening.data.dict.InstalledDictionary
+import dev.lovkvist.listening.data.dict.RecommendedDictionary
+import dev.lovkvist.listening.data.dict.WiktionaryCatalog
 import dev.lovkvist.listening.data.known.KnownWordsRepository
+import dev.lovkvist.listening.data.known.MyWords
 import dev.lovkvist.listening.data.local.SentenceState
 import dev.lovkvist.listening.data.local.SentenceStateDao
+import dev.lovkvist.listening.data.local.WordStatus
+import dev.lovkvist.listening.data.media.LikelyLanguage
 import dev.lovkvist.listening.data.media.MediaEntry
 import dev.lovkvist.listening.data.media.MediaLibrary
+import dev.lovkvist.listening.data.media.RateLimitedException
+import dev.lovkvist.listening.data.media.SubtitleCache
+import dev.lovkvist.listening.data.media.SubtitleStatus
+import dev.lovkvist.listening.data.media.TitleLanguage
+import dev.lovkvist.listening.data.media.VideoResult
 import dev.lovkvist.listening.data.media.YouTubeImporter
 import dev.lovkvist.listening.data.settings.Settings
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.l10n.displayName
+import dev.lovkvist.listening.playback.PracticeController
 import dev.lovkvist.listening.text.Language
 import dev.lovkvist.listening.ui.theme.DarkMode
+import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlinx.coroutines.withContext
+
+/** A YouTube search: running, failed ([error]), or done with [results] ([searched]). */
+data class YouTubeSearchState(
+    val searching: Boolean = false,
+    val results: List<VideoResult> = emptyList(),
+    val error: String? = null,
+    val searched: Boolean = false,
+    /** YouTube started refusing requests, so the rest was not checked. */
+    val limited: Boolean = false,
+)
+
+/** Videos checked for subtitles per search, and the pause between two checks. */
+private const val MAX_AUTO_CHECKS = 10
+private const val CHECK_PAUSE_MS = 1500L
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -60,6 +84,8 @@ class SettingsViewModel @Inject constructor(
     private val strings: Strings,
     private val dictionaries: DictionaryRepository,
     private val wiktionary: WiktionaryCatalog,
+    private val titleLanguage: TitleLanguage,
+    private val subtitleCache: SubtitleCache,
     /** The practice session: playback defaults set here apply to it right away. */
     val practice: PracticeController,
     private val myWords: MyWords,
@@ -183,6 +209,8 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun importYouTube(url: String) = viewModelScope.launch {
+        // The download shouldn't compete with checks for YouTube's attention; the results stay.
+        searchJob?.cancel()
         _mediaBusy.value = strings(R.string.starting)
         _message.value = try {
             val s = settingsRepo.current()
@@ -194,6 +222,87 @@ class SettingsViewModel @Inject constructor(
         } finally {
             _mediaBusy.value = null
         }
+    }
+
+    private val _ytSearch = MutableStateFlow(YouTubeSearchState())
+    /** The latest YouTube search and its results. */
+    val ytSearch: StateFlow<YouTubeSearchState> = _ytSearch.asStateFlow()
+
+    private val _ytSubtitles = MutableStateFlow<Map<String, SubtitleStatus>>(emptyMap())
+    /** Subtitle status by video id, for the videos that have been checked. */
+    val ytSubtitles: StateFlow<Map<String, SubtitleStatus>> = _ytSubtitles.asStateFlow()
+
+    private val _ytLikely = MutableStateFlow<Map<String, LikelyLanguage>>(emptyMap())
+    /** What each result's title says about its language. */
+    val ytLikely: StateFlow<Map<String, LikelyLanguage>> = _ytLikely.asStateFlow()
+
+    private val _ytChecking = MutableStateFlow<Set<String>>(emptySet())
+    /** The videos still waiting to be checked. */
+    val ytChecking: StateFlow<Set<String>> = _ytChecking.asStateFlow()
+
+    private var searchJob: Job? = null
+
+    /**
+     * Searches YouTube, then checks some of the results for subtitles in the study language. YouTube
+     * can't search by language and each check is several requests, so only the results that
+     * aren't clearly in another language are checked (by their titles), at most [MAX_AUTO_CHECKS],
+     * one at a time with a pause, and answers already known come from [subtitleCache]. When YouTube
+     * starts refusing requests the checking stops. Cancelling (see [clearYouTubeSearch]) stops it at
+     * once, also the yt-dlp process that is running.
+     */
+    fun searchYouTube(query: String) {
+        if (query.isBlank()) return
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            _ytSubtitles.value = emptyMap()
+            _ytLikely.value = emptyMap()
+            _ytChecking.value = emptySet()
+            _ytSearch.value = YouTubeSearchState(searching = true)
+            val language = settingsRepo.current().language
+            val results = try {
+                youTube.search(query)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: RateLimitedException) {
+                _ytSearch.value = YouTubeSearchState(error = strings(R.string.youtube_limited), limited = true)
+                return@launch
+            } catch (e: Exception) {
+                _ytSearch.value = YouTubeSearchState(error = e.message ?: e.toString())
+                return@launch
+            }
+            val likely = results.associate { it.id to titleLanguage.likely(it.title, language) }
+            val toCheck = results.filter { likely[it.id] != LikelyLanguage.OTHER }.take(MAX_AUTO_CHECKS)
+            _ytLikely.value = likely
+            _ytChecking.value = toCheck.mapTo(HashSet()) { it.id }
+            _ytSearch.value = YouTubeSearchState(results = results, searched = true)
+            try {
+                var asked = false
+                for (r in toCheck) {
+                    val status = subtitleCache.get(r.id, language) ?: try {
+                        if (asked) delay(CHECK_PAUSE_MS)
+                        asked = true
+                        youTube.subtitleStatus(r.url, language).also { subtitleCache.put(r.id, language, it) }
+                    } catch (e: RateLimitedException) {
+                        _ytSearch.update { it.copy(limited = true) }
+                        break
+                    }
+                    _ytSubtitles.update { it + (r.id to status) }
+                    _ytChecking.update { it - r.id }
+                }
+            } finally {
+                _ytChecking.value = emptySet()
+            }
+        }
+    }
+
+    /** Ends the search: stops the checking (and the yt-dlp process it runs) and forgets the results. */
+    fun clearYouTubeSearch() {
+        searchJob?.cancel()
+        searchJob = null
+        _ytSearch.value = YouTubeSearchState()
+        _ytSubtitles.value = emptyMap()
+        _ytLikely.value = emptyMap()
+        _ytChecking.value = emptySet()
     }
 
     fun setTranslation(l: Language?) = viewModelScope.launch { settingsRepo.setTranslation(l) }

@@ -215,4 +215,5 @@
     <string name="favorite_add">הוספה למועדפים</string>
     <string name="favorite_remove">הסרה מהמועדפים</string>
     <string name="headset_double_tap">הקשה כפולה באוזניות</string>
+    <string name="explain_sentence">הסבר</string>
 </resources>

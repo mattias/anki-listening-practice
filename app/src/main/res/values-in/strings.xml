@@ -215,4 +215,5 @@
     <string name="favorite_add">Tambahkan ke favorit</string>
     <string name="favorite_remove">Hapus dari favorit</string>
     <string name="headset_double_tap">Ketuk dua kali di headset</string>
+    <string name="explain_sentence">Jelaskan</string>
 </resources>

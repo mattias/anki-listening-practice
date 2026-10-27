@@ -226,4 +226,5 @@
     <string name="favorite_add">Add to favorites</string>
     <string name="favorite_remove">Remove from favorites</string>
     <string name="headset_double_tap">Double tap on the headset</string>
+    <string name="explain_sentence">Explain</string>
 </resources>

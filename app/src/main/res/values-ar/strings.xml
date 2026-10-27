@@ -215,4 +215,5 @@
     <string name="favorite_add">إضافة إلى المفضلة</string>
     <string name="favorite_remove">إزالة من المفضلة</string>
     <string name="headset_double_tap">النقر مرتين على سماعة الرأس</string>
+    <string name="explain_sentence">اشرح</string>
 </resources>

@@ -215,4 +215,5 @@
     <string name="favorite_add">Adicionar aos favoritos</string>
     <string name="favorite_remove">Remover dos favoritos</string>
     <string name="headset_double_tap">Toque duplo no fone de ouvido</string>
+    <string name="explain_sentence">Explicar</string>
 </resources>

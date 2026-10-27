@@ -215,4 +215,5 @@
     <string name="favorite_add">Legg til i favoritter</string>
     <string name="favorite_remove">Fjern fra favoritter</string>
     <string name="headset_double_tap">Dobbelttrykk på headsettet</string>
+    <string name="explain_sentence">Forklar</string>
 </resources>

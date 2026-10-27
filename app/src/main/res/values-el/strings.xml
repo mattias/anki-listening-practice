@@ -215,4 +215,5 @@
     <string name="favorite_add">Προσθήκη στα αγαπημένα</string>
     <string name="favorite_remove">Αφαίρεση από τα αγαπημένα</string>
     <string name="headset_double_tap">Διπλό πάτημα στα ακουστικά</string>
+    <string name="explain_sentence">Εξήγηση</string>
 </resources>

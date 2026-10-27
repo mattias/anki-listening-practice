@@ -215,4 +215,5 @@
     <string name="favorite_add">Dodaj u favorite</string>
     <string name="favorite_remove">Ukloni iz favorita</string>
     <string name="headset_double_tap">Dvostruki dodir na slušalicama</string>
+    <string name="explain_sentence">Objasni</string>
 </resources>

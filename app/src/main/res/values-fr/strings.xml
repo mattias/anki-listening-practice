@@ -215,4 +215,5 @@
     <string name="favorite_add">Ajouter aux favoris</string>
     <string name="favorite_remove">Retirer des favoris</string>
     <string name="headset_double_tap">Double appui sur le casque</string>
+    <string name="explain_sentence">Expliquer</string>
 </resources>

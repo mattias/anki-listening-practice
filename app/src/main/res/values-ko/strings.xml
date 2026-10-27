@@ -215,4 +215,5 @@
     <string name="favorite_add">즐겨찾기에 추가</string>
     <string name="favorite_remove">즐겨찾기에서 삭제</string>
     <string name="headset_double_tap">헤드셋 두 번 탭</string>
+    <string name="explain_sentence">설명</string>
 </resources>

@@ -50,6 +50,9 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   mark it *Known* or *Ignore*. Known words count as known from then on; ignored ones (names,
   sounds) only stop counting as unknown and aren't exported. They're listed under
   **Settings → My words**, where you can search, switch between known and ignored, or remove them.
+- **Explain a sentence** — with the text showing, *Explain* opens the Gemini app with a ready question:
+  a translation, the sentence broken down chunk by chunk and every piece of grammar explained, in
+  your app's language (the share menu opens instead if Gemini isn't installed).
 - **Yomitan dictionaries for every language** — under **Settings → Dictionaries**, install with one
   tap the five dictionaries [Hachidori](https://github.com/bee-san/hachidori) sets up by default
   for Japanese, or for any language a [Wiktionary](https://github.com/yomidevs/wiktionary-to-yomitan)

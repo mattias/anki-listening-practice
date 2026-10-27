@@ -215,4 +215,5 @@
     <string name="favorite_add">Hozzáadás a kedvencekhez</string>
     <string name="favorite_remove">Eltávolítás a kedvencek közül</string>
     <string name="headset_double_tap">Dupla koppintás a fülhallgatón</string>
+    <string name="explain_sentence">Magyarázat</string>
 </resources>

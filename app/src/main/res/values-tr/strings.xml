@@ -215,4 +215,5 @@
     <string name="favorite_add">Favorilere ekle</string>
     <string name="favorite_remove">Favorilerden çıkar</string>
     <string name="headset_double_tap">Kulaklıkta çift dokunma</string>
+    <string name="explain_sentence">Açıkla</string>
 </resources>

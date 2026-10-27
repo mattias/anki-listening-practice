@@ -215,4 +215,5 @@
     <string name="favorite_add">Pridėti prie mėgstamų</string>
     <string name="favorite_remove">Pašalinti iš mėgstamų</string>
     <string name="headset_double_tap">Dvigubas bakstelėjimas ausinėse</string>
+    <string name="explain_sentence">Paaiškinti</string>
 </resources>

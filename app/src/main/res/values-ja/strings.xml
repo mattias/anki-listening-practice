@@ -215,4 +215,5 @@
     <string name="favorite_add">お気に入りに追加</string>
     <string name="favorite_remove">お気に入りから削除</string>
     <string name="headset_double_tap">ヘッドセットのダブルタップ</string>
+    <string name="explain_sentence">解説</string>
 </resources>

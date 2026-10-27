@@ -1,5 +1,6 @@
 package dev.lovkvist.listening.ui
 
+import androidx.compose.ui.platform.LocalContext
 import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
@@ -435,6 +436,12 @@ private fun SentenceCard(
                 SentenceText(sentence, words, language, onWord, onToggle)
                 Spacer(Modifier.height(12.dp))
                 Hint(R.drawable.ic_visibility_off, stringResource(R.string.hide_text))
+                val context = LocalContext.current
+                TextButton(onClick = { explainInGemini(context, sentence, language) }) {
+                    Icon(painterResource(R.drawable.ic_auto_awesome), contentDescription = null, Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(R.string.explain_sentence))
+                }
             } else {
                 for (width in listOf(0.85f, 0.6f, 0.72f)) {
                     Box(

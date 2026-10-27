@@ -215,4 +215,5 @@
     <string name="favorite_add">Thêm vào yêu thích</string>
     <string name="favorite_remove">Xóa khỏi yêu thích</string>
     <string name="headset_double_tap">Chạm hai lần trên tai nghe</string>
+    <string name="explain_sentence">Giải thích</string>
 </resources>

@@ -215,4 +215,5 @@
     <string name="favorite_add">เพิ่มในรายการโปรด</string>
     <string name="favorite_remove">นำออกจากรายการโปรด</string>
     <string name="headset_double_tap">แตะสองครั้งที่หูฟัง</string>
+    <string name="explain_sentence">อธิบาย</string>
 </resources>

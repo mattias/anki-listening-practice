@@ -227,4 +227,11 @@
     <string name="favorite_remove">Remove from favorites</string>
     <string name="headset_double_tap">Double tap on the headset</string>
     <string name="explain_sentence">Explain</string>
+    <string name="chain">Chain</string>
+    <string name="chain_add_after">Add the next line</string>
+    <string name="chain_move_back">Move the chain back one line</string>
+    <string name="chain_move_forward">Move the chain forward one line</string>
+    <string name="words">Words</string>
+    <string name="chain_shrink">Remove the last line of the chain</string>
+    <string name="chain_off">Turn the chain off</string>
 </resources>

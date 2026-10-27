@@ -216,4 +216,11 @@
     <string name="favorite_remove">Verwijderen uit favorieten</string>
     <string name="headset_double_tap">Dubbeltikken op de headset</string>
     <string name="explain_sentence">Uitleggen</string>
+    <string name="chain">Keten</string>
+    <string name="chain_add_after">Volgende regel toevoegen</string>
+    <string name="chain_move_back">Keten een regel terug verplaatsen</string>
+    <string name="chain_move_forward">Keten een regel vooruit verplaatsen</string>
+    <string name="words">Woorden</string>
+    <string name="chain_shrink">Laatste regel van de keten verwijderen</string>
+    <string name="chain_off">Keten uitschakelen</string>
 </resources>

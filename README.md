@@ -78,11 +78,19 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
   - *Skip*: go to the next sentence; this one comes back later.
   - *Blacklist*: never show it again (after a confirmation). Blacklisted sentences are listed in
     Settings → Progress, where each one can be restored.
+- **Chains** — for videos, the *Chain* chip under the sentence repeats several neighboring lines as one
+  stretch. **+** adds the next line and **−** drops the last one; **⟨ ⟩** move the whole chain along
+  the video (to add a line before the chain, move it back and press +), and **✕** turns it off. The
+  arrows point the way the language is read (left for Arabic, Persian and Hebrew). Crystal Clear and
+  Skip act on all the chain's lines and count each of them in the day's stats; Undo takes back
+  exactly what that action counted.
 - **Undo** — the back arrow next to the actions returns to the sentence you just heard and takes
   back what you did to it (Crystal Clear, Skip or Blacklist, and the day's stats), several steps back.
 - **Hands-free** — move on automatically after 3, 5, 10 or 20 plays: each sentence repeats that
   many times, then counts as Crystal Clear (or is skipped, if you choose *Skip*) and the next one
   starts, so you can listen on the go.
+- **Playback defaults** — speed, pause, auto advance and the headset double tap also have their own
+  page under **Settings → Playback**.
 - **Sleep timer** — pause playback after 10 to 60 minutes, from the playback settings (the
   chips under the sentence); the time left shows under the play button.
 - **Headset and notification controls** — play/pause from your headset button; double-tap it

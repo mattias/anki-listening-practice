@@ -216,4 +216,11 @@
     <string name="favorite_remove">นำออกจากรายการโปรด</string>
     <string name="headset_double_tap">แตะสองครั้งที่หูฟัง</string>
     <string name="explain_sentence">อธิบาย</string>
+    <string name="chain">โซ่</string>
+    <string name="chain_add_after">เพิ่มบรรทัดถัดไป</string>
+    <string name="chain_move_back">เลื่อนโซ่ถอยหลังหนึ่งบรรทัด</string>
+    <string name="chain_move_forward">เลื่อนโซ่ไปข้างหน้าหนึ่งบรรทัด</string>
+    <string name="words">คำ</string>
+    <string name="chain_shrink">ลบบรรทัดสุดท้ายของโซ่</string>
+    <string name="chain_off">ปิดโซ่</string>
 </resources>

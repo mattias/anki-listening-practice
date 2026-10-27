@@ -216,4 +216,11 @@
     <string name="favorite_remove">Xóa khỏi yêu thích</string>
     <string name="headset_double_tap">Chạm hai lần trên tai nghe</string>
     <string name="explain_sentence">Giải thích</string>
+    <string name="chain">Chuỗi</string>
+    <string name="chain_add_after">Thêm dòng sau</string>
+    <string name="chain_move_back">Lùi chuỗi một dòng</string>
+    <string name="chain_move_forward">Tiến chuỗi một dòng</string>
+    <string name="words">Từ</string>
+    <string name="chain_shrink">Xóa dòng cuối của chuỗi</string>
+    <string name="chain_off">Tắt chuỗi</string>
 </resources>

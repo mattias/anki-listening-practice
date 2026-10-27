@@ -216,4 +216,11 @@
     <string name="favorite_remove">Прибрати з вибраного</string>
     <string name="headset_double_tap">Подвійне натискання на гарнітурі</string>
     <string name="explain_sentence">Пояснити</string>
+    <string name="chain">Ланцюжок</string>
+    <string name="chain_add_after">Додати наступний рядок</string>
+    <string name="chain_move_back">Зсунути ланцюжок на рядок назад</string>
+    <string name="chain_move_forward">Зсунути ланцюжок на рядок вперед</string>
+    <string name="words">Слова</string>
+    <string name="chain_shrink">Прибрати останній рядок ланцюжка</string>
+    <string name="chain_off">Вимкнути ланцюжок</string>
 </resources>

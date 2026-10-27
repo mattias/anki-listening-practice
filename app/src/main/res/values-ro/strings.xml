@@ -216,4 +216,11 @@
     <string name="favorite_remove">Elimină din favorite</string>
     <string name="headset_double_tap">Atingere dublă pe căști</string>
     <string name="explain_sentence">Explică</string>
+    <string name="chain">Lanț</string>
+    <string name="chain_add_after">Adaugă rândul următor</string>
+    <string name="chain_move_back">Mută lanțul un rând înapoi</string>
+    <string name="chain_move_forward">Mută lanțul un rând înainte</string>
+    <string name="words">Cuvinte</string>
+    <string name="chain_shrink">Elimină ultimul rând al lanțului</string>
+    <string name="chain_off">Dezactivează lanțul</string>
 </resources>

@@ -72,11 +72,11 @@ interface PracticeDayDao {
     @Query("INSERT OR IGNORE INTO practice_day (day, heard, clear) VALUES (:day, 0, 0)")
     suspend fun ensure(day: String)
 
-    @Query("UPDATE practice_day SET heard = heard + 1, clear = clear + :clear WHERE day = :day")
-    suspend fun add(day: String, clear: Int)
+    @Query("UPDATE practice_day SET heard = heard + :heard, clear = clear + :clear WHERE day = :day")
+    suspend fun add(day: String, heard: Int, clear: Int)
 
-    @Query("UPDATE practice_day SET heard = MAX(heard - 1, 0), clear = MAX(clear - :clear, 0) WHERE day = :day")
-    suspend fun subtract(day: String, clear: Int)
+    @Query("UPDATE practice_day SET heard = MAX(heard - :heard, 0), clear = MAX(clear - :clear, 0) WHERE day = :day")
+    suspend fun subtract(day: String, heard: Int, clear: Int)
 
     /** Newest first; enough days for any realistic streak. */
     @Query("SELECT * FROM practice_day WHERE heard > 0 ORDER BY day DESC LIMIT 1000")

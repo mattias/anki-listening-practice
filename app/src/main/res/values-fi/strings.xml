@@ -216,4 +216,11 @@
     <string name="favorite_remove">Poista suosikeista</string>
     <string name="headset_double_tap">Kaksoisnapautus kuulokkeissa</string>
     <string name="explain_sentence">Selitä</string>
+    <string name="chain">Ketju</string>
+    <string name="chain_add_after">Lisää seuraava rivi</string>
+    <string name="chain_move_back">Siirrä ketjua yksi rivi taaksepäin</string>
+    <string name="chain_move_forward">Siirrä ketjua yksi rivi eteenpäin</string>
+    <string name="words">Sanat</string>
+    <string name="chain_shrink">Poista ketjun viimeinen rivi</string>
+    <string name="chain_off">Sammuta ketju</string>
 </resources>

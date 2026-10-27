@@ -216,4 +216,11 @@
     <string name="favorite_remove">Eltávolítás a kedvencek közül</string>
     <string name="headset_double_tap">Dupla koppintás a fülhallgatón</string>
     <string name="explain_sentence">Magyarázat</string>
+    <string name="chain">Lánc</string>
+    <string name="chain_add_after">Következő sor hozzáadása</string>
+    <string name="chain_move_back">Lánc mozgatása egy sorral hátra</string>
+    <string name="chain_move_forward">Lánc mozgatása egy sorral előre</string>
+    <string name="words">Szavak</string>
+    <string name="chain_shrink">A lánc utolsó sorának eltávolítása</string>
+    <string name="chain_off">Lánc kikapcsolása</string>
 </resources>

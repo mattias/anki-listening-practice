@@ -216,4 +216,11 @@
     <string name="favorite_remove">Убрать из избранного</string>
     <string name="headset_double_tap">Двойное нажатие на гарнитуре</string>
     <string name="explain_sentence">Объяснить</string>
+    <string name="chain">Цепочка</string>
+    <string name="chain_add_after">Добавить следующую строку</string>
+    <string name="chain_move_back">Сдвинуть цепочку на строку назад</string>
+    <string name="chain_move_forward">Сдвинуть цепочку на строку вперёд</string>
+    <string name="words">Слова</string>
+    <string name="chain_shrink">Убрать последнюю строку цепочки</string>
+    <string name="chain_off">Выключить цепочку</string>
 </resources>

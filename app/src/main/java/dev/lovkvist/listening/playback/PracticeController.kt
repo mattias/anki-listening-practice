@@ -60,10 +60,13 @@ sealed interface PracticeState {
     data object Loading : PracticeState
     data class Message(val text: String) : PracticeState
     data class Ready(
+        /** What is shown and played: one sentence, or a chain of neighboring ones as a single clip. */
         val current: Sentence,
         val showText: Boolean,
         /** The words of the shown text ([displayedText]): for tapping, and the unknown ones to mark. */
         val words: SentenceWords = SentenceWords(),
+        /** The sentences [current] is made of; more than one in a chain. */
+        val lines: List<Sentence> = listOf(current),
     ) : PracticeState
 }
 
@@ -117,8 +120,18 @@ class PracticeController @Inject constructor(
     /** After [autoClearAfter] plays: skip the sentence instead of marking it Crystal Clear. */
     val autoAdvanceSkip: StateFlow<Boolean> = _autoAdvanceSkip.asStateFlow()
 
+    /** The current timeline source's sentences, or empty when the source is shuffled. */
+    private var timeline: List<Sentence> = emptyList()
+    /** The chain: [chainStart]..[chainEnd] in [timeline], inclusive. A single sentence when chaining is off. */
+    private var chainStart = 0
+    private var chainEnd = 0
+
+    private val _chainOn = MutableStateFlow(false)
+    /** Neighboring sentences are repeated together as one chain (only for timeline sources). */
+    val chainOn: StateFlow<Boolean> = _chainOn.asStateFlow()
+
     /** What was done to a sentence, so [undo] can take it back. */
-    private data class Step(val sentence: Sentence, val clear: Boolean, val before: SentenceState?, val day: String)
+    private data class Step(val sentences: List<Sentence>, val clear: Boolean, val before: Map<Long, SentenceState?>, val day: String)
 
     /** Sentences left behind, newest last. */
     private val history = ArrayDeque<Step>()
@@ -148,6 +161,10 @@ class PracticeController @Inject constructor(
 
     val source: StateFlow<PracticeSource> = settings.settings.map { it.source }
         .stateIn(scope, SharingStarted.Eagerly, PracticeSource.Anki)
+
+    /** The current source can chain sentences (a video, not Anki cards). */
+    val canChain: StateFlow<Boolean> = source.map { it.supportsChain }
+        .stateIn(scope, SharingStarted.Eagerly, false)
 
     val stats: StateFlow<PracticeStats> = days.recent().map { list ->
         val today = LocalDate.now()
@@ -293,6 +310,41 @@ class PracticeController @Inject constructor(
         }
     }
 
+    /** Turns chaining on or off; when on, neighboring sentences can be added to the repeated stretch. */
+    fun setChain(on: Boolean) {
+        _chainOn.value = on
+        reshowChain { if (!on) chainEnd = chainStart }
+    }
+
+    /** Adds the next sentence after the chain. To add one before it, move the chain back first. */
+    fun extendChain() = reshowChain {
+        if (chainEnd < timeline.lastIndex) chainEnd++
+    }
+
+    /** Drops the chain's last sentence (never the only one). */
+    fun shrinkChain() = reshowChain {
+        if (chainEnd > chainStart) chainEnd--
+    }
+
+    /** Moves the whole chain [by] sentences along the timeline (negative: back). */
+    fun moveChain(by: Int) = reshowChain {
+        val shift = by.coerceIn(-chainStart, timeline.lastIndex - chainEnd)
+        chainStart += shift
+        chainEnd += shift
+    }
+
+    /** Applies [change] to the chain and plays the result, keeping the text shown and audio playing as it was. */
+    private fun reshowChain(change: () -> Unit) {
+        scope.launch {
+            lock.withLock {
+                if (_state.value !is PracticeState.Ready || timeline.isEmpty() || chainStart < 0) return@withLock
+                val wasPlaying = player.isPlaying.value
+                change()
+                showLines(timeline.subList(chainStart, chainEnd + 1), autoPlay = wasPlaying, keepText = true)
+            }
+        }
+    }
+
     /**
      * Goes back to the sentence before, and takes back what was done to it: its Crystal Clear
      * rest or its blacklisting, and its count in today's stats. Can be repeated.
@@ -303,9 +355,11 @@ class PracticeController @Inject constructor(
                 val step = history.removeLastOrNull() ?: return@withLock
                 _canUndo.value = history.isNotEmpty()
                 val wasPlaying = player.isPlaying.value
-                repository.restore(step.sentence.id, step.before)
-                days.subtract(step.day, if (step.clear) 1 else 0)
-                show(step.sentence, autoPlay = wasPlaying)
+                for (s in step.sentences) repository.restore(s.id, step.before[s.id])
+                // What that action counted: every sentence of its chain, whatever the chain is now.
+                val n = step.sentences.size
+                days.subtract(step.day, n, if (step.clear) n else 0)
+                show(step.sentences.first(), autoPlay = wasPlaying, chainLength = step.sentences.size)
             }
         }
     }
@@ -335,18 +389,21 @@ class PracticeController @Inject constructor(
     private fun advance(clear: Boolean, action: suspend (Sentence) -> Unit) {
         scope.launch {
             lock.withLock {
-                val current = (_state.value as? PracticeState.Ready)?.current ?: return@withLock
+                val ready = _state.value as? PracticeState.Ready ?: return@withLock
+                // A chain is marked as a whole; its sentences are the lines it is made of.
+                val lines = ready.lines
                 // A new sentence continues in the same state: playing on, or staying paused.
                 val wasPlaying = player.isPlaying.value
-                val before = repository.stateOf(current.id)
-                action(current)
+                val before = lines.associate { it.id to repository.stateOf(it.id) }
+                lines.forEach { action(it) }
                 val today = LocalDate.now().toString()
-                history.addLast(Step(current, clear, before, today))
+                history.addLast(Step(lines, clear, before, today))
                 while (history.size > MAX_UNDO) history.removeFirst()
                 _canUndo.value = true
                 days.ensure(today)
-                days.add(today, if (clear) 1 else 0)
-                show(fetch(afterId = current.id), autoPlay = wasPlaying)
+                // Every sentence of a chain counts.
+                days.add(today, lines.size, if (clear) lines.size else 0)
+                show(fetch(afterId = lines.last().id), autoPlay = wasPlaying, chainLength = lines.size)
             }
         }
     }
@@ -365,14 +422,58 @@ class PracticeController @Inject constructor(
             null
         }
 
-    private suspend fun show(sentence: Sentence?, autoPlay: Boolean) {
+    /**
+     * Shows [sentence], with [chainLength] sentences from it on when chaining is on. A chain is
+     * played as one clip from its first line's start to its last line's end.
+     */
+    private suspend fun show(sentence: Sentence?, autoPlay: Boolean, chainLength: Int = chainLength()) {
         if (sentence == null) {
             player.stop()
             return
         }
+        timeline = repository.timeline().orEmpty()
+        val lines = startChain(sentence, chainLength)
+        showLines(lines, autoPlay, keepText = false)
+    }
+
+    /** How many sentences the chain has now: 1 when chaining is off. */
+    private fun chainLength(): Int = if (_chainOn.value && timeline.isNotEmpty()) chainEnd - chainStart + 1 else 1
+
+    /** Starts a chain at [first]: [length] sentences long if chaining is on, else just [first]. */
+    private fun startChain(first: Sentence, length: Int): List<Sentence> {
+        val i = timeline.indexOfFirst { it.id == first.id }
+        if (i < 0 || !_chainOn.value) {
+            chainStart = i
+            chainEnd = i
+            return listOf(first)
+        }
+        chainStart = i
+        chainEnd = minOf(timeline.lastIndex, i + length - 1)
+        return timeline.subList(chainStart, chainEnd + 1)
+    }
+
+    /** One sentence for [lines]: their texts one under the other, and a clip spanning all of them. */
+    private fun merged(lines: List<Sentence>): Sentence {
+        val first = lines.first()
+        if (lines.size == 1) return first
+        val last = lines.last()
+        return first.copy(
+            text = lines.joinToString("\n") { it.text },
+            furigana = if (lines.all { it.furigana.isBlank() }) "" else lines.joinToString("\n") { it.furigana.ifBlank { it.text } },
+            translation = lines.joinToString(" ") { it.translation }.trim(),
+            clip = first.clip?.let { it.first..(last.clip?.last ?: it.last) },
+        )
+    }
+
+    private suspend fun showLines(lines: List<Sentence>, autoPlay: Boolean, keepText: Boolean) {
+        val sentence = merged(lines)
         val prev = _state.value as? PracticeState.Ready
         val same = prev?.current?.id == sentence.id
-        _state.value = PracticeState.Ready(current = sentence, showText = same && prev?.showText == true)
+        _state.value = PracticeState.Ready(
+            current = sentence,
+            showText = (same || keepText) && prev?.showText == true,
+            lines = lines,
+        )
         player.metadata = MediaMetadata.Builder()
             .setTitle(sources.value.firstOrNull { it.first == source.value }?.second?.ifEmpty { null } ?: strings(R.string.anki_cards))
             .setArtist(strings(R.string.notification_subtitle, language.value.displayName()))

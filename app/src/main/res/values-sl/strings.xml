@@ -216,4 +216,11 @@
     <string name="favorite_remove">Odstrani iz priljubljenih</string>
     <string name="headset_double_tap">Dvojni dotik na slušalkah</string>
     <string name="explain_sentence">Razloži</string>
+    <string name="chain">Veriga</string>
+    <string name="chain_add_after">Dodaj naslednjo vrstico</string>
+    <string name="chain_move_back">Premakni verigo za vrstico nazaj</string>
+    <string name="chain_move_forward">Premakni verigo za vrstico naprej</string>
+    <string name="words">Besede</string>
+    <string name="chain_shrink">Odstrani zadnjo vrstico verige</string>
+    <string name="chain_off">Izklopi verigo</string>
 </resources>

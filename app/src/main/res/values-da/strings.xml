@@ -216,4 +216,11 @@
     <string name="favorite_remove">Fjern fra favoritter</string>
     <string name="headset_double_tap">Dobbelttryk på headsettet</string>
     <string name="explain_sentence">Forklar</string>
+    <string name="chain">Kæde</string>
+    <string name="chain_add_after">Tilføj næste linje</string>
+    <string name="chain_move_back">Flyt kæden en linje tilbage</string>
+    <string name="chain_move_forward">Flyt kæden en linje frem</string>
+    <string name="words">Ord</string>
+    <string name="chain_shrink">Fjern kædens sidste linje</string>
+    <string name="chain_off">Slå kæden fra</string>
 </resources>

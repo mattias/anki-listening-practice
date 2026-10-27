@@ -216,4 +216,11 @@
     <string name="favorite_remove">Favorilerden çıkar</string>
     <string name="headset_double_tap">Kulaklıkta çift dokunma</string>
     <string name="explain_sentence">Açıkla</string>
+    <string name="chain">Zincir</string>
+    <string name="chain_add_after">Sonraki satırı ekle</string>
+    <string name="chain_move_back">Zinciri bir satır geri taşı</string>
+    <string name="chain_move_forward">Zinciri bir satır ileri taşı</string>
+    <string name="words">Kelimeler</string>
+    <string name="chain_shrink">Zincirin son satırını kaldır</string>
+    <string name="chain_off">Zinciri kapat</string>
 </resources>

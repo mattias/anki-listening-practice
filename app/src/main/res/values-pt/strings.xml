@@ -216,4 +216,11 @@
     <string name="favorite_remove">Remover dos favoritos</string>
     <string name="headset_double_tap">Toque duplo no fone de ouvido</string>
     <string name="explain_sentence">Explicar</string>
+    <string name="chain">Cadeia</string>
+    <string name="chain_add_after">Adicionar a próxima linha</string>
+    <string name="chain_move_back">Mover a cadeia uma linha para trás</string>
+    <string name="chain_move_forward">Mover a cadeia uma linha para a frente</string>
+    <string name="words">Palavras</string>
+    <string name="chain_shrink">Remover a última linha da cadeia</string>
+    <string name="chain_off">Desativar a cadeia</string>
 </resources>

@@ -216,4 +216,11 @@
     <string name="favorite_remove">Ta bort från favoriter</string>
     <string name="headset_double_tap">Dubbeltryck på headsetet</string>
     <string name="explain_sentence">Förklara</string>
+    <string name="chain">Kedja</string>
+    <string name="chain_add_after">Lägg till nästa rad</string>
+    <string name="chain_move_back">Flytta kedjan en rad bakåt</string>
+    <string name="chain_move_forward">Flytta kedjan en rad framåt</string>
+    <string name="words">Ord</string>
+    <string name="chain_shrink">Ta bort kedjans sista rad</string>
+    <string name="chain_off">Stäng av kedjan</string>
 </resources>

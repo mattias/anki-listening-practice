@@ -92,6 +92,9 @@ enum class Language(
     ),
     ;
 
+    /** The language is written and read from right to left. */
+    val rightToLeft: Boolean get() = this == ARABIC || this == PERSIAN || this == HEBREW
+
     /** True if a note's Language field value (e.g. "zh-Hans") is this language. */
     fun matchesTag(tag: String): Boolean {
         val t = tag.trim()

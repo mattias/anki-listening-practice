@@ -124,13 +124,29 @@ class SentenceRepository @Inject constructor(
 
             list.drop(start).firstOrNull { it.id != afterId && eligible(it) }?.let { return@withContext it }
             // Reached the end: Anki cards get a new random order, a video starts over.
-            if (source == PracticeSource.Anki && start > 0) {
+            if (!source.ordered && start > 0) {
                 list = list.shuffled()
                 pool = list
             }
             list.firstOrNull { it.id != afterId && eligible(it) }
                 ?: list.firstOrNull { it.id == afterId && eligible(it) }
         }
+    }
+
+    /**
+     * Every sentence of the current source in timeline order, whatever their words, for sources
+     * that [PracticeSource.supportsChain]; null for a shuffled source. Chains of neighboring
+     * sentences are cut from it.
+     */
+    suspend fun timeline(): List<Sentence>? = mutex.withLock {
+        val current = settings.current()
+        if (!current.source.supportsChain) return@withLock null
+        if (pool == null || poolSource != current.source || poolLanguage != current.language) {
+            pool = loadPool(current.source, current.language)
+            poolSource = current.source
+            poolLanguage = current.language
+        }
+        pool
     }
 
     /**

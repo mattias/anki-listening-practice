@@ -7,6 +7,7 @@ import dev.lovkvist.listening.data.dict.DictionaryRepository
 import dev.lovkvist.listening.data.dict.InstallProgress
 import dev.lovkvist.listening.data.dict.InstalledDictionary
 import dev.lovkvist.listening.data.dict.RecommendedDictionary
+import dev.lovkvist.listening.playback.PracticeController
 import dev.lovkvist.listening.data.dict.WiktionaryCatalog
 import dev.lovkvist.listening.data.known.MyWords
 import dev.lovkvist.listening.data.local.WordStatus
@@ -59,6 +60,8 @@ class SettingsViewModel @Inject constructor(
     private val strings: Strings,
     private val dictionaries: DictionaryRepository,
     private val wiktionary: WiktionaryCatalog,
+    /** The practice session: playback defaults set here apply to it right away. */
+    val practice: PracticeController,
     private val myWords: MyWords,
 ) : ViewModel() {
 

@@ -216,4 +216,11 @@
     <string name="favorite_remove">Rimuovi dai preferiti</string>
     <string name="headset_double_tap">Doppio tocco sulle cuffie</string>
     <string name="explain_sentence">Spiega</string>
+    <string name="chain">Catena</string>
+    <string name="chain_add_after">Aggiungi la riga successiva</string>
+    <string name="chain_move_back">Sposta la catena indietro di una riga</string>
+    <string name="chain_move_forward">Sposta la catena avanti di una riga</string>
+    <string name="words">Parole</string>
+    <string name="chain_shrink">Rimuovi l\'ultima riga della catena</string>
+    <string name="chain_off">Disattiva la catena</string>
 </resources>

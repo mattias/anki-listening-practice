@@ -216,4 +216,11 @@
     <string name="favorite_remove">הסרה מהמועדפים</string>
     <string name="headset_double_tap">הקשה כפולה באוזניות</string>
     <string name="explain_sentence">הסבר</string>
+    <string name="chain">שרשרת</string>
+    <string name="chain_add_after">הוספת השורה הבאה</string>
+    <string name="chain_move_back">הזזת השרשרת שורה אחורה</string>
+    <string name="chain_move_forward">הזזת השרשרת שורה קדימה</string>
+    <string name="words">מילים</string>
+    <string name="chain_shrink">הסרת השורה האחרונה בשרשרת</string>
+    <string name="chain_off">כיבוי השרשרת</string>
 </resources>

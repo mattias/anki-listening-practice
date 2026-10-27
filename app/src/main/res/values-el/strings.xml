@@ -216,4 +216,11 @@
     <string name="favorite_remove">Αφαίρεση από τα αγαπημένα</string>
     <string name="headset_double_tap">Διπλό πάτημα στα ακουστικά</string>
     <string name="explain_sentence">Εξήγηση</string>
+    <string name="chain">Αλυσίδα</string>
+    <string name="chain_add_after">Προσθήκη της επόμενης γραμμής</string>
+    <string name="chain_move_back">Μετακίνηση της αλυσίδας μία γραμμή πίσω</string>
+    <string name="chain_move_forward">Μετακίνηση της αλυσίδας μία γραμμή μπροστά</string>
+    <string name="words">Λέξεις</string>
+    <string name="chain_shrink">Αφαίρεση της τελευταίας γραμμής της αλυσίδας</string>
+    <string name="chain_off">Απενεργοποίηση της αλυσίδας</string>
 </resources>

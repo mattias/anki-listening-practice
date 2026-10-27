@@ -216,4 +216,11 @@
     <string name="favorite_remove">Retirer des favoris</string>
     <string name="headset_double_tap">Double appui sur le casque</string>
     <string name="explain_sentence">Expliquer</string>
+    <string name="chain">Chaîne</string>
+    <string name="chain_add_after">Ajouter la ligne suivante</string>
+    <string name="chain_move_back">Reculer la chaîne d\'une ligne</string>
+    <string name="chain_move_forward">Avancer la chaîne d\'une ligne</string>
+    <string name="words">Mots</string>
+    <string name="chain_shrink">Retirer la dernière ligne de la chaîne</string>
+    <string name="chain_off">Désactiver la chaîne</string>
 </resources>

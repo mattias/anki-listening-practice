@@ -18,10 +18,19 @@ data class Sentence(
     val clip: LongRange? = null,
 )
 
-/** Where practice sentences come from. */
+/**
+ * Where practice sentences come from. Each kind says how it behaves, so the rest of the app asks
+ * the source instead of checking which one it is.
+ */
 sealed interface PracticeSource {
     data object Anki : PracticeSource
     data class Media(val id: String) : PracticeSource
+
+    /** Sentences come in timeline order (a video, a song) rather than shuffled (Anki cards). */
+    val ordered: Boolean get() = this !is Anki
+
+    /** Neighboring sentences can be chained into one repeated stretch; needs [ordered]. */
+    val supportsChain: Boolean get() = ordered
 
     fun key(): String = when (this) {
         Anki -> "anki"

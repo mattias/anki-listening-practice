@@ -216,4 +216,11 @@
     <string name="favorite_remove">Aus Favoriten entfernen</string>
     <string name="headset_double_tap">Doppeltippen am Headset</string>
     <string name="explain_sentence">Erklären</string>
+    <string name="chain">Kette</string>
+    <string name="chain_add_after">Nächste Zeile hinzufügen</string>
+    <string name="chain_move_back">Kette eine Zeile zurückschieben</string>
+    <string name="chain_move_forward">Kette eine Zeile vorschieben</string>
+    <string name="words">Wörter</string>
+    <string name="chain_shrink">Letzte Zeile der Kette entfernen</string>
+    <string name="chain_off">Kette ausschalten</string>
 </resources>

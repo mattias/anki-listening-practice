@@ -216,4 +216,11 @@
     <string name="favorite_remove">お気に入りから削除</string>
     <string name="headset_double_tap">ヘッドセットのダブルタップ</string>
     <string name="explain_sentence">解説</string>
+    <string name="chain">連結</string>
+    <string name="chain_add_after">次の行を追加</string>
+    <string name="chain_move_back">連結を1行前へ移動</string>
+    <string name="chain_move_forward">連結を1行先へ移動</string>
+    <string name="words">単語</string>
+    <string name="chain_shrink">連結の最後の行を外す</string>
+    <string name="chain_off">連結をオフにする</string>
 </resources>

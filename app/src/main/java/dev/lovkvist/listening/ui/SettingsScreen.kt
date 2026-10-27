@@ -96,6 +96,7 @@ import java.util.Date
 private enum class Page(val title: Int) {
     MAIN(R.string.settings),
     DECKS(R.string.anki_decks),
+    PLAYBACK(R.string.playback),
     MEDIA(R.string.videos_audio),
     KNOWN(R.string.known_words),
     MY_WORDS(R.string.my_words),
@@ -212,10 +213,14 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                             page = Page.DECKS
                         }
                         RowDivider()
+                        NavRow(R.drawable.ic_tune, stringResource(R.string.field_preset), s.preset.label) { page = Page.PRESET }
+                        RowDivider()
                         NavRow(R.drawable.ic_video_library, stringResource(R.string.videos_audio), mediaItems.count { it.language == s.language }.toString()) {
                             page = Page.MEDIA
                         }
-                        RowDivider()
+                    }
+
+                    Group(stringResource(R.string.words)) {
                         val known = (knownCounts[s.language] ?: 0).toString()
                         NavRow(
                             R.drawable.ic_abc,
@@ -230,11 +235,15 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                         NavRow(R.drawable.ic_menu_book, stringResource(R.string.dictionaries), dictionaries.count { it.language == s.language }.toString()) {
                             page = Page.DICTIONARIES
                         }
-                        RowDivider()
-                        NavRow(R.drawable.ic_tune, stringResource(R.string.field_preset), s.preset.label) { page = Page.PRESET }
                     }
 
                     Group(null) {
+                        NavRow(
+                            R.drawable.ic_speed,
+                            stringResource(R.string.playback),
+                            "%.2f×".format(s.speed) + if (s.autoClearAfter > 0) " · ${s.autoClearAfter}×" else "",
+                        ) { page = Page.PLAYBACK }
+                        RowDivider()
                         NavRow(R.drawable.ic_insights, stringResource(R.string.progress), "") {
                             page = Page.PROGRESS
                         }
@@ -248,6 +257,27 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                 }
 
                 Page.DECKS -> Decks(vm, s.language)
+
+                Page.PLAYBACK -> {
+                    // The same controls as the sheet under the sentence; changes apply to the session at once.
+                    val practice = vm.practice
+                    val speed by practice.speed.collectAsStateWithLifecycle()
+                    val delayMs by practice.delayMs.collectAsStateWithLifecycle()
+                    val autoClearAfter by practice.autoClearAfter.collectAsStateWithLifecycle()
+                    val autoAdvanceSkip by practice.autoAdvanceSkip.collectAsStateWithLifecycle()
+                    val headsetClear by practice.headsetDoubleTapClear.collectAsStateWithLifecycle()
+                    PlaybackSettings(
+                        speed = speed,
+                        delayMs = delayMs,
+                        autoClearAfter = autoClearAfter,
+                        onSpeed = { practice.setSpeed(it) },
+                        onDelay = { practice.setDelay(it) },
+                        onAutoClear = { practice.setAutoClearAfter(it) },
+                        autoAdvanceSkip = autoAdvanceSkip,
+                        onAutoAdvanceSkip = practice::setAutoAdvanceSkip,
+                    )
+                    HeadsetSettings(headsetClear, practice::setHeadsetDoubleTapClear)
+                }
 
                 Page.MEDIA -> MediaItems(vm, s.language, s.translation)
 

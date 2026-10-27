@@ -216,4 +216,11 @@
     <string name="favorite_remove">Hapus dari favorit</string>
     <string name="headset_double_tap">Ketuk dua kali di headset</string>
     <string name="explain_sentence">Jelaskan</string>
+    <string name="chain">Rantai</string>
+    <string name="chain_add_after">Tambah baris berikutnya</string>
+    <string name="chain_move_back">Geser rantai satu baris ke belakang</string>
+    <string name="chain_move_forward">Geser rantai satu baris ke depan</string>
+    <string name="words">Kata</string>
+    <string name="chain_shrink">Hapus baris terakhir rantai</string>
+    <string name="chain_off">Matikan rantai</string>
 </resources>

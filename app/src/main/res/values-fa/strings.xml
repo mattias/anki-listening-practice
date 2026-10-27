@@ -216,4 +216,11 @@
     <string name="favorite_remove">حذف از برگزیده‌ها</string>
     <string name="headset_double_tap">دو ضربه روی هدست</string>
     <string name="explain_sentence">توضیح</string>
+    <string name="chain">زنجیره</string>
+    <string name="chain_add_after">افزودن سطر بعدی</string>
+    <string name="chain_move_back">حرکت زنجیره یک سطر به عقب</string>
+    <string name="chain_move_forward">حرکت زنجیره یک سطر به جلو</string>
+    <string name="words">واژه‌ها</string>
+    <string name="chain_shrink">حذف آخرین سطر زنجیره</string>
+    <string name="chain_off">خاموش کردن زنجیره</string>
 </resources>

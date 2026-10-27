@@ -216,4 +216,11 @@
     <string name="favorite_remove">Ukloni iz favorita</string>
     <string name="headset_double_tap">Dvostruki dodir na slušalicama</string>
     <string name="explain_sentence">Objasni</string>
+    <string name="chain">Lanac</string>
+    <string name="chain_add_after">Dodaj sljedeći redak</string>
+    <string name="chain_move_back">Pomakni lanac redak unatrag</string>
+    <string name="chain_move_forward">Pomakni lanac redak naprijed</string>
+    <string name="words">Riječi</string>
+    <string name="chain_shrink">Ukloni zadnji redak lanca</string>
+    <string name="chain_off">Isključi lanac</string>
 </resources>

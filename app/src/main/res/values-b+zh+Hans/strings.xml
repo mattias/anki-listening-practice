@@ -216,4 +216,11 @@
     <string name="favorite_remove">取消收藏</string>
     <string name="headset_double_tap">耳机双击</string>
     <string name="explain_sentence">讲解</string>
+    <string name="chain">连播</string>
+    <string name="chain_add_after">加入下一句</string>
+    <string name="chain_move_back">整体后退一句</string>
+    <string name="chain_move_forward">整体前进一句</string>
+    <string name="words">单词</string>
+    <string name="chain_shrink">移除连播的最后一句</string>
+    <string name="chain_off">关闭连播</string>
 </resources>

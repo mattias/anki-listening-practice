@@ -216,4 +216,11 @@
     <string name="favorite_remove">إزالة من المفضلة</string>
     <string name="headset_double_tap">النقر مرتين على سماعة الرأس</string>
     <string name="explain_sentence">اشرح</string>
+    <string name="chain">سلسلة</string>
+    <string name="chain_add_after">إضافة السطر التالي</string>
+    <string name="chain_move_back">تحريك السلسلة سطرًا للخلف</string>
+    <string name="chain_move_forward">تحريك السلسلة سطرًا للأمام</string>
+    <string name="words">الكلمات</string>
+    <string name="chain_shrink">إزالة آخر سطر من السلسلة</string>
+    <string name="chain_off">إيقاف السلسلة</string>
 </resources>

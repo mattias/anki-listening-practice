@@ -216,4 +216,11 @@
     <string name="favorite_remove">Usuń z ulubionych</string>
     <string name="headset_double_tap">Podwójne dotknięcie słuchawek</string>
     <string name="explain_sentence">Wyjaśnij</string>
+    <string name="chain">Łańcuch</string>
+    <string name="chain_add_after">Dodaj następną linijkę</string>
+    <string name="chain_move_back">Przesuń łańcuch o linijkę wstecz</string>
+    <string name="chain_move_forward">Przesuń łańcuch o linijkę do przodu</string>
+    <string name="words">Słowa</string>
+    <string name="chain_shrink">Usuń ostatnią linijkę łańcucha</string>
+    <string name="chain_off">Wyłącz łańcuch</string>
 </resources>

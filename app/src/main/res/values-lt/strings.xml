@@ -216,4 +216,11 @@
     <string name="favorite_remove">Pašalinti iš mėgstamų</string>
     <string name="headset_double_tap">Dvigubas bakstelėjimas ausinėse</string>
     <string name="explain_sentence">Paaiškinti</string>
+    <string name="chain">Grandinė</string>
+    <string name="chain_add_after">Pridėti kitą eilutę</string>
+    <string name="chain_move_back">Perkelti grandinę viena eilute atgal</string>
+    <string name="chain_move_forward">Perkelti grandinę viena eilute pirmyn</string>
+    <string name="words">Žodžiai</string>
+    <string name="chain_shrink">Pašalinti paskutinę grandinės eilutę</string>
+    <string name="chain_off">Išjungti grandinę</string>
 </resources>

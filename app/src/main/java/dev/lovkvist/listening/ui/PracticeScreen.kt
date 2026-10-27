@@ -1,9 +1,9 @@
 package dev.lovkvist.listening.ui
 
-import androidx.compose.ui.platform.LocalContext
 import android.os.SystemClock
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,6 +58,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -75,8 +78,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
@@ -86,6 +93,7 @@ import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -129,6 +137,8 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     val canUndo by practice.canUndo.collectAsStateWithLifecycle()
     val favorites by practice.favoriteLanguages.collectAsStateWithLifecycle()
     val sleepAt by practice.sleepAt.collectAsStateWithLifecycle()
+    val canChain by practice.canChain.collectAsStateWithLifecycle()
+    val chainOn by practice.chainOn.collectAsStateWithLifecycle()
     val sleepMinutes by practice.sleepMinutes.collectAsStateWithLifecycle()
     val headsetDoubleTapClear by practice.headsetDoubleTapClear.collectAsStateWithLifecycle()
 
@@ -190,6 +200,19 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                         Spacer(Modifier.height(16.dp))
                     }
 
+                    // Outside the scrolling part, so the chain controls stay in reach under a tall card.
+                    if (canChain) {
+                        ChainBar(
+                            on = chainOn,
+                            lines = s.lines.size,
+                            rightToLeft = language.rightToLeft,
+                            onToggle = practice::setChain,
+                            onExtend = practice::extendChain,
+                            onShrink = practice::shrinkChain,
+                            onMove = practice::moveChain,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                    }
                     PlaybackChips(speed, delayMs, autoClearAfter) { showPlayback = true }
                     Spacer(Modifier.height(12.dp))
                     ActionButtons(
@@ -554,6 +577,69 @@ private fun PlaybackChips(speed: Float, delayMs: Long, autoClearAfter: Int, onCl
     }
 }
 
+/**
+ * Repeat several neighboring lines as one stretch. + adds the next line and − drops the last one
+ * (the chain only grows and shrinks at its far end); ⟨ ⟩ move the whole chain along the timeline,
+ * so a line before the chain is added by moving back and pressing +. Crystal Clear and Skip act
+ * on all its lines. The controls follow the study language's reading direction: for Arabic,
+ * Persian and Hebrew "forward" points left.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ChainBar(
+    on: Boolean,
+    lines: Int,
+    rightToLeft: Boolean,
+    onToggle: (Boolean) -> Unit,
+    onExtend: () -> Unit,
+    onShrink: () -> Unit,
+    onMove: (Int) -> Unit,
+) {
+    CompositionLocalProvider(LocalLayoutDirection provides if (rightToLeft) LayoutDirection.Rtl else LayoutDirection.Ltr) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            if (!on) {
+                FilterChip(
+                    selected = false,
+                    onClick = { onToggle(true) },
+                    label = { Text(stringResource(R.string.chain)) },
+                    leadingIcon = { Icon(painterResource(R.drawable.ic_link), contentDescription = null, Modifier.size(18.dp)) },
+                )
+            } else {
+                // How many lines the chain has; not a button.
+                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer) {
+                    Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(painterResource(R.drawable.ic_link), contentDescription = null, Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(lines.toString(), style = MaterialTheme.typography.labelLarge)
+                    }
+                }
+                // The glyphs point the way the timeline goes in this language.
+                ChainButton(if (rightToLeft) "⟩" else "⟨", R.string.chain_move_back) { onMove(-1) }
+                ChainButton("−", R.string.chain_shrink) { onShrink() }
+                ChainButton("+", R.string.chain_add_after) { onExtend() }
+                ChainButton(if (rightToLeft) "⟨" else "⟩", R.string.chain_move_forward) { onMove(1) }
+                IconButton(onClick = { onToggle(false) }) {
+                    Icon(painterResource(R.drawable.ic_close), contentDescription = stringResource(R.string.chain_off))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChainButton(label: String, @StringRes description: Int, onClick: () -> Unit) {
+    val text = stringResource(description)
+    FilledTonalButton(
+        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = 4.dp),
+        modifier = Modifier.defaultMinSize(minWidth = 44.dp).semantics { contentDescription = text },
+    ) { Text(label, style = MaterialTheme.typography.titleMedium) }
+}
+
 /** Time left on the sleep timer, ticking each second; a tap opens the playback settings. */
 @Composable
 private fun SleepCountdown(at: Long, onClick: () -> Unit) {
@@ -578,7 +664,7 @@ private fun SleepCountdown(at: Long, onClick: () -> Unit) {
 /** What a double tap on the headset button does: skip, or mark Crystal Clear. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun HeadsetSettings(clear: Boolean, onClear: (Boolean) -> Unit) {
+internal fun HeadsetSettings(clear: Boolean, onClear: (Boolean) -> Unit) {
     Text(stringResource(R.string.headset_double_tap), style = MaterialTheme.typography.labelLarge)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         FilterChip(selected = !clear, onClick = { onClear(false) }, label = { Text(stringResource(R.string.skip)) })
@@ -604,7 +690,7 @@ private fun SleepTimerSettings(minutes: Int, onMinutes: (Int) -> Unit) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun PlaybackSettings(
+internal fun PlaybackSettings(
     speed: Float,
     delayMs: Long,
     autoClearAfter: Int,

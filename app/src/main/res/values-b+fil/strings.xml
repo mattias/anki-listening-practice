@@ -216,4 +216,11 @@
     <string name="favorite_remove">Alisin sa mga paborito</string>
     <string name="headset_double_tap">Double-tap sa headset</string>
     <string name="explain_sentence">Ipaliwanag</string>
+    <string name="chain">Chain</string>
+    <string name="chain_add_after">Idagdag ang susunod na linya</string>
+    <string name="chain_move_back">Ilipat ang chain nang isang linya pabalik</string>
+    <string name="chain_move_forward">Ilipat ang chain nang isang linya pasulong</string>
+    <string name="words">Mga salita</string>
+    <string name="chain_shrink">Alisin ang huling linya ng chain</string>
+    <string name="chain_off">I-off ang chain</string>
 </resources>

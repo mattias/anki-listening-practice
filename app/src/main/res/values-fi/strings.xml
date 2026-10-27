@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Piilota muunkieliset videot</string>
     <string name="subs_other_language">Toinen kieli</string>
     <string name="subs_no_speech">Puhetta ei löytynyt</string>
+    <string name="yt_lyrics">Etsitään sanoja…</string>
+    <string name="song_no_lyrics">Kappaleelle “%1$s” ei löytynyt ajastettuja sanoja.</string>
+    <string name="song_wrong_language">Kappaleen “%1$s” sanat eivät ole kielellä %2$s.</string>
+    <string name="song_lines">Sanarivejä: %1$d · laulu</string>
+    <string name="download_song">Lataa laulona (sanojen kanssa)</string>
+    <string name="search_videos">Videot</string>
+    <string name="search_songs">Laulut</string>
+    <string name="search_songs_help">Laulut, joiden sanat ovat kielellä %1$s. Napauta laulua ladataksesi äänen; ajastetut sanat tulevat LRCLIB:stä.</string>
+    <string name="on">Päällä</string>
+    <string name="sing_back">Laula takaisin: rivin mittainen hiljaisuus jokaisen toiston jälkeen</string>
+    <string name="lyrics_timing">Sanojen ajoitus: %1$s s</string>
+    <string name="lyrics_earlier">Aiemmin −0,5 s</string>
+    <string name="lyrics_later">Myöhemmin +0,5 s</string>
+    <string name="lyrics_query">Sanojen haku (valinnainen, laululle: esittäjä ja nimi)</string>
+    <string name="song_no_lyrics_tip">LRCLIBissä kappale voi olla toisella kirjoitusasulla, esim. romajina: liitä linkki, kirjoita esittäjä ja nimi sanahakuun ja lataa se laulona.</string>
+    <string name="song_auto_captions">Sanoja ei löytynyt, joten käytettiin videon automaattisia tekstityksiä; ne ovat usein huonoja laululle. Etsi sanat itse.</string>
+    <string name="song_length_differs">Video poikkeaa %1$d s sanojen äänitteen pituudesta, joten ajat voivat olla siirtyneet: säädä sanojen ajoitusta toistovalikossa.</string>
+    <string name="auto_time">Ajoita automaattisesti videon tekstityksistä</string>
+    <string name="auto_time_working">Kuunnellaan tekstityksiä…</string>
+    <string name="auto_time_done">Ajoitus asetettu arvoon %1$s s videon tekstityksistä.</string>
+    <string name="auto_time_no_captions">Videolla ei ole tekstityksiä, joista ajoituksen voisi ottaa.</string>
+    <string name="auto_time_no_match">Tekstitys muistuttaa sanoja liian vähän ajoituksen päättelemiseksi.</string>
+    <string name="auto_time_failed">Automaattinen ajoitus epäonnistui: %1$s</string>
 </resources>

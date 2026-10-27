@@ -108,6 +108,12 @@ class SentenceRepository @Inject constructor(
             poolSource = source
             poolLanguage = language
         }
+        // A song is sung in full: every line in order, whatever its words, and none is cooled down.
+        if (isSong(source)) {
+            val list = pool.orEmpty()
+            val start = list.indexOfFirst { it.id == afterId } + 1
+            return@withLock list.getOrNull(start) ?: list.firstOrNull()
+        }
         val tokenizer = tokenizers.forLanguage(language)
         val known = knownSet(language, tokenizer)
         if (known.isEmpty()) return@withLock null
@@ -196,7 +202,18 @@ class SentenceRepository @Inject constructor(
     }
 
 
+    /** Whether [source] is a song, whose lines aren't filtered by words or cooled down. */
+    fun isSong(source: PracticeSource): Boolean =
+        source is PracticeSource.Media && media.items.value.any { it.id == source.id && it.song }
+
+    /**
+     * Rebuilds the current source's lines after something changed in them (a song's timing),
+     * without a new generation: practice goes on where it is.
+     */
+    suspend fun refreshTimeline() = mutex.withLock { pool = null }
+
     suspend fun markCrystalClear(id: Long) {
+        if (isSong(settings.current().source)) return // songs have no cooldown
         val until = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(COOLDOWN_DAYS)
         val current = dao.get(id) ?: SentenceState(id)
         dao.upsert(current.copy(cooldownUntil = until))

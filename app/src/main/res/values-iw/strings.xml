@@ -238,4 +238,27 @@
     <string name="hide_other_languages">הסתרת סרטונים בשפות אחרות</string>
     <string name="subs_other_language">שפה אחרת</string>
     <string name="subs_no_speech">לא נמצא דיבור</string>
+    <string name="yt_lyrics">מחפש את מילות השיר…</string>
+    <string name="song_no_lyrics">לא נמצאו מילים מסונכרנות עבור “%1$s”.</string>
+    <string name="song_wrong_language">המילים של “%1$s” אינן ב%2$s.</string>
+    <string name="song_lines">שורות מילים: %1$d · שיר</string>
+    <string name="download_song">הורדה כשיר (עם מילים)</string>
+    <string name="search_videos">סרטונים</string>
+    <string name="search_songs">שירים</string>
+    <string name="search_songs_help">שירים עם מילים ב%1$s. הקש על שיר כדי להוריד את האודיו; המילים עם הזמנים מגיעות מ-LRCLIB.</string>
+    <string name="on">פעיל</string>
+    <string name="sing_back">שירה חוזרת: שקט באורך השורה אחרי כל השמעה</string>
+    <string name="lyrics_timing">תזמון המילים: %1$s ש׳</string>
+    <string name="lyrics_earlier">מוקדם יותר −0.5 ש׳</string>
+    <string name="lyrics_later">מאוחר יותר +0.5 ש׳</string>
+    <string name="lyrics_query">חיפוש מילים (אופציונלי, לשיר: אמן ושם)</string>
+    <string name="song_no_lyrics_tip">ייתכן ש-LRCLIB מכיל את השיר בכתיב אחר, למשל רומאג\x27י: הדבק את הקישור, כתוב אמן ושם בחיפוש המילים והורד כשיר.</string>
+    <string name="song_auto_captions">לא נמצאו מילים, ולכן נעשה שימוש בכתוביות האוטומטיות של הסרטון, שלרוב אינן מדויקות לשירה. כדאי לחפש את המילים בעצמך.</string>
+    <string name="song_length_differs">אורך הסרטון שונה ב-%1$d שניות מהקלטת המילים, ולכן הזמנים עלולים להיות מוסטים: כוונן את תזמון המילים בתפריט ההשמעה.</string>
+    <string name="auto_time">תזמון אוטומטי לפי כתוביות הסרטון</string>
+    <string name="auto_time_working">בודק את הכתוביות…</string>
+    <string name="auto_time_done">התזמון נקבע ל-%1$s שניות לפי כתוביות הסרטון.</string>
+    <string name="auto_time_no_captions">אין לסרטון כתוביות שאפשר לקחת מהן את התזמון.</string>
+    <string name="auto_time_no_match">הכתוביות לא דומות מספיק למילים כדי לקבוע תזמון.</string>
+    <string name="auto_time_failed">התזמון האוטומטי נכשל: %1$s</string>
 </resources>

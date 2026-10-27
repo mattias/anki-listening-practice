@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Ẩn các video ngôn ngữ khác</string>
     <string name="subs_other_language">Ngôn ngữ khác</string>
     <string name="subs_no_speech">Không có lời nói</string>
+    <string name="yt_lyrics">Đang tìm lời bài hát…</string>
+    <string name="song_no_lyrics">Không tìm thấy lời đồng bộ cho “%1$s”.</string>
+    <string name="song_wrong_language">Lời của “%1$s” không phải tiếng %2$s.</string>
+    <string name="song_lines">Số dòng lời: %1$d · bài hát</string>
+    <string name="download_song">Tải về dưới dạng bài hát (có lời)</string>
+    <string name="search_videos">Video</string>
+    <string name="search_songs">Bài hát</string>
+    <string name="search_songs_help">Bài hát có lời tiếng %1$s. Chạm vào một bài để tải âm thanh; lời có thời gian lấy từ LRCLIB.</string>
+    <string name="on">Bật</string>
+    <string name="sing_back">Hát lại: im lặng dài bằng dòng đó sau mỗi lần phát</string>
+    <string name="lyrics_timing">Độ lệch lời: %1$s giây</string>
+    <string name="lyrics_earlier">Sớm hơn −0,5 giây</string>
+    <string name="lyrics_later">Muộn hơn +0,5 giây</string>
+    <string name="lyrics_query">Tìm lời (tùy chọn, cho bài hát: nghệ sĩ và tên bài)</string>
+    <string name="song_no_lyrics_tip">LRCLIB có thể lưu bài hát với cách viết khác, ví dụ romaji: dán liên kết, nhập nghệ sĩ và tên bài vào ô tìm lời rồi tải về dưới dạng bài hát.</string>
+    <string name="song_auto_captions">Không tìm thấy lời, nên đã dùng phụ đề tự động của video; thường kém chính xác với bài hát. Hãy tự tìm lời.</string>
+    <string name="song_length_differs">Video lệch %1$d giây về độ dài so với bản ghi của lời, nên thời gian có thể bị lệch: chỉnh độ lệch lời trong menu phát.</string>
+    <string name="auto_time">Tự động chỉnh thời gian theo phụ đề video</string>
+    <string name="auto_time_working">Đang kiểm tra phụ đề…</string>
+    <string name="auto_time_done">Đã đặt độ lệch %1$s giây theo phụ đề video.</string>
+    <string name="auto_time_no_captions">Video không có phụ đề để lấy thời gian.</string>
+    <string name="auto_time_no_match">Phụ đề quá khác với lời nên không xác định được thời gian.</string>
+    <string name="auto_time_failed">Tự động chỉnh thời gian thất bại: %1$s</string>
 </resources>

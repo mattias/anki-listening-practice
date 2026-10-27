@@ -44,6 +44,13 @@ class LoopPlayer(private val context: Context) {
             refreshGap()
         }
 
+    /** The gap after a play is also as long as the clip itself, to sing it back (songs). */
+    var singBack: Boolean = false
+        set(value) {
+            field = value
+            refreshGap()
+        }
+
     /** Plays per sentence before [onPlayLimit] is called instead of repeating; 0 loops forever. */
     var playLimit: Int = 0
     var onPlayLimit: (() -> Unit)? = null
@@ -59,6 +66,8 @@ class LoopPlayer(private val context: Context) {
     var metadata: MediaMetadata = MediaMetadata.EMPTY
 
     private var clip: MediaItem? = null
+    /** Length of the loaded clip in the audio's own time; 0 when it is a whole file. */
+    private var clipLengthMs = 0L
     /** The gap item in the playlist is for an older delay or speed and gets replaced when possible. */
     private var gapStale = false
     /** The play limit was reached; the next [load] continues seamlessly after the current gap. */
@@ -109,6 +118,7 @@ class LoopPlayer(private val context: Context) {
         }
         val next = item.build()
         this.clip = next
+        clipLengthMs = clip?.let { it.last - it.first } ?: 0L
         _repeats.value = 0
         gapStale = false
         val current = player.currentMediaItem?.mediaId
@@ -203,7 +213,10 @@ class LoopPlayer(private val context: Context) {
     }
 
     /** The pause between repeats; it plays at the playback speed, so it's stretched to match. */
-    private fun gap() = silenceItem(GAP, (delayMs * speed).toLong().coerceAtLeast(MIN_GAP_MS))
+    private fun gap(): MediaItem {
+        val sing = if (singBack) clipLengthMs else 0L
+        return silenceItem(GAP, (sing + delayMs * speed).toLong().coerceIn(MIN_GAP_MS, SILENCE_SECONDS * 1000L))
+    }
 
     private fun silenceItem(id: String, durationMs: Long) = MediaItem.Builder()
         .setUri(Uri.fromFile(silence))
@@ -239,12 +252,13 @@ class LoopPlayer(private val context: Context) {
         const val HOLD = "hold"
         const val MIN_GAP_MS = 20L
         const val HOLD_MS = 10_000L
+        const val SILENCE_SECONDS = 60
 
-        /** 12 s of 8 kHz mono silence as a WAV file, clipped to make gaps of any length. */
+        /** A minute of 8 kHz mono silence as a WAV file, clipped to make gaps of any length. */
         fun silenceFile(context: Context): File {
             val file = File(context.cacheDir, "silence.wav")
             val rate = 8000
-            val dataSize = rate * 2 * 12
+            val dataSize = rate * 2 * SILENCE_SECONDS
             if (file.length() == 44L + dataSize) return file
             RandomAccessFile(file, "rw").use { f ->
                 fun int(v: Int) = f.write(byteArrayOf(v.toByte(), (v shr 8).toByte(), (v shr 16).toByte(), (v shr 24).toByte()))

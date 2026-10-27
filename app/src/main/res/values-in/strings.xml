@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Sembunyikan video berbahasa lain</string>
     <string name="subs_other_language">Bahasa lain</string>
     <string name="subs_no_speech">Tidak ada ucapan</string>
+    <string name="yt_lyrics">Mencari lirik…</string>
+    <string name="song_no_lyrics">Lirik tersinkron untuk “%1$s” tidak ditemukan.</string>
+    <string name="song_wrong_language">Lirik “%1$s” bukan dalam bahasa %2$s.</string>
+    <string name="song_lines">Baris lirik: %1$d · lagu</string>
+    <string name="download_song">Unduh sebagai lagu (dengan lirik)</string>
+    <string name="search_videos">Video</string>
+    <string name="search_songs">Lagu</string>
+    <string name="search_songs_help">Lagu dengan lirik berbahasa %1$s. Ketuk satu untuk mengunduh audio; lirik berwaktu berasal dari LRCLIB.</string>
+    <string name="on">Aktif</string>
+    <string name="sing_back">Nyanyikan kembali: hening sepanjang baris setelah setiap pemutaran</string>
+    <string name="lyrics_timing">Waktu lirik: %1$s dtk</string>
+    <string name="lyrics_earlier">Lebih awal −0,5 dtk</string>
+    <string name="lyrics_later">Lebih lambat +0,5 dtk</string>
+    <string name="lyrics_query">Pencarian lirik (opsional, untuk lagu: artis dan judul)</string>
+    <string name="song_no_lyrics_tip">LRCLIB mungkin menyimpan lagu ini dengan ejaan lain, mis. romaji: tempel tautan, tulis artis dan judul di pencarian lirik, lalu unduh sebagai lagu.</string>
+    <string name="song_auto_captions">Lirik tidak ditemukan, jadi takarir otomatis video digunakan; sering kurang akurat untuk lagu. Cari liriknya sendiri.</string>
+    <string name="song_length_differs">Video berbeda %1$d dtk panjangnya dari rekaman liriknya, jadi waktunya bisa meleset: sesuaikan waktu lirik di menu pemutaran.</string>
+    <string name="auto_time">Atur waktu otomatis dari takarir video</string>
+    <string name="auto_time_working">Memeriksa takarir…</string>
+    <string name="auto_time_done">Waktu diatur ke %1$s dtk berdasarkan takarir video.</string>
+    <string name="auto_time_no_captions">Video tidak punya takarir untuk mengambil waktunya.</string>
+    <string name="auto_time_no_match">Takarir terlalu berbeda dari lirik untuk menentukan waktu.</string>
+    <string name="auto_time_failed">Pengaturan waktu otomatis gagal: %1$s</string>
 </resources>

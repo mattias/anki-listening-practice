@@ -18,6 +18,7 @@ import dev.lovkvist.listening.text.WordSpan
 import dev.lovkvist.listening.data.anki.AnkiText
 import dev.lovkvist.listening.data.local.PracticeDayDao
 import dev.lovkvist.listening.data.media.MediaLibrary
+import dev.lovkvist.listening.data.media.YouTubeImporter
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.l10n.displayName
@@ -56,6 +57,19 @@ fun displayedText(sentence: Sentence, language: Language): String =
         sentence.text
     }
 
+/** The progress and outcome of timing a song's lyrics from the video's captions. */
+sealed interface AutoTimeState {
+    data object Idle : AutoTimeState
+    data object Working : AutoTimeState
+    /** The offset that was set, in ms. */
+    data class Done(val offsetMs: Long) : AutoTimeState
+    /** The video has no automatic captions in the language. */
+    data object NoCaptions : AutoTimeState
+    /** The captions don't look enough like the lyrics. */
+    data object NoMatch : AutoTimeState
+    data class Failed(val message: String) : AutoTimeState
+}
+
 sealed interface PracticeState {
     data object Loading : PracticeState
     data class Message(val text: String) : PracticeState
@@ -77,13 +91,14 @@ sealed interface PracticeState {
  */
 @Singleton
 class PracticeController @Inject constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
     private val repository: SentenceRepository,
     private val settings: SettingsRepository,
     private val strings: Strings,
     private val days: PracticeDayDao,
     private val dictionaries: DictionaryRepository,
-    media: MediaLibrary,
+    private val library: MediaLibrary,
+    private val youTube: YouTubeImporter,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
@@ -143,7 +158,7 @@ class PracticeController @Inject constructor(
      * Everything that can be practiced: Anki cards plus each video/audio in the current language.
      * Anki cards have no name here; it's translated where it's shown.
      */
-    val sources: StateFlow<List<Pair<PracticeSource, String>>> = combine(media.items, settings.settings) { items, s ->
+    val sources: StateFlow<List<Pair<PracticeSource, String>>> = combine(library.items, settings.settings) { items, s ->
         listOf(PracticeSource.Anki to "") +
             items.filter { it.language == s.language }.map { PracticeSource.Media(it.id) to it.name }
     }.stateIn(scope, SharingStarted.Eagerly, listOf(PracticeSource.Anki to ""))
@@ -206,6 +221,7 @@ class PracticeController @Inject constructor(
             setAutoClearAfter(s.autoClearAfter, persist = false)
             _autoAdvanceSkip.value = s.autoAdvanceSkip
             _headsetDoubleTapClear.value = s.headsetDoubleTapClear
+            _singBack.value = s.singBack
         }
         scope.launch {
             // Initial load, and again whenever the collection, mapping or known words change.
@@ -259,6 +275,100 @@ class PracticeController @Inject constructor(
     fun setAutoAdvanceSkip(skip: Boolean) {
         _autoAdvanceSkip.value = skip
         scope.launch { settings.setAutoAdvanceSkip(skip) }
+    }
+
+    private val _singBack = MutableStateFlow(true)
+    /** Songs: a silence as long as the line follows each play, to sing it back. */
+    val singBack: StateFlow<Boolean> = _singBack.asStateFlow()
+
+    fun setSingBack(on: Boolean) {
+        _singBack.value = on
+        player.singBack = on && isSong.value
+        scope.launch { settings.setSingBack(on) }
+    }
+
+    /** The current source is a song: all its lines are practiced, in order, with no cooldown. */
+    val isSong: StateFlow<Boolean> = combine(source, library.items) { s, items ->
+        s is PracticeSource.Media && items.any { it.id == s.id && it.song }
+    }.stateIn(scope, SharingStarted.Eagerly, false)
+
+    init {
+        scope.launch {
+            // The silence for singing back is for songs only.
+            combine(_singBack, isSong) { on, song -> on && song }.collect { player.singBack = it }
+        }
+    }
+
+    /** The song's timing offset in ms (0 for other sources). */
+    val songOffsetMs: StateFlow<Long> = combine(source, library.items) { s, items ->
+        (s as? PracticeSource.Media)?.let { m -> items.firstOrNull { it.id == m.id }?.offsetMs } ?: 0L
+    }.stateIn(scope, SharingStarted.Eagerly, 0L)
+
+    /** Moves the song's lyrics [byMs] later (negative: earlier) against the audio, and replays the line. */
+    fun adjustSongOffset(byMs: Long) {
+        scope.launch { setSongOffset(songOffsetMs.value + byMs) }
+    }
+
+    /** Sets the song's timing offset to [offsetMs] and replays the line it is on. */
+    private suspend fun setSongOffset(offsetMs: Long) {
+        val s = source.value as? PracticeSource.Media ?: return
+        lock.withLock {
+            val ready = _state.value as? PracticeState.Ready ?: return@withLock
+            library.setOffset(s.id, offsetMs.coerceIn(-MAX_OFFSET_MS, MAX_OFFSET_MS))
+            repository.refreshTimeline()
+            timeline = repository.timeline().orEmpty()
+            val wasPlaying = player.isPlaying.value
+            val ids = ready.lines.map { it.id }.toSet()
+            val lines = timeline.filter { it.id in ids }
+            if (lines.isNotEmpty()) showLines(lines, autoPlay = wasPlaying, keepText = true)
+        }
+    }
+
+    /** The song was downloaded from YouTube, so its lyrics can be timed against the video's captions. */
+    val songAutoTimable: StateFlow<Boolean> = combine(source, library.items) { s, items ->
+        s is PracticeSource.Media && items.any { it.id == s.id && it.song && it.sourceUrl != null }
+    }.stateIn(scope, SharingStarted.Eagerly, false)
+
+    private val _autoTiming = MutableStateFlow<AutoTimeState>(AutoTimeState.Idle)
+    /** What auto-timing is doing, and how it ended. */
+    val autoTiming: StateFlow<AutoTimeState> = _autoTiming.asStateFlow()
+
+    /**
+     * Times the song's lyrics from the video's automatic captions: the lines that look alike show how
+     * far the lyrics are off, and that becomes the timing offset. Says in [autoTiming] if it can't.
+     */
+    fun autoTimeSong() {
+        val entry = (source.value as? PracticeSource.Media)?.let { m -> library.items.value.firstOrNull { it.id == m.id } } ?: return
+        val url = entry.sourceUrl ?: return
+        if (_autoTiming.value == AutoTimeState.Working) return
+        scope.launch {
+            _autoTiming.value = AutoTimeState.Working
+            _autoTiming.value = try {
+                val result = youTube.songShift(url, entry.language, library.rawCues(entry.id)) {}
+                val shift = result.shiftMs
+                when {
+                    shift != null -> {
+                        setSongOffset(shift)
+                        AutoTimeState.Done(shift)
+                    }
+                    result.found -> AutoTimeState.NoMatch
+                    else -> AutoTimeState.NoCaptions
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                AutoTimeState.Failed(e.message ?: e.toString())
+            }
+            // The result also shows in the playback sheet, but under a button that may be out of sight.
+            val message = when (val r = _autoTiming.value) {
+                is AutoTimeState.Done -> strings(R.string.auto_time_done, "%+.1f".format(r.offsetMs / 1000.0))
+                AutoTimeState.NoCaptions -> strings(R.string.auto_time_no_captions)
+                AutoTimeState.NoMatch -> strings(R.string.auto_time_no_match)
+                is AutoTimeState.Failed -> strings(R.string.auto_time_failed, r.message)
+                else -> null
+            }
+            if (message != null) android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()
+        }
     }
 
     private val _headsetDoubleTapClear = MutableStateFlow(false)
@@ -489,6 +599,7 @@ class PracticeController @Inject constructor(
 
     private companion object {
         const val MAX_UNDO = 50
+        const val MAX_OFFSET_MS = 120_000L
 
         // A headset's "next" reaches the player right after its press arrives; this leaves room to spare.
         const val HEADSET_WINDOW_MS = 1000L

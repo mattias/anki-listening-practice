@@ -7,7 +7,7 @@ import java.io.IOException
 data class SubtitleCue(val startMs: Long, val endMs: Long, val text: String)
 
 /**
- * Parses SRT, WebVTT, ASS/SSA and YouTube json3 subtitles into cues.
+ * Parses SRT, WebVTT, ASS/SSA, LRC lyrics and YouTube json3 subtitles into cues.
  * Formatting (HTML tags, ASS override blocks, karaoke timestamps) is stripped; line breaks are
  * kept as "\n". Empty cues are dropped and identical back-to-back cues are merged.
  */
@@ -17,14 +17,49 @@ object Subtitles {
         val text = content.removePrefix("﻿").replace("\r\n", "\n").replace('\r', '\n')
         val ext = fileName.substringAfterLast('.', "").lowercase()
         val cues = when {
+            ext == "lrc" -> parseLrc(text)
             ext == "ass" || ext == "ssa" || text.contains("[Events]") -> parseAss(text)
             ext == "json3" || ext == "json" || text.trimStart().startsWith("{") -> parseJson3(text)
             ext == "vtt" || text.startsWith("WEBVTT") -> parseTimed(text)
             else -> parseTimed(text) // SRT, and anything with "-->" timings
         }
         if (cues.isEmpty()) throw IOException("No subtitles found in $fileName")
-        return tidy(cues)
+        // Repeated lines of a song (a chorus) stay separate lines.
+        return if (ext == "lrc") cues else tidy(cues)
     }
+
+    /**
+     * LRC lyrics: lines like `[01:23.45]text`, with several `[..]` stamps on a line when it
+     * repeats, `<mm:ss.xx>` word stamps (dropped) and `[ar:..]` style tags (ignored). A line ends
+     * where the next stamp starts; an empty line is such a marker too (an instrumental break), and
+     * a line is never held longer than [MAX_LRC_LINE_MS], so a long silence isn't looped.
+     */
+    private fun parseLrc(text: String): List<SubtitleCue> {
+        val stamp = Regex("""\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?]""")
+        val marks = mutableListOf<Pair<Long, String>>()
+        for (line in text.lines()) {
+            val stamps = stamp.findAll(line).toList()
+            if (stamps.isEmpty()) continue
+            val body = line.substring(stamps.last().range.last + 1).replace(Regex("""<\d{1,3}:\d{1,2}(?:[.:]\d{1,3})?>"""), "").trim()
+            for (m in stamps) {
+                val (min, sec, frac) = m.destructured
+                val fraction = frac.padEnd(3, '0').take(3).toLong()
+                marks += (min.toLong() * 60_000 + sec.toLong() * 1000 + fraction) to body
+            }
+        }
+        marks.sortBy { it.first }
+        val cues = mutableListOf<SubtitleCue>()
+        for ((i, mark) in marks.withIndex()) {
+            val (start, body) = mark
+            if (body.isEmpty()) continue
+            val next = marks.getOrNull(i + 1)?.first ?: (start + LAST_LRC_LINE_MS)
+            cues += SubtitleCue(start, minOf(next, start + MAX_LRC_LINE_MS).coerceAtLeast(start + 500), body)
+        }
+        return cues
+    }
+
+    private const val MAX_LRC_LINE_MS = 10_000L
+    private const val LAST_LRC_LINE_MS = 5_000L
 
     /** SRT and WebVTT share the "start --> end" line followed by text lines. */
     private fun parseTimed(text: String): List<SubtitleCue> {

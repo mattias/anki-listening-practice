@@ -164,6 +164,16 @@ default; if a video has none in that language, English; *Off* skips them) and sh
 translation of each line. Lines are matched by time, so a translation can cover a little more or
 less than its line.
 
+### Songs
+
+Switch the YouTube search to **Songs** (or paste a link and tap **Download as a song**): the app
+downloads the audio and looks up synced lyrics at [LRCLIB](https://lrclib.net) (free, no key),
+matched by title and length. Songs play line by line in order, with **every** line shown whatever
+its words, and with no cooldown: **Crystal Clear** just moves on. The playback sheet has
+**Sing back** (after each play, a silence as long as the line, for you to sing it) and **Lyrics
+timing**, which moves the lyrics 0.5 s earlier or later against the audio. You can also add your
+own audio with an `.lrc` lyrics file under **Add video/audio**. Chains work for songs too.
+
 Picked files stay where they are, so don't move or delete them. YouTube downloads are stored in
 the app. Downloading from YouTube is against YouTube's terms of service; use it for your own
 study only.

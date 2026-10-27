@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Skjul videoene på andre språk</string>
     <string name="subs_other_language">Annet språk</string>
     <string name="subs_no_speech">Fant ikke tale</string>
+    <string name="yt_lyrics">Leter etter sangteksten…</string>
+    <string name="song_no_lyrics">Fant ingen synkronisert sangtekst for “%1$s”.</string>
+    <string name="song_wrong_language">Sangteksten til “%1$s” er ikke på %2$s.</string>
+    <string name="song_lines">Tekstlinjer: %1$d · sang</string>
+    <string name="download_song">Last ned som sang (med tekst)</string>
+    <string name="search_videos">Videoer</string>
+    <string name="search_songs">Sanger</string>
+    <string name="search_songs_help">Sanger med tekst på %1$s. Trykk på en for å laste ned lyden; teksten med tider kommer fra LRCLIB.</string>
+    <string name="on">På</string>
+    <string name="sing_back">Syng tilbake: stillhet like lang som linjen etter hver avspilling</string>
+    <string name="lyrics_timing">Tekstens timing: %1$s s</string>
+    <string name="lyrics_earlier">Tidligere −0,5 s</string>
+    <string name="lyrics_later">Senere +0,5 s</string>
+    <string name="lyrics_query">Tekstsøk (valgfritt, for en sang: artist og tittel)</string>
+    <string name="song_no_lyrics_tip">LRCLIB kan ha sangen under en annen stavemåte, f.eks. i romaji: lim inn lenken, skriv artist og tittel i tekstsøket og last den ned som sang.</string>
+    <string name="song_auto_captions">Fant ingen sangtekst, så videoens automatiske undertekster ble brukt; de er ofte dårlige for sang. Søk gjerne etter teksten selv.</string>
+    <string name="song_length_differs">Videoen avviker %1$d s i lengde fra tekstens innspilling, så tidene kan være forskjøvet: juster tekstens timing i avspillingsmenyen.</string>
+    <string name="auto_time">Tidsett automatisk fra videoens undertekster</string>
+    <string name="auto_time_working">Lytter til undertekstene…</string>
+    <string name="auto_time_done">Timing satt til %1$s s fra videoens undertekster.</string>
+    <string name="auto_time_no_captions">Videoen har ingen undertekster å ta timingen fra.</string>
+    <string name="auto_time_no_match">Undertekstene ligner for lite på sangteksten til å avgjøre timingen.</string>
+    <string name="auto_time_failed">Automatisk tidsetting mislyktes: %1$s</string>
 </resources>

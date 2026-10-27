@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Ocultar os vídeos em outros idiomas</string>
     <string name="subs_other_language">Outro idioma</string>
     <string name="subs_no_speech">Nenhuma fala encontrada</string>
+    <string name="yt_lyrics">Procurando a letra…</string>
+    <string name="song_no_lyrics">Nenhuma letra sincronizada encontrada para “%1$s”.</string>
+    <string name="song_wrong_language">A letra de “%1$s” não está em %2$s.</string>
+    <string name="song_lines">Linhas da letra: %1$d · música</string>
+    <string name="download_song">Baixar como música (com letra)</string>
+    <string name="search_videos">Vídeos</string>
+    <string name="search_songs">Músicas</string>
+    <string name="search_songs_help">Músicas com letra em %1$s. Toque em uma para baixar o áudio; a letra com tempos vem do LRCLIB.</string>
+    <string name="on">Ativado</string>
+    <string name="sing_back">Cantar de volta: um silêncio do tamanho da linha após cada reprodução</string>
+    <string name="lyrics_timing">Sincronia da letra: %1$s s</string>
+    <string name="lyrics_earlier">Mais cedo −0,5 s</string>
+    <string name="lyrics_later">Mais tarde +0,5 s</string>
+    <string name="lyrics_query">Busca da letra (opcional, para uma música: artista e título)</string>
+    <string name="song_no_lyrics_tip">O LRCLIB pode ter a música com outra grafia, p. ex. em romaji: cole o link, escreva artista e título na busca da letra e baixe como música.</string>
+    <string name="song_auto_captions">Nenhuma letra encontrada, então foram usadas as legendas automáticas do vídeo, que costumam ser imprecisas para canto. Procure a letra você mesmo.</string>
+    <string name="song_length_differs">O vídeo difere em %1$d s da gravação da letra, então os tempos podem estar deslocados: ajuste a sincronia da letra no menu de reprodução.</string>
+    <string name="auto_time">Sincronizar pelas legendas do vídeo</string>
+    <string name="auto_time_working">Analisando as legendas…</string>
+    <string name="auto_time_done">Sincronia definida em %1$s s pelas legendas do vídeo.</string>
+    <string name="auto_time_no_captions">O vídeo não tem legendas das quais tirar a sincronia.</string>
+    <string name="auto_time_no_match">As legendas são parecidas demais pouco com a letra para saber a sincronia.</string>
+    <string name="auto_time_failed">Falha na sincronização automática: %1$s</string>
 </resources>

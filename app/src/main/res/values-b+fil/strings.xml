@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Itago ang mga video sa ibang wika</string>
     <string name="subs_other_language">Ibang wika</string>
     <string name="subs_no_speech">Walang nahanap na pagsasalita</string>
+    <string name="yt_lyrics">Hinahanap ang lyrics…</string>
+    <string name="song_no_lyrics">Walang nahanap na naka-sync na lyrics para sa “%1$s”.</string>
+    <string name="song_wrong_language">Ang lyrics ng “%1$s” ay hindi sa wikang %2$s.</string>
+    <string name="song_lines">Mga linya ng lyrics: %1$d · kanta</string>
+    <string name="download_song">I-download bilang kanta (may lyrics)</string>
+    <string name="search_videos">Mga video</string>
+    <string name="search_songs">Mga kanta</string>
+    <string name="search_songs_help">Mga kantang may lyrics sa %1$s. I-tap ang isa para i-download ang audio; ang lyrics na may oras ay galing sa LRCLIB.</string>
+    <string name="on">Naka-on</string>
+    <string name="sing_back">Kantahin pabalik: katahimikang kasing-haba ng linya pagkatapos ng bawat play</string>
+    <string name="lyrics_timing">Timing ng lyrics: %1$s s</string>
+    <string name="lyrics_earlier">Mas maaga −0.5 s</string>
+    <string name="lyrics_later">Mas huli +0.5 s</string>
+    <string name="lyrics_query">Paghahanap ng lyrics (opsyonal, para sa kanta: artist at pamagat)</string>
+    <string name="song_no_lyrics_tip">Maaaring nasa LRCLIB ang kanta sa ibang baybay, hal. romaji: i-paste ang link, isulat ang artist at pamagat sa paghahanap ng lyrics, at i-download bilang kanta.</string>
+    <string name="song_auto_captions">Walang nahanap na lyrics, kaya ginamit ang awtomatikong caption ng video; madalas hindi tumpak para sa kanta. Hanapin mo mismo ang lyrics.</string>
+    <string name="song_length_differs">Ang video ay %1$d s ang pagkakaiba sa haba mula sa recording ng lyrics, kaya maaaring lihis ang oras: i-adjust ang timing ng lyrics sa playback menu.</string>
+    <string name="auto_time">Awtomatikong i-time mula sa caption ng video</string>
+    <string name="auto_time_working">Sinusuri ang mga caption…</string>
+    <string name="auto_time_done">Naitakda ang timing sa %1$s s mula sa caption ng video.</string>
+    <string name="auto_time_no_captions">Walang caption ang video na mapagkukunan ng timing.</string>
+    <string name="auto_time_no_match">Masyadong hindi kahawig ng lyrics ang mga caption para matukoy ang timing.</string>
+    <string name="auto_time_failed">Hindi nagtagumpay ang awtomatikong timing: %1$s</string>
 </resources>

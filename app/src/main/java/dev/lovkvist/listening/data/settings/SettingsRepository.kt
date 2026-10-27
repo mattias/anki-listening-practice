@@ -51,6 +51,8 @@ data class Settings(
     val onboardingDone: Boolean,
     /** A double tap on the headset button marks Crystal Clear instead of skipping. */
     val headsetDoubleTapClear: Boolean = false,
+    /** Songs: after each play, a silence as long as the line, to sing it back. */
+    val singBack: Boolean = true,
     /** Languages starred in the language menus; they're listed first. */
     val favoriteLanguages: Set<Language> = emptySet(),
 )
@@ -73,6 +75,7 @@ class SettingsRepository @Inject constructor(
         val onboardingDone = booleanPreferencesKey("setup_guide_seen")
         val favoriteLanguages = stringSetPreferencesKey("favorite_languages")
         val headsetDoubleTapClear = booleanPreferencesKey("headset_double_tap_clear")
+        val singBack = booleanPreferencesKey("sing_back")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -112,9 +115,12 @@ class SettingsRepository @Inject constructor(
             autoAdvanceSkip = prefs[Keys.autoAdvanceSkip] ?: false,
             onboardingDone = prefs[Keys.onboardingDone] ?: false,
             headsetDoubleTapClear = prefs[Keys.headsetDoubleTapClear] ?: false,
+            singBack = prefs[Keys.singBack] ?: true,
             favoriteLanguages = prefs[Keys.favoriteLanguages].orEmpty().mapNotNull { code -> Language.entries.firstOrNull { it.code == code } }.toSet(),
         )
     }
+
+    suspend fun setSingBack(on: Boolean) = context.dataStore.edit { it[Keys.singBack] = on }
 
     suspend fun setHeadsetDoubleTapClear(clear: Boolean) = context.dataStore.edit { it[Keys.headsetDoubleTapClear] = clear }
 

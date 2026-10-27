@@ -238,4 +238,27 @@
     <string name="hide_other_languages">إخفاء الفيديوهات بلغات أخرى</string>
     <string name="subs_other_language">لغة أخرى</string>
     <string name="subs_no_speech">لم يُعثر على كلام</string>
+    <string name="yt_lyrics">جارٍ البحث عن كلمات الأغنية…</string>
+    <string name="song_no_lyrics">لم يُعثر على كلمات متزامنة لـ «%1$s».</string>
+    <string name="song_wrong_language">كلمات «%1$s» ليست بلغة %2$s.</string>
+    <string name="song_lines">أسطر الكلمات: %1$d · أغنية</string>
+    <string name="download_song">تنزيل كأغنية (مع الكلمات)</string>
+    <string name="search_videos">فيديوهات</string>
+    <string name="search_songs">أغانٍ</string>
+    <string name="search_songs_help">أغانٍ بكلمات بلغة %1$s. اضغط على واحدة لتنزيل الصوت؛ الكلمات المؤقتة تأتي من LRCLIB.</string>
+    <string name="on">تشغيل</string>
+    <string name="sing_back">الغناء بالمقابل: صمت بطول السطر بعد كل تشغيل</string>
+    <string name="lyrics_timing">توقيت الكلمات: %1$s ث</string>
+    <string name="lyrics_earlier">أبكر −0.5 ث</string>
+    <string name="lyrics_later">أبطأ +0.5 ث</string>
+    <string name="lyrics_query">بحث عن الكلمات (اختياري، للأغنية: الفنان والعنوان)</string>
+    <string name="song_no_lyrics_tip">قد تكون الأغنية في LRCLIB بتهجئة أخرى، مثل الرومانجي: الصق الرابط واكتب الفنان والعنوان في بحث الكلمات ونزّلها كأغنية.</string>
+    <string name="song_auto_captions">لم تُوجد كلمات، فاستُخدمت الترجمة التلقائية للفيديو وهي غالباً غير دقيقة للغناء. جرّب البحث عن الكلمات بنفسك.</string>
+    <string name="song_length_differs">يختلف الفيديو بمقدار %1$d ث في الطول عن تسجيل الكلمات، لذا قد تكون الأوقات منزاحة: اضبط توقيت الكلمات في قائمة التشغيل.</string>
+    <string name="auto_time">ضبط التوقيت تلقائياً من ترجمة الفيديو</string>
+    <string name="auto_time_working">جارٍ فحص الترجمة…</string>
+    <string name="auto_time_done">تم ضبط التوقيت على %1$s ث من ترجمة الفيديو.</string>
+    <string name="auto_time_no_captions">لا تتوفر للفيديو ترجمة يمكن أخذ التوقيت منها.</string>
+    <string name="auto_time_no_match">الترجمة لا تشبه الكلمات بما يكفي لتحديد التوقيت.</string>
+    <string name="auto_time_failed">فشل الضبط التلقائي: %1$s</string>
 </resources>

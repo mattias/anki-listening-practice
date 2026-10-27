@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Sakrij videozapise na drugim jezicima</string>
     <string name="subs_other_language">Drugi jezik</string>
     <string name="subs_no_speech">Govor nije pronađen</string>
+    <string name="yt_lyrics">Tražim tekst pjesme…</string>
+    <string name="song_no_lyrics">Nije pronađen sinkronizirani tekst za „%1$s”.</string>
+    <string name="song_wrong_language">Tekst pjesme „%1$s” nije na jeziku: %2$s.</string>
+    <string name="song_lines">Redaka teksta: %1$d · pjesma</string>
+    <string name="download_song">Preuzmi kao pjesmu (s tekstom)</string>
+    <string name="search_videos">Videozapisi</string>
+    <string name="search_songs">Pjesme</string>
+    <string name="search_songs_help">Pjesme s tekstom na jeziku: %1$s. Dodirnite za preuzimanje zvuka; tekst s vremenima dolazi s LRCLIB-a.</string>
+    <string name="on">Uključeno</string>
+    <string name="sing_back">Otpjevaj natrag: tišina duga kao redak nakon svakog reproduciranja</string>
+    <string name="lyrics_timing">Vrijeme teksta: %1$s s</string>
+    <string name="lyrics_earlier">Ranije −0,5 s</string>
+    <string name="lyrics_later">Kasnije +0,5 s</string>
+    <string name="lyrics_query">Pretraga teksta (neobavezno, za pjesmu: izvođač i naslov)</string>
+    <string name="song_no_lyrics_tip">LRCLIB možda ima pjesmu pod drugim pisanjem, npr. u romaji: zalijepite poveznicu, upišite izvođača i naslov u pretragu teksta i preuzmite kao pjesmu.</string>
+    <string name="song_auto_captions">Tekst nije pronađen pa su korišteni automatski titlovi videa; za pjevanje su često loši. Potražite tekst sami.</string>
+    <string name="song_length_differs">Video se razlikuje za %1$d s u duljini od snimke teksta pa vremena mogu biti pomaknuta: podesite vrijeme teksta u izborniku reprodukcije.</string>
+    <string name="auto_time">Automatski uskladi vrijeme prema titlovima videa</string>
+    <string name="auto_time_working">Provjeravam titlove…</string>
+    <string name="auto_time_done">Vrijeme postavljeno na %1$s s prema titlovima videa.</string>
+    <string name="auto_time_no_captions">Video nema titlove iz kojih bi se uzelo vrijeme.</string>
+    <string name="auto_time_no_match">Titlovi su previše različiti od teksta da bi se odredilo vrijeme.</string>
+    <string name="auto_time_failed">Automatsko usklađivanje nije uspjelo: %1$s</string>
 </resources>

@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Amaga els vídeos en altres llengües</string>
     <string name="subs_other_language">Una altra llengua</string>
     <string name="subs_no_speech">No s\'ha trobat parla</string>
+    <string name="yt_lyrics">Cercant la lletra…</string>
+    <string name="song_no_lyrics">No s’ha trobat cap lletra sincronitzada per a «%1$s».</string>
+    <string name="song_wrong_language">La lletra de «%1$s» no és en %2$s.</string>
+    <string name="song_lines">Línies de lletra: %1$d · cançó</string>
+    <string name="download_song">Baixa com a cançó (amb lletra)</string>
+    <string name="search_videos">Vídeos</string>
+    <string name="search_songs">Cançons</string>
+    <string name="search_songs_help">Cançons amb lletra en %1$s. Toca’n una per baixar l’àudio; la lletra amb temps ve de LRCLIB.</string>
+    <string name="on">Activat</string>
+    <string name="sing_back">Cantar de tornada: un silenci tan llarg com la línia després de cada reproducció</string>
+    <string name="lyrics_timing">Sincronia de la lletra: %1$s s</string>
+    <string name="lyrics_earlier">Abans −0,5 s</string>
+    <string name="lyrics_later">Després +0,5 s</string>
+    <string name="lyrics_query">Cerca de la lletra (opcional, per a una cançó: artista i títol)</string>
+    <string name="song_no_lyrics_tip">LRCLIB pot tenir la cançó amb una altra grafia, p. ex. en romaji: enganxa l’enllaç, escriu l’artista i el títol a la cerca de la lletra i baixa-la com a cançó.</string>
+    <string name="song_auto_captions">No s’ha trobat cap lletra, així que s’han fet servir els subtítols automàtics del vídeo, sovint imprecisos per al cant. Cerca la lletra tu mateix.</string>
+    <string name="song_length_differs">El vídeo difereix en %1$d s de l’enregistrament de la lletra, així que els temps poden estar desplaçats: ajusta la sincronia de la lletra al menú de reproducció.</string>
+    <string name="auto_time">Sincronitza amb els subtítols del vídeo</string>
+    <string name="auto_time_working">Analitzant els subtítols…</string>
+    <string name="auto_time_done">Sincronia fixada en %1$s s segons els subtítols del vídeo.</string>
+    <string name="auto_time_no_captions">El vídeo no té subtítols dels quals prendre la sincronia.</string>
+    <string name="auto_time_no_match">Els subtítols s’assemblen massa poc a la lletra per saber la sincronia.</string>
+    <string name="auto_time_failed">Ha fallat la sincronització automàtica: %1$s</string>
 </resources>

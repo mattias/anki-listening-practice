@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Başka dillerdeki videoları gizle</string>
     <string name="subs_other_language">Başka dil</string>
     <string name="subs_no_speech">Konuşma bulunamadı</string>
+    <string name="yt_lyrics">Şarkı sözleri aranıyor…</string>
+    <string name="song_no_lyrics">“%1$s” için eşzamanlı söz bulunamadı.</string>
+    <string name="song_wrong_language">“%1$s” şarkısının sözleri %2$s dilinde değil.</string>
+    <string name="song_lines">Söz satırları: %1$d · şarkı</string>
+    <string name="download_song">Şarkı olarak indir (sözlerle)</string>
+    <string name="search_videos">Videolar</string>
+    <string name="search_songs">Şarkılar</string>
+    <string name="search_songs_help">%1$s sözlü şarkılar. Sesi indirmek için birine dokunun; zamanlı sözler LRCLIB’den gelir.</string>
+    <string name="on">Açık</string>
+    <string name="sing_back">Geri söyle: her oynatmadan sonra satır kadar sessizlik</string>
+    <string name="lyrics_timing">Söz zamanlaması: %1$s sn</string>
+    <string name="lyrics_earlier">Daha erken −0,5 sn</string>
+    <string name="lyrics_later">Daha geç +0,5 sn</string>
+    <string name="lyrics_query">Söz araması (isteğe bağlı, şarkı için: sanatçı ve ad)</string>
+    <string name="song_no_lyrics_tip">LRCLIB şarkıyı başka bir yazımla, örn. romaji ile tutuyor olabilir: bağlantıyı yapıştırın, söz aramasına sanatçı ve adı yazın ve şarkı olarak indirin.</string>
+    <string name="song_auto_captions">Söz bulunamadı, bu yüzden videonun otomatik altyazıları kullanıldı; şarkı için genellikle kötüdür. Sözleri kendiniz aramayı deneyin.</string>
+    <string name="song_length_differs">Video, sözlerin kaydından %1$d sn farklı uzunlukta; zamanlar kayık olabilir: oynatma menüsünden söz zamanlamasını ayarlayın.</string>
+    <string name="auto_time">Videonun altyazılarından otomatik zamanla</string>
+    <string name="auto_time_working">Altyazılar inceleniyor…</string>
+    <string name="auto_time_done">Zamanlama videonun altyazılarına göre %1$s sn olarak ayarlandı.</string>
+    <string name="auto_time_no_captions">Videoda zamanlamanın alınacağı altyazı yok.</string>
+    <string name="auto_time_no_match">Altyazılar sözlere zamanlamayı belirleyecek kadar benzemiyor.</string>
+    <string name="auto_time_failed">Otomatik zamanlama başarısız: %1$s</string>
 </resources>

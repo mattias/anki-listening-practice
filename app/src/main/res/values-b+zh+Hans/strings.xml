@@ -238,4 +238,27 @@
     <string name="hide_other_languages">隐藏其他语言的视频</string>
     <string name="subs_other_language">其他语言</string>
     <string name="subs_no_speech">未发现语音</string>
+    <string name="yt_lyrics">正在查找歌词…</string>
+    <string name="song_no_lyrics">没有找到“%1$s”的同步歌词。</string>
+    <string name="song_wrong_language">“%1$s”的歌词不是%2$s。</string>
+    <string name="song_lines">歌词行数：%1$d · 歌曲</string>
+    <string name="download_song">作为歌曲下载（含歌词）</string>
+    <string name="search_videos">视频</string>
+    <string name="search_songs">歌曲</string>
+    <string name="search_songs_help">%1$s歌词的歌曲。点按即可下载音频；带时间的歌词来自 LRCLIB。</string>
+    <string name="on">开</string>
+    <string name="sing_back">跟唱：每次播放后留出与该行等长的静音</string>
+    <string name="lyrics_timing">歌词时间：%1$s 秒</string>
+    <string name="lyrics_earlier">提前 −0.5 秒</string>
+    <string name="lyrics_later">延后 +0.5 秒</string>
+    <string name="lyrics_query">歌词搜索（可选，用于歌曲：歌手和歌名）</string>
+    <string name="song_no_lyrics_tip">LRCLIB 可能以其他写法（如罗马字）收录了这首歌：粘贴链接，在歌词搜索中填写歌手和歌名，再作为歌曲下载。</string>
+    <string name="song_auto_captions">没有找到歌词，因此使用了视频的自动字幕，对歌曲往往不准确。可以自己搜索歌词。</string>
+    <string name="song_length_differs">视频与歌词录音的长度相差 %1$d 秒，时间可能有偏移：请在播放菜单中调整歌词时间。</string>
+    <string name="auto_time">根据视频字幕自动校准时间</string>
+    <string name="auto_time_working">正在比对字幕…</string>
+    <string name="auto_time_done">已根据视频字幕将时间偏移设为 %1$s 秒。</string>
+    <string name="auto_time_no_captions">视频没有可用来校准时间的字幕。</string>
+    <string name="auto_time_no_match">字幕与歌词差异太大，无法判断时间。</string>
+    <string name="auto_time_failed">自动校准失败：%1$s</string>
 </resources>

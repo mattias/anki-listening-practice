@@ -42,6 +42,15 @@ class RateLimitedException(message: String, cause: Throwable? = null) : IOExcept
  * translates titles and subtitles and even dubs audio by machine, so none of those say what is
  * really spoken; the speech-recognition track ("<code>-orig", only made when someone speaks) does.
  */
+/** What comparing a song's lyrics with the video's captions found: the shift in ms, and whether there were any captions to compare. */
+data class SongShift(val shiftMs: Long?, val found: Boolean)
+
+/** Where a song's lyrics came from. */
+enum class SongSource { VIDEO_SUBTITLES, LRCLIB, AUTO_CAPTIONS }
+
+/** A downloaded song, and what to tell about its lyrics: their source, and how much longer the video is than the lyrics' recording. */
+data class SongImport(val entry: MediaEntry, val source: SongSource, val lengthDiffSeconds: Double = 0.0)
+
 enum class SubtitleStatus {
     /** Spoken in the study language, with subtitles made by people. */
     MANUAL,
@@ -67,6 +76,8 @@ class YouTubeImporter @Inject constructor(
     @ApplicationContext private val context: Context,
     private val library: MediaLibrary,
     private val strings: Strings,
+    private val lrcLib: LrcLib,
+    private val titleLanguage: TitleLanguage,
 ) {
     private val setupLock = Mutex()
     private var ready = false
@@ -75,10 +86,12 @@ class YouTubeImporter @Inject constructor(
      * Searches YouTube for [query], limited to videos that have captions (YouTube's "Subtitles/CC"
      * filter, which doesn't say in which language: see [subtitleStatus]). Nothing is downloaded.
      */
-    suspend fun search(query: String, limit: Int = SEARCH_LIMIT): List<VideoResult> {
+    suspend fun search(query: String, limit: Int = SEARCH_LIMIT, captionsOnly: Boolean = true): List<VideoResult> {
         setUp {}
-        // The filter's parameter goes in double-encoded, as YouTube writes it in its own links.
-        val url = "https://www.youtube.com/results?search_query=${Uri.encode(query.trim())}&sp=$CAPTIONS_FILTER"
+        // The filter's parameter goes in double-encoded, as YouTube writes it in its own links. Songs
+        // are searched without it: music videos seldom have captions, their lyrics come from elsewhere.
+        val filter = if (captionsOnly) "&sp=$CAPTIONS_FILTER" else ""
+        val url = "https://www.youtube.com/results?search_query=${Uri.encode(query.trim())}$filter"
         return parseSearchResults(runCancellable("search", YoutubeDLRequest(url).apply {
             addOption("--flat-playlist")
             addOption("--dump-single-json")
@@ -107,6 +120,139 @@ class YouTubeImporter @Inject constructor(
         } catch (e: Exception) {
             SubtitleStatus.UNKNOWN
         }
+
+    /**
+     * Downloads a song's audio and adds it with synced lyrics from LRCLIB, found by the video's
+     * title (and the music metadata YouTube has for official uploads) and length. Practiced
+     * like a video, but with every line, whatever its words. Throws if no lyrics fit, or if
+     * they are clearly in another language than [language].
+     */
+    suspend fun importSong(url: String, language: Language, lyricsQuery: String = "", onStatus: (String) -> Unit): SongImport = withContext(Dispatchers.IO) {
+        setUp(onStatus)
+
+        onStatus(strings(R.string.yt_looking))
+        val info = JSONObject(run(YoutubeDLRequest(url).apply {
+            addOption("--dump-single-json")
+            addOption("--skip-download")
+            addOption("--no-playlist")
+        }))
+        val title = info.optString("title").ifBlank { "YouTube video" }
+        // "Artist - Topic" channels are YouTube's auto-made music channels.
+        val channel = info.optString("channel").ifBlank { info.optString("uploader") }.removeSuffix(" - Topic")
+        val duration = info.optDouble("duration", 0.0).toLong().takeIf { it > 0 }
+
+        // Subtitles someone made by hand for a song are its lyrics, and the best ones to use. A search
+        // the user wrote means they want LRCLIB's.
+        if (lyricsQuery.isBlank()) {
+            pickTrack(trackNames(info, "subtitles"), emptyList(), language)?.let {
+                return@withContext SongImport(downloadSong(url, title, it, language, onStatus), SongSource.VIDEO_SUBTITLES)
+            }
+        }
+
+        onStatus(strings(R.string.yt_lyrics))
+        val lyrics = lrcLib.find(title, channel, duration, info.optString("track"), info.optString("artist"), lyricsQuery)
+        if (lyrics == null) {
+            // Last resort: the video's automatic captions, which are rougher for singing.
+            if (lyricsQuery.isBlank()) {
+                pickTrack(emptyList(), trackNames(info, "automatic_captions"), language, allowTranslated = false)?.let {
+                    return@withContext SongImport(downloadSong(url, title, it, language, onStatus), SongSource.AUTO_CAPTIONS)
+                }
+            }
+            throw NoLyricsException(strings(R.string.song_no_lyrics, title))
+        }
+        val cues = Subtitles.parse("lyrics.lrc", lyrics.synced)
+        val sample = cues.take(12).joinToString(" ") { it.text }
+        if (titleLanguage.likely(sample, language) == LikelyLanguage.OTHER) {
+            throw IOException(strings(R.string.song_wrong_language, title, language.displayName()))
+        }
+
+        val dir = library.newDir()
+        try {
+            onStatus(strings(R.string.yt_downloading))
+            run(YoutubeDLRequest(url).apply {
+                addOption("--no-playlist")
+                addOption("-f", "bestaudio[ext=m4a]/bestaudio")
+                addOption("-o", File(dir, "audio.%(ext)s").absolutePath)
+            }) { progress -> onStatus(strings(R.string.yt_progress, progress.toInt().coerceIn(0, 100))) }
+            val audio = dir.listFiles().orEmpty().firstOrNull { it.name.startsWith("audio.") && !it.name.endsWith(".part") }
+                ?: throw IOException("yt-dlp didn't save the audio")
+            onStatus(strings(R.string.reading_subtitles))
+            SongImport(library.importSong(dir, audio, cues, title, url, language), SongSource.LRCLIB, lyrics.lengthDiffSeconds)
+        } catch (e: Exception) {
+            dir.deleteRecursively()
+            throw e
+        }
+    }
+
+    /**
+     * The video's automatic captions in [language], or null if it has none: speech recognition by YouTube,
+     * rough for singing but with times that fit the audio. Used to find how far a song's lyrics are off.
+     */
+    suspend fun songShift(url: String, language: Language, lyrics: List<SubtitleCue>, onStatus: (String) -> Unit): SongShift = withContext(Dispatchers.IO) {
+        setUp(onStatus)
+        val info = JSONObject(run(YoutubeDLRequest(url).apply {
+            addOption("--dump-single-json")
+            addOption("--skip-download")
+            addOption("--no-playlist")
+        }))
+        val manual = trackNames(info, "subtitles")
+        val automatic = trackNames(info, "automatic_captions")
+        // The speech recognition in the song's language can be compared by text; any other captions (a
+        // translation, say) only by their times. At most two are fetched.
+        val candidates = listOfNotNull(
+            pickTrack(emptyList(), automatic, language, allowTranslated = false)?.let { it to true },
+            pickTrack(manual, automatic, if (language == Language.ENGLISH) language else Language.ENGLISH)?.let { it to false },
+            manual.firstOrNull { !it.endsWith("-orig") }?.let { Track(it, automatic = false) to false },
+        ).distinctBy { it.first.lang to it.first.automatic }.take(2)
+        var found = false
+        var failure: Exception? = null
+        for ((track, sameLanguage) in candidates) {
+            val dir = File(context.cacheDir, "captions-" + System.nanoTime()).apply { mkdirs() }
+            val cues = try {
+                val file = downloadSubtitles(url, track, File(dir, "captions.%(ext)s"))
+                Subtitles.parse(file.name, file.readText(Charsets.UTF_8))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                failure = e
+                continue
+            } finally {
+                dir.deleteRecursively()
+            }
+            if (cues.isEmpty()) continue
+            found = true
+            val shift = (if (sameLanguage) SongAligner.offsetMs(lyrics, cues) else null) ?: SongAligner.offsetByTiming(lyrics, cues)
+            if (shift != null) return@withContext SongShift(shift, found = true)
+        }
+        if (!found && failure != null) throw failure
+        SongShift(null, found)
+    }
+
+    /** Downloads a song's audio together with the video's own subtitles [track] as its lyrics. */
+    private suspend fun downloadSong(url: String, title: String, track: Track, language: Language, onStatus: (String) -> Unit): MediaEntry {
+        val dir = library.newDir()
+        try {
+            onStatus(strings(R.string.yt_downloading))
+            run(YoutubeDLRequest(url).apply {
+                addOption("--no-playlist")
+                addOption("-f", "bestaudio[ext=m4a]/bestaudio")
+                addOption("-o", File(dir, "audio.%(ext)s").absolutePath)
+                addOption(if (track.automatic) "--write-auto-subs" else "--write-subs")
+                addOption("--sub-langs", track.lang)
+                addOption("--sub-format", if (track.automatic) "json3" else "vtt/srt/best")
+            }) { progress -> onStatus(strings(R.string.yt_progress, progress.toInt().coerceIn(0, 100))) }
+            val files = dir.listFiles().orEmpty()
+            val subs = files.firstOrNull { it.name.startsWith("audio.${track.lang}.") }
+                ?: throw IOException("yt-dlp didn't save the subtitles")
+            val audio = files.firstOrNull { it.name.startsWith("audio.") && it != subs && !it.name.endsWith(".part") }
+                ?: throw IOException("yt-dlp didn't save the audio")
+            onStatus(strings(R.string.reading_subtitles))
+            return library.importDownloaded(dir, audio, subs, title + if (track.automatic) " (auto subs)" else "", url, language, null, song = true)
+        } catch (e: Exception) {
+            dir.deleteRecursively()
+            throw e
+        }
+    }
 
     suspend fun import(
         url: String,

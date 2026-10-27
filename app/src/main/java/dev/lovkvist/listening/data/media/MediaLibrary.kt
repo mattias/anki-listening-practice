@@ -38,6 +38,10 @@ data class MediaEntry(
     val language: Language = Language.JAPANESE,
     /** Language of the subtitles the lines' translations come from, if any. */
     val translation: Language? = null,
+    /** Lyrics of a song (from an LRC file): every line is practiced, whatever its words. */
+    val song: Boolean = false,
+    /** For a song: how much later (negative: earlier) than the lyrics say each line is in the audio. */
+    val offsetMs: Long = 0,
 )
 
 /**
@@ -63,7 +67,37 @@ class MediaLibrary @Inject constructor(
             ?: throw IOException(strings(R.string.could_not_open_file)), language))
         // Keep access to the media after restarts; subtitles are copied into chunks.json.
         context.contentResolver.takePersistableUriPermission(media, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language)
+        // Lyrics in an LRC file make it a song.
+        save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language, song = subName.endsWith(".lrc", ignoreCase = true))
+    }
+
+    /** Registers a downloaded song: its audio (already inside [dir]) and the [lyrics] cues. */
+    suspend fun importSong(
+        dir: File,
+        audio: File,
+        lyrics: List<SubtitleCue>,
+        title: String,
+        url: String,
+        language: Language,
+    ): MediaEntry = withContext(Dispatchers.IO) {
+        save(dir, title, Uri.fromFile(audio), lyrics, sourceUrl = url, language, song = true)
+    }
+
+    /** The lines of [id] as imported, with their own times (no timing offset applied). */
+    suspend fun rawCues(id: String): List<SubtitleCue> = withContext(Dispatchers.IO) {
+        val chunks = JSONArray(File(File(root, id), CHUNKS_FILE).readText())
+        (0 until chunks.length()).map { i ->
+            val c = chunks.getJSONObject(i)
+            SubtitleCue(c.getLong("s"), c.getLong("e"), c.getString("t"))
+        }
+    }
+
+    /** Sets how much later the lyrics' lines are in the audio of the song [id] (negative: earlier). */
+    suspend fun setOffset(id: String, offsetMs: Long) = withContext(Dispatchers.IO) {
+        val file = File(File(root, id), INFO_FILE)
+        if (!file.isFile) return@withContext
+        file.writeText(JSONObject(file.readText()).put("offsetMs", offsetMs).toString())
+        _items.value = loadItems()
     }
 
     /**
@@ -78,12 +112,14 @@ class MediaLibrary @Inject constructor(
         url: String,
         language: Language,
         translation: Pair<Language, File>?,
+        /** The subtitles are a song's lyrics. */
+        song: Boolean = false,
     ): MediaEntry = withContext(Dispatchers.IO) {
         val cues = Subtitles.parse(subtitles.name, readText(subtitles.readBytes(), language))
         val translations = translation?.let { (l, file) ->
             runCatching { Subtitles.align(cues, Subtitles.parse(file.name, readText(file.readBytes(), l)), l.unspaced) }.getOrNull()
         }
-        save(dir, title, Uri.fromFile(audio), cues, sourceUrl = url, language, translations, translations?.let { translation?.first })
+        save(dir, title, Uri.fromFile(audio), cues, sourceUrl = url, language, translations, translations?.let { translation?.first }, song)
     }
 
     /** A fresh folder for a new item; also used as the download target. */
@@ -115,7 +151,7 @@ class MediaLibrary @Inject constructor(
                 furigana = if (entry.language == Language.JAPANESE) tokenizer.furigana(text) else "",
                 translation = c.optString("tr"),
                 audio = entry.media,
-                clip = maxOf(0, c.getLong("s") - PAD_BEFORE_MS)..(c.getLong("e") + PAD_AFTER_MS),
+                clip = maxOf(0, c.getLong("s") - PAD_BEFORE_MS + entry.offsetMs)..maxOf(1, c.getLong("e") + PAD_AFTER_MS + entry.offsetMs),
             )
         }
     }
@@ -130,6 +166,7 @@ class MediaLibrary @Inject constructor(
         /** One per cue, or null. */
         translations: List<String>? = null,
         translationLanguage: Language? = null,
+        song: Boolean = false,
     ): MediaEntry {
         if (cues.size >= MAX_CHUNKS) throw IOException("Too many subtitle lines (${cues.size})")
         val chunks = JSONArray()
@@ -139,7 +176,7 @@ class MediaLibrary @Inject constructor(
             chunks.put(chunk)
         }
         File(dir, CHUNKS_FILE).writeText(chunks.toString())
-        val entry = MediaEntry(dir.name, name, dir.name.toLong(), cues.size, media, sourceUrl, language, translationLanguage)
+        val entry = MediaEntry(dir.name, name, dir.name.toLong(), cues.size, media, sourceUrl, language, translationLanguage, song)
         File(dir, INFO_FILE).writeText(
             JSONObject()
                 .put("name", entry.name)
@@ -149,6 +186,8 @@ class MediaLibrary @Inject constructor(
                 .put("sourceUrl", entry.sourceUrl)
                 .put("language", entry.language.code)
                 .put("translation", entry.translation?.code)
+                .put("song", entry.song)
+                .put("offsetMs", entry.offsetMs)
                 .toString(),
         )
         _items.value = loadItems()
@@ -170,6 +209,8 @@ class MediaLibrary @Inject constructor(
                     // Items from before other languages existed are Japanese.
                     language = Language.fromCode(j.optString("language").ifEmpty { null }),
                     translation = j.optString("translation").takeIf { it.isNotEmpty() && it != "null" }?.let(Language::fromCode),
+                    song = j.optBoolean("song"),
+                    offsetMs = j.optLong("offsetMs"),
                 )
             }.getOrNull()
         }.sortedByDescending { it.importedAt }

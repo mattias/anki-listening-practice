@@ -16,8 +16,8 @@ android {
         applicationId = "dev.lovkvist.listening"
         minSdk = 26
         targetSdk = 35
-        versionCode = 18
-        versionName = "0.8.1"
+        versionCode = 19
+        versionName = "0.9.0"
         // The bundled Python runtime is large per ABI; virtually all current phones are arm64.
         ndk { abiFilters += listOf("arm64-v8a") }
     }

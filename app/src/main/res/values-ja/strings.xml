@@ -238,4 +238,27 @@
     <string name="hide_other_languages">他の言語の動画を隠す</string>
     <string name="subs_other_language">別の言語</string>
     <string name="subs_no_speech">音声が見つかりません</string>
+    <string name="yt_lyrics">歌詞を探しています…</string>
+    <string name="song_no_lyrics">「%1$s」の時間付き歌詞が見つかりませんでした。</string>
+    <string name="song_wrong_language">「%1$s」の歌詞は%2$sではありません。</string>
+    <string name="song_lines">歌詞の行数：%1$d・曲</string>
+    <string name="download_song">曲としてダウンロード（歌詞付き）</string>
+    <string name="search_videos">動画</string>
+    <string name="search_songs">曲</string>
+    <string name="search_songs_help">%1$sの歌詞がある曲。タップして音声をダウンロードします。時間付き歌詞は LRCLIB から取得します。</string>
+    <string name="on">オン</string>
+    <string name="sing_back">歌い返し：再生のたびに、その行と同じ長さの無音</string>
+    <string name="lyrics_timing">歌詞のタイミング：%1$s 秒</string>
+    <string name="lyrics_earlier">早く −0.5 秒</string>
+    <string name="lyrics_later">遅く +0.5 秒</string>
+    <string name="lyrics_query">歌詞の検索（任意、曲用：アーティスト名と曲名）</string>
+    <string name="song_no_lyrics_tip">LRCLIB では曲がローマ字など別の表記で登録されているかもしれません。リンクを貼り、歌詞の検索にアーティスト名と曲名を入力して、曲としてダウンロードしてください。</string>
+    <string name="song_auto_captions">歌詞が見つからなかったため、動画の自動字幕を使いました。歌には不向きなことが多いので、歌詞を自分で検索してみてください。</string>
+    <string name="song_length_differs">動画の長さが歌詞の音源と%1$d秒違うため、時間がずれている可能性があります。再生メニューで歌詞のタイミングを調整してください。</string>
+    <string name="auto_time">動画の字幕から自動でタイミング調整</string>
+    <string name="auto_time_working">字幕を確認しています…</string>
+    <string name="auto_time_done">動画の字幕をもとにタイミングを%1$s秒に設定しました。</string>
+    <string name="auto_time_no_captions">タイミングの基準にできる動画の字幕がありません。</string>
+    <string name="auto_time_no_match">字幕が歌詞とあまり似ておらず、タイミングを判断できません。</string>
+    <string name="auto_time_failed">自動タイミング調整に失敗しました：%1$s</string>
 </resources>

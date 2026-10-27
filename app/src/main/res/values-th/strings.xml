@@ -238,4 +238,27 @@
     <string name="hide_other_languages">ซ่อนวิดีโอภาษาอื่น</string>
     <string name="subs_other_language">ภาษาอื่น</string>
     <string name="subs_no_speech">ไม่พบเสียงพูด</string>
+    <string name="yt_lyrics">กำลังค้นหาเนื้อเพลง…</string>
+    <string name="song_no_lyrics">ไม่พบเนื้อเพลงที่มีเวลาของ “%1$s”</string>
+    <string name="song_wrong_language">เนื้อเพลงของ “%1$s” ไม่ใช่ภาษา%2$s</string>
+    <string name="song_lines">บรรทัดเนื้อเพลง: %1$d · เพลง</string>
+    <string name="download_song">ดาวน์โหลดเป็นเพลง (พร้อมเนื้อ)</string>
+    <string name="search_videos">วิดีโอ</string>
+    <string name="search_songs">เพลง</string>
+    <string name="search_songs_help">เพลงที่มีเนื้อเป็นภาษา%1$s แตะเพื่อดาวน์โหลดเสียง เนื้อเพลงพร้อมเวลามาจาก LRCLIB</string>
+    <string name="on">เปิด</string>
+    <string name="sing_back">ร้องตาม: เงียบเท่าความยาวบรรทัดหลังเล่นแต่ละครั้ง</string>
+    <string name="lyrics_timing">จังหวะเนื้อเพลง: %1$s วิ</string>
+    <string name="lyrics_earlier">เร็วขึ้น −0.5 วิ</string>
+    <string name="lyrics_later">ช้าลง +0.5 วิ</string>
+    <string name="lyrics_query">ค้นหาเนื้อเพลง (ไม่บังคับ สำหรับเพลง: ศิลปินและชื่อเพลง)</string>
+    <string name="song_no_lyrics_tip">LRCLIB อาจเก็บเพลงไว้ด้วยการสะกดแบบอื่น เช่น โรมะจิ: วางลิงก์ พิมพ์ศิลปินและชื่อเพลงในช่องค้นหาเนื้อเพลง แล้วดาวน์โหลดเป็นเพลง</string>
+    <string name="song_auto_captions">ไม่พบเนื้อเพลง จึงใช้คำบรรยายอัตโนมัติของวิดีโอ ซึ่งมักไม่แม่นสำหรับเพลง ลองค้นหาเนื้อเพลงเอง</string>
+    <string name="song_length_differs">วิดีโอยาวต่างจากเสียงต้นฉบับของเนื้อเพลง %1$d วินาที เวลาจึงอาจเคลื่อน: ปรับจังหวะเนื้อเพลงในเมนูการเล่น</string>
+    <string name="auto_time">ปรับเวลาอัตโนมัติจากคำบรรยายของวิดีโอ</string>
+    <string name="auto_time_working">กำลังตรวจคำบรรยาย…</string>
+    <string name="auto_time_done">ตั้งเวลาเป็น %1$s วินาทีจากคำบรรยายของวิดีโอแล้ว</string>
+    <string name="auto_time_no_captions">วิดีโอไม่มีคำบรรยายให้ใช้อ้างอิงเวลา</string>
+    <string name="auto_time_no_match">คำบรรยายไม่คล้ายเนื้อเพลงพอที่จะระบุเวลาได้</string>
+    <string name="auto_time_failed">ปรับเวลาอัตโนมัติไม่สำเร็จ: %1$s</string>
 </resources>

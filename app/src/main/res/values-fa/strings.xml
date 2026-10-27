@@ -238,4 +238,27 @@
     <string name="hide_other_languages">پنهان کردن ویدیوها به زبان‌های دیگر</string>
     <string name="subs_other_language">زبان دیگر</string>
     <string name="subs_no_speech">گفتاری پیدا نشد</string>
+    <string name="yt_lyrics">در حال جستجوی متن آهنگ…</string>
+    <string name="song_no_lyrics">متن همگام‌شده‌ای برای «%1$s» پیدا نشد.</string>
+    <string name="song_wrong_language">متن «%1$s» به زبان %2$s نیست.</string>
+    <string name="song_lines">خط‌های متن: %1$d · آهنگ</string>
+    <string name="download_song">دانلود به‌عنوان آهنگ (با متن)</string>
+    <string name="search_videos">ویدیوها</string>
+    <string name="search_songs">آهنگ‌ها</string>
+    <string name="search_songs_help">آهنگ‌هایی با متن %1$s. برای دانلود صدا روی یکی بزنید؛ متن زمان‌دار از LRCLIB می‌آید.</string>
+    <string name="on">روشن</string>
+    <string name="sing_back">خواندن دوباره: بعد از هر پخش، سکوتی به اندازهٔ همان خط</string>
+    <string name="lyrics_timing">زمان‌بندی متن: %1$s ثانیه</string>
+    <string name="lyrics_earlier">زودتر −0.5 ثانیه</string>
+    <string name="lyrics_later">دیرتر +0.5 ثانیه</string>
+    <string name="lyrics_query">جستجوی متن (اختیاری، برای آهنگ: خواننده و عنوان)</string>
+    <string name="song_no_lyrics_tip">ممکن است LRCLIB آهنگ را با نگارش دیگری داشته باشد، مثلاً رومَجی: پیوند را بچسبانید، خواننده و عنوان را در جستجوی متن بنویسید و به‌عنوان آهنگ دانلود کنید.</string>
+    <string name="song_auto_captions">متنی پیدا نشد، پس زیرنویس خودکار ویدیو به کار رفت که برای آواز اغلب نادقیق است. متن را خودتان جستجو کنید.</string>
+    <string name="song_length_differs">طول ویدیو %1$d ثانیه با ضبط متن تفاوت دارد، پس زمان‌ها ممکن است جابه‌جا باشند: زمان‌بندی متن را در منوی پخش تنظیم کنید.</string>
+    <string name="auto_time">زمان‌بندی خودکار از روی زیرنویس ویدیو</string>
+    <string name="auto_time_working">در حال بررسی زیرنویس…</string>
+    <string name="auto_time_done">زمان‌بندی روی %1$s ثانیه تنظیم شد، بر اساس زیرنویس ویدیو.</string>
+    <string name="auto_time_no_captions">ویدیو زیرنویسی ندارد که زمان‌بندی از آن گرفته شود.</string>
+    <string name="auto_time_no_match">زیرنویس برای تعیین زمان‌بندی شباهت کافی به متن ندارد.</string>
+    <string name="auto_time_failed">زمان‌بندی خودکار ناموفق بود: %1$s</string>
 </resources>

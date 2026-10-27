@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Ascunde videoclipurile în alte limbi</string>
     <string name="subs_other_language">Altă limbă</string>
     <string name="subs_no_speech">Nu s-a găsit vorbire</string>
+    <string name="yt_lyrics">Se caută versurile…</string>
+    <string name="song_no_lyrics">Nu s-au găsit versuri sincronizate pentru „%1$s”.</string>
+    <string name="song_wrong_language">Versurile pentru „%1$s” nu sunt în %2$s.</string>
+    <string name="song_lines">Rânduri de versuri: %1$d · cântec</string>
+    <string name="download_song">Descarcă ca melodie (cu versuri)</string>
+    <string name="search_videos">Videoclipuri</string>
+    <string name="search_songs">Melodii</string>
+    <string name="search_songs_help">Melodii cu versuri în %1$s. Atinge una pentru a descărca sunetul; versurile cu timpi vin de la LRCLIB.</string>
+    <string name="on">Pornit</string>
+    <string name="sing_back">Cântă înapoi: o tăcere cât rândul după fiecare redare</string>
+    <string name="lyrics_timing">Sincronizare versuri: %1$s s</string>
+    <string name="lyrics_earlier">Mai devreme −0,5 s</string>
+    <string name="lyrics_later">Mai târziu +0,5 s</string>
+    <string name="lyrics_query">Căutare versuri (opțional, pentru un cântec: artist și titlu)</string>
+    <string name="song_no_lyrics_tip">LRCLIB poate avea cântecul cu altă grafie, de ex. în romaji: lipește linkul, scrie artistul și titlul în căutarea versurilor și descarcă-l ca melodie.</string>
+    <string name="song_auto_captions">Nu s-au găsit versuri, așa că au fost folosite subtitrările automate ale videoclipului, adesea slabe pentru cântat. Caută versurile singur.</string>
+    <string name="song_length_differs">Videoclipul diferă cu %1$d s în lungime de înregistrarea versurilor, deci timpii pot fi decalați: reglează sincronizarea versurilor în meniul de redare.</string>
+    <string name="auto_time">Sincronizează automat după subtitrările videoclipului</string>
+    <string name="auto_time_working">Se analizează subtitrările…</string>
+    <string name="auto_time_done">Decalajul a fost setat la %1$s s după subtitrările videoclipului.</string>
+    <string name="auto_time_no_captions">Videoclipul nu are subtitrări din care să se ia sincronizarea.</string>
+    <string name="auto_time_no_match">Subtitrările seamănă prea puțin cu versurile ca să se stabilească decalajul.</string>
+    <string name="auto_time_failed">Sincronizarea automată a eșuat: %1$s</string>
 </resources>

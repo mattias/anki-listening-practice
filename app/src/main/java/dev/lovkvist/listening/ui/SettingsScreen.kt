@@ -604,23 +604,28 @@ private fun YouTubeSearchSection(vm: SettingsViewModel, language: Language) {
     val checking by vm.ytChecking.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf("") }
     var showOthers by rememberSaveable { mutableStateOf(false) }
+    var songs by rememberSaveable { mutableStateOf(false) }
     Text(stringResource(R.string.search_youtube), style = MaterialTheme.typography.titleMedium)
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        FilterChip(selected = !songs, onClick = { songs = false; vm.clearYouTubeSearch() }, label = { Text(stringResource(R.string.search_videos)) })
+        FilterChip(selected = songs, onClick = { songs = true; vm.clearYouTubeSearch() }, label = { Text(stringResource(R.string.search_songs)) })
+    }
     OutlinedTextField(
         value = query,
         onValueChange = { query = it },
         label = { Text(stringResource(R.string.search_youtube_label)) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(onSearch = { vm.searchYouTube(query) }),
+        keyboardActions = KeyboardActions(onSearch = { vm.searchYouTube(query, songs) }),
         trailingIcon = {
-            IconButton(onClick = { vm.searchYouTube(query) }, enabled = query.isNotBlank() && !search.searching) {
+            IconButton(onClick = { vm.searchYouTube(query, songs) }, enabled = query.isNotBlank() && !search.searching) {
                 Icon(painterResource(R.drawable.ic_search), contentDescription = stringResource(R.string.search))
             }
         },
         modifier = Modifier.fillMaxWidth(),
     )
     Text(
-        stringResource(R.string.search_youtube_help, language.displayName()),
+        if (songs) stringResource(R.string.search_songs_help, language.displayName()) else stringResource(R.string.search_youtube_help, language.displayName()),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -634,7 +639,7 @@ private fun YouTubeSearchSection(vm: SettingsViewModel, language: Language) {
         search.searched && search.results.isEmpty() -> Text(stringResource(R.string.no_videos_found))
     }
     val (others, mine) = search.results.partition { likely[it.id] == LikelyLanguage.OTHER }
-    for (r in mine) VideoRow(r, subtitles[r.id], r.id in checking) { vm.importYouTube(r.url) }
+    for (r in mine) VideoRow(r, subtitles[r.id], r.id in checking) { if (songs) vm.importSong(r.url) else vm.importYouTube(r.url) }
     if (search.limited) {
         Text(
             stringResource(R.string.search_limited),
@@ -830,7 +835,7 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
                 Text(item.name, style = MaterialTheme.typography.bodyLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
                     listOfNotNull(
-                        stringResource(R.string.subtitle_lines, item.chunkCount),
+                        if (item.song) stringResource(R.string.song_lines, item.chunkCount) else stringResource(R.string.subtitle_lines, item.chunkCount),
                         item.translation?.let { stringResource(R.string.translations_in, it.displayName()) },
                         DateFormat.getDateInstance().format(Date(item.importedAt)),
                     ).joinToString(" · "),
@@ -866,6 +871,22 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
             },
             enabled = url.isNotBlank(),
         ) { Text(stringResource(R.string.download_youtube)) }
+        var lyricsQuery by rememberSaveable { mutableStateOf("") }
+        OutlinedTextField(
+            value = lyricsQuery,
+            onValueChange = { lyricsQuery = it },
+            label = { Text(stringResource(R.string.lyrics_query)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedButton(
+            onClick = {
+                vm.importSong(url, lyricsQuery)
+                url = ""
+                lyricsQuery = ""
+            },
+            enabled = url.isNotBlank(),
+        ) { Text(stringResource(R.string.download_song)) }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.translations_from), style = MaterialTheme.typography.bodyMedium)
             TranslationPicker(translation, vm::setTranslation)

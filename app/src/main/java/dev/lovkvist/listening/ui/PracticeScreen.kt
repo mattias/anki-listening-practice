@@ -107,6 +107,7 @@ import dev.lovkvist.listening.data.dict.DictionaryEntry
 import dev.lovkvist.listening.data.dict.LookupResult
 import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.l10n.label
+import dev.lovkvist.listening.playback.AutoTimeState
 import dev.lovkvist.listening.playback.PracticeController
 import dev.lovkvist.listening.playback.PracticeState
 import dev.lovkvist.listening.playback.PracticeStats
@@ -138,6 +139,11 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     val favorites by practice.favoriteLanguages.collectAsStateWithLifecycle()
     val sleepAt by practice.sleepAt.collectAsStateWithLifecycle()
     val canChain by practice.canChain.collectAsStateWithLifecycle()
+    val isSong by practice.isSong.collectAsStateWithLifecycle()
+    val singBack by practice.singBack.collectAsStateWithLifecycle()
+    val songOffsetMs by practice.songOffsetMs.collectAsStateWithLifecycle()
+    val autoTimable by practice.songAutoTimable.collectAsStateWithLifecycle()
+    val autoTiming by practice.autoTiming.collectAsStateWithLifecycle()
     val chainOn by practice.chainOn.collectAsStateWithLifecycle()
     val sleepMinutes by practice.sleepMinutes.collectAsStateWithLifecycle()
     val headsetDoubleTapClear by practice.headsetDoubleTapClear.collectAsStateWithLifecycle()
@@ -247,6 +253,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                     autoAdvanceSkip = autoAdvanceSkip,
                     onAutoAdvanceSkip = practice::setAutoAdvanceSkip,
                 )
+                if (isSong) SongSettings(singBack, practice::setSingBack, songOffsetMs, practice::adjustSongOffset, autoTimable, autoTiming, practice::autoTimeSong)
                 HeadsetSettings(headsetDoubleTapClear, practice::setHeadsetDoubleTapClear)
                 SleepTimerSettings(sleepMinutes, practice::setSleepTimer)
             }
@@ -658,6 +665,45 @@ private fun SleepCountdown(at: Long, onClick: () -> Unit) {
             stringResource(R.string.sleep_stops_in, "%d:%02d".format(left / 60, left % 60)),
             style = MaterialTheme.typography.labelLarge,
         )
+    }
+}
+
+/** For songs: a silence to sing each line back in, and the lyrics' timing against the audio. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SongSettings(
+    singBack: Boolean,
+    onSingBack: (Boolean) -> Unit,
+    offsetMs: Long,
+    onOffset: (Long) -> Unit,
+    autoTimable: Boolean,
+    autoTiming: AutoTimeState,
+    onAutoTime: () -> Unit,
+) {
+    Text(stringResource(R.string.sing_back), style = MaterialTheme.typography.labelLarge)
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FilterChip(selected = singBack, onClick = { onSingBack(true) }, label = { Text(stringResource(R.string.on)) })
+        FilterChip(selected = !singBack, onClick = { onSingBack(false) }, label = { Text(stringResource(R.string.off)) })
+    }
+    Text(stringResource(R.string.lyrics_timing, "%+.1f".format(offsetMs / 1000.0)), style = MaterialTheme.typography.labelLarge)
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        OutlinedButton(onClick = { onOffset(-5000) }) { Text("−5 s") }
+        OutlinedButton(onClick = { onOffset(-500) }) { Text(stringResource(R.string.lyrics_earlier)) }
+        OutlinedButton(onClick = { onOffset(500) }) { Text(stringResource(R.string.lyrics_later)) }
+        OutlinedButton(onClick = { onOffset(5000) }) { Text("+5 s") }
+    }
+    if (autoTimable) {
+        OutlinedButton(onClick = onAutoTime, enabled = autoTiming != AutoTimeState.Working) {
+            Text(stringResource(if (autoTiming == AutoTimeState.Working) R.string.auto_time_working else R.string.auto_time))
+        }
+        val result = when (autoTiming) {
+            is AutoTimeState.Done -> stringResource(R.string.auto_time_done, "%+.1f".format(autoTiming.offsetMs / 1000.0))
+            AutoTimeState.NoCaptions -> stringResource(R.string.auto_time_no_captions)
+            AutoTimeState.NoMatch -> stringResource(R.string.auto_time_no_match)
+            is AutoTimeState.Failed -> stringResource(R.string.auto_time_failed, autoTiming.message)
+            else -> null
+        }
+        if (result != null) Text(result, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 

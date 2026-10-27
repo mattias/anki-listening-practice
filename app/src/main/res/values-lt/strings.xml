@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Slėpti vaizdo įrašus kitomis kalbomis</string>
     <string name="subs_other_language">Kita kalba</string>
     <string name="subs_no_speech">Kalbos nerasta</string>
+    <string name="yt_lyrics">Ieškoma dainos žodžių…</string>
+    <string name="song_no_lyrics">Nerasta sinchronizuotų žodžių dainai „%1$s“.</string>
+    <string name="song_wrong_language">Dainos „%1$s“ žodžiai ne šia kalba: %2$s.</string>
+    <string name="song_lines">Žodžių eilučių: %1$d · daina</string>
+    <string name="download_song">Atsisiųsti kaip dainą (su žodžiais)</string>
+    <string name="search_videos">Vaizdo įrašai</string>
+    <string name="search_songs">Dainos</string>
+    <string name="search_songs_help">Dainos su žodžiais kalba: %1$s. Palieskite, kad atsisiųstumėte garsą; žodžiai su laikais imami iš LRCLIB.</string>
+    <string name="on">Įjungta</string>
+    <string name="sing_back">Padainuoti atgal: tyla, tokia ilga kaip eilutė, po kiekvieno atkūrimo</string>
+    <string name="lyrics_timing">Žodžių laikas: %1$s s</string>
+    <string name="lyrics_earlier">Anksčiau −0,5 s</string>
+    <string name="lyrics_later">Vėliau +0,5 s</string>
+    <string name="lyrics_query">Žodžių paieška (nebūtina, dainai: atlikėjas ir pavadinimas)</string>
+    <string name="song_no_lyrics_tip">LRCLIB daina gali būti kitaip užrašyta, pvz., romaji: įklijuokite nuorodą, žodžių paieškoje įrašykite atlikėją ir pavadinimą ir atsisiųskite kaip dainą.</string>
+    <string name="song_auto_captions">Žodžių nerasta, todėl naudoti automatiniai vaizdo įrašo subtitrai; dainavimui jie dažnai prasti. Paieškokite žodžių patys.</string>
+    <string name="song_length_differs">Vaizdo įrašas %1$d s skiriasi ilgiu nuo žodžių įrašo, todėl laikai gali būti pasislinkę: sureguliuokite žodžių laiką atkūrimo meniu.</string>
+    <string name="auto_time">Automatiškai suderinti laiką pagal vaizdo įrašo subtitrus</string>
+    <string name="auto_time_working">Tikrinami subtitrai…</string>
+    <string name="auto_time_done">Laikas nustatytas į %1$s s pagal vaizdo įrašo subtitrus.</string>
+    <string name="auto_time_no_captions">Vaizdo įrašas neturi subtitrų, iš kurių būtų galima paimti laiką.</string>
+    <string name="auto_time_no_match">Subtitrai per mažai panašūs į žodžius, kad būtų galima nustatyti laiką.</string>
+    <string name="auto_time_failed">Automatinis laiko suderinimas nepavyko: %1$s</string>
 </resources>

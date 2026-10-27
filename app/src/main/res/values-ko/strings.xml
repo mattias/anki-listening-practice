@@ -238,4 +238,27 @@
     <string name="hide_other_languages">다른 언어의 동영상 숨기기</string>
     <string name="subs_other_language">다른 언어</string>
     <string name="subs_no_speech">말소리 없음</string>
+    <string name="yt_lyrics">가사를 찾는 중…</string>
+    <string name="song_no_lyrics">“%1$s”의 시간 동기화 가사를 찾지 못했습니다.</string>
+    <string name="song_wrong_language">“%1$s”의 가사가 %2$s이(가) 아닙니다.</string>
+    <string name="song_lines">가사 줄: %1$d · 노래</string>
+    <string name="download_song">노래로 다운로드(가사 포함)</string>
+    <string name="search_videos">동영상</string>
+    <string name="search_songs">노래</string>
+    <string name="search_songs_help">%1$s 가사가 있는 노래. 눌러서 오디오를 받으세요. 시간이 있는 가사는 LRCLIB에서 가져옵니다.</string>
+    <string name="on">켜짐</string>
+    <string name="sing_back">따라 부르기: 재생할 때마다 그 줄 길이만큼의 무음</string>
+    <string name="lyrics_timing">가사 타이밍: %1$s초</string>
+    <string name="lyrics_earlier">더 빠르게 −0.5초</string>
+    <string name="lyrics_later">더 늦게 +0.5초</string>
+    <string name="lyrics_query">가사 검색(선택, 노래용: 아티스트와 제목)</string>
+    <string name="song_no_lyrics_tip">LRCLIB에는 로마자 등 다른 표기로 등록되어 있을 수 있습니다. 링크를 붙여넣고 가사 검색에 아티스트와 제목을 적은 뒤 노래로 다운로드하세요.</string>
+    <string name="song_auto_captions">가사를 찾지 못해 동영상의 자동 자막을 사용했습니다. 노래에는 부정확한 경우가 많으니 가사를 직접 검색해 보세요.</string>
+    <string name="song_length_differs">동영상 길이가 가사 음원과 %1$d초 달라 시간이 어긋날 수 있습니다. 재생 메뉴에서 가사 타이밍을 조정하세요.</string>
+    <string name="auto_time">동영상 자막으로 자동 타이밍 맞추기</string>
+    <string name="auto_time_working">자막을 확인하는 중…</string>
+    <string name="auto_time_done">동영상 자막을 바탕으로 타이밍을 %1$s초로 설정했습니다.</string>
+    <string name="auto_time_no_captions">타이밍을 맞출 기준이 될 동영상 자막이 없습니다.</string>
+    <string name="auto_time_no_match">자막이 가사와 너무 달라 타이밍을 알 수 없습니다.</string>
+    <string name="auto_time_failed">자동 타이밍 맞추기 실패: %1$s</string>
 </resources>

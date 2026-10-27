@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Скрыть видео на других языках</string>
     <string name="subs_other_language">Другой язык</string>
     <string name="subs_no_speech">Речь не найдена</string>
+    <string name="yt_lyrics">Ищем текст песни…</string>
+    <string name="song_no_lyrics">Не найден синхронизированный текст для «%1$s».</string>
+    <string name="song_wrong_language">Текст песни «%1$s» не на языке: %2$s.</string>
+    <string name="song_lines">Строк текста: %1$d · песня</string>
+    <string name="download_song">Скачать как песню (с текстом)</string>
+    <string name="search_videos">Видео</string>
+    <string name="search_songs">Песни</string>
+    <string name="search_songs_help">Песни с текстом на языке: %1$s. Нажмите, чтобы скачать звук; текст с временем берётся из LRCLIB.</string>
+    <string name="on">Вкл.</string>
+    <string name="sing_back">Спеть в ответ: тишина длиной в строку после каждого воспроизведения</string>
+    <string name="lyrics_timing">Сдвиг текста: %1$s с</string>
+    <string name="lyrics_earlier">Раньше −0,5 с</string>
+    <string name="lyrics_later">Позже +0,5 с</string>
+    <string name="lyrics_query">Поиск текста (необязательно, для песни: исполнитель и название)</string>
+    <string name="song_no_lyrics_tip">В LRCLIB песня может быть под другим написанием, например ромадзи: вставьте ссылку, впишите исполнителя и название в поиск текста и скачайте как песню.</string>
+    <string name="song_auto_captions">Текст не найден, поэтому использованы автосубтитры видео; для пения они часто неточны. Поищите текст сами.</string>
+    <string name="song_length_differs">Видео отличается на %1$d с по длине от записи текста, поэтому время может сместиться: настройте сдвиг текста в меню воспроизведения.</string>
+    <string name="auto_time">Подогнать время по субтитрам видео</string>
+    <string name="auto_time_working">Анализ субтитров…</string>
+    <string name="auto_time_done">Сдвиг установлен на %1$s с по субтитрам видео.</string>
+    <string name="auto_time_no_captions">У видео нет субтитров, по которым можно определить время.</string>
+    <string name="auto_time_no_match">Субтитры слишком мало похожи на текст, чтобы определить сдвиг.</string>
+    <string name="auto_time_failed">Автоподгонка не удалась: %1$s</string>
 </resources>

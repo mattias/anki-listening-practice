@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Video\'s in andere talen verbergen</string>
     <string name="subs_other_language">Andere taal</string>
     <string name="subs_no_speech">Geen spraak gevonden</string>
+    <string name="yt_lyrics">Songtekst zoeken…</string>
+    <string name="song_no_lyrics">Geen gesynchroniseerde songtekst gevonden voor “%1$s”.</string>
+    <string name="song_wrong_language">De songtekst van “%1$s” is niet in het %2$s.</string>
+    <string name="song_lines">Tekstregels: %1$d · lied</string>
+    <string name="download_song">Downloaden als lied (met tekst)</string>
+    <string name="search_videos">Video’s</string>
+    <string name="search_songs">Liedjes</string>
+    <string name="search_songs_help">Liedjes met tekst in het %1$s. Tik op een lied om de audio te downloaden; de tekst met tijden komt van LRCLIB.</string>
+    <string name="on">Aan</string>
+    <string name="sing_back">Terugzingen: na elke keer afspelen stilte zo lang als de regel</string>
+    <string name="lyrics_timing">Teksttiming: %1$s s</string>
+    <string name="lyrics_earlier">Eerder −0,5 s</string>
+    <string name="lyrics_later">Later +0,5 s</string>
+    <string name="lyrics_query">Tekst zoeken (optioneel, voor een lied: artiest en titel)</string>
+    <string name="song_no_lyrics_tip">LRCLIB heeft het lied misschien onder een andere schrijfwijze, bijv. in romaji: plak de link, schrijf artiest en titel in de tekstzoekopdracht en download het als lied.</string>
+    <string name="song_auto_captions">Geen songtekst gevonden, dus de automatische ondertitels van de video zijn gebruikt; die zijn vaak slecht voor zang. Zoek de tekst zelf.</string>
+    <string name="song_length_differs">De video wijkt %1$d s in lengte af van de opname van de tekst, dus de tijden kunnen verschoven zijn: pas de teksttiming aan in het afspeelmenu.</string>
+    <string name="auto_time">Automatisch timen op de ondertitels van de video</string>
+    <string name="auto_time_working">Ondertitels worden vergeleken…</string>
+    <string name="auto_time_done">Timing ingesteld op %1$s s op basis van de ondertitels van de video.</string>
+    <string name="auto_time_no_captions">De video heeft geen ondertitels om de timing van af te leiden.</string>
+    <string name="auto_time_no_match">De ondertitels lijken te weinig op de tekst om de timing te bepalen.</string>
+    <string name="auto_time_failed">Automatisch timen mislukt: %1$s</string>
 </resources>

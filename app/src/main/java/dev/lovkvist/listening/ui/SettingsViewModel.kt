@@ -26,7 +26,9 @@ import dev.lovkvist.listening.data.local.WordStatus
 import dev.lovkvist.listening.data.media.LikelyLanguage
 import dev.lovkvist.listening.data.media.MediaEntry
 import dev.lovkvist.listening.data.media.MediaLibrary
+import dev.lovkvist.listening.data.media.NoLyricsException
 import dev.lovkvist.listening.data.media.RateLimitedException
+import dev.lovkvist.listening.data.media.SongSource
 import dev.lovkvist.listening.data.media.SubtitleCache
 import dev.lovkvist.listening.data.media.SubtitleStatus
 import dev.lovkvist.listening.data.media.TitleLanguage
@@ -224,6 +226,29 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    /** Downloads the audio of a YouTube video as a song, with its synced lyrics from LRCLIB. */
+    fun importSong(url: String, lyricsQuery: String = "") = viewModelScope.launch {
+        searchJob?.cancel()
+        _mediaBusy.value = strings(R.string.starting)
+        _message.value = try {
+            val song = youTube.importSong(url.trim(), settingsRepo.current().language, lyricsQuery.trim()) { _mediaBusy.value = it }
+            val item = song.entry
+            val note = when {
+                song.source == SongSource.AUTO_CAPTIONS -> " " + strings(R.string.song_auto_captions)
+                song.source == SongSource.LRCLIB && kotlin.math.abs(song.lengthDiffSeconds) > 7 ->
+                    " " + strings(R.string.song_length_differs, kotlin.math.abs(song.lengthDiffSeconds).toInt())
+                else -> ""
+            }
+            strings(R.string.media_added, item.name, item.chunkCount) + note
+        } catch (e: NoLyricsException) {
+            strings(R.string.youtube_failed, e.message.orEmpty()) + " " + strings(R.string.song_no_lyrics_tip)
+        } catch (e: Exception) {
+            strings(R.string.youtube_failed, e.message ?: e.toString())
+        } finally {
+            _mediaBusy.value = null
+        }
+    }
+
     private val _ytSearch = MutableStateFlow(YouTubeSearchState())
     /** The latest YouTube search and its results. */
     val ytSearch: StateFlow<YouTubeSearchState> = _ytSearch.asStateFlow()
@@ -250,7 +275,7 @@ class SettingsViewModel @Inject constructor(
      * starts refusing requests the checking stops. Cancelling (see [clearYouTubeSearch]) stops it at
      * once, also the yt-dlp process that is running.
      */
-    fun searchYouTube(query: String) {
+    fun searchYouTube(query: String, songs: Boolean = false) {
         if (query.isBlank()) return
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
@@ -260,7 +285,7 @@ class SettingsViewModel @Inject constructor(
             _ytSearch.value = YouTubeSearchState(searching = true)
             val language = settingsRepo.current().language
             val results = try {
-                youTube.search(query)
+                youTube.search(query, captionsOnly = !songs)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: RateLimitedException) {
@@ -274,6 +299,13 @@ class SettingsViewModel @Inject constructor(
             val toCheck = results.filter { likely[it.id] != LikelyLanguage.OTHER }.take(MAX_AUTO_CHECKS)
             _ytLikely.value = likely
             _ytChecking.value = toCheck.mapTo(HashSet()) { it.id }
+            if (songs) {
+                // Lyrics come from LRCLIB when a song is picked: nothing to check on YouTube.
+                _ytLikely.value = emptyMap()
+                _ytChecking.value = emptySet()
+                _ytSearch.value = YouTubeSearchState(results = results, searched = true)
+                return@launch
+            }
             _ytSearch.value = YouTubeSearchState(results = results, searched = true)
             try {
                 var asked = false

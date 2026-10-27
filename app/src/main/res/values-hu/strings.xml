@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Más nyelvű videók elrejtése</string>
     <string name="subs_other_language">Másik nyelv</string>
     <string name="subs_no_speech">Nincs beszéd</string>
+    <string name="yt_lyrics">Dalszöveg keresése…</string>
+    <string name="song_no_lyrics">Nem található időzített dalszöveg ehhez: „%1$s”.</string>
+    <string name="song_wrong_language">A(z) „%1$s” dalszövege nem ezen a nyelven van: %2$s.</string>
+    <string name="song_lines">Szövegsorok: %1$d · dal</string>
+    <string name="download_song">Letöltés dalként (szöveggel)</string>
+    <string name="search_videos">Videók</string>
+    <string name="search_songs">Dalok</string>
+    <string name="search_songs_help">Dalok ezen a nyelven: %1$s. Koppints egyre a hang letöltéséhez; az időzített szöveg a LRCLIB-ről jön.</string>
+    <string name="on">Be</string>
+    <string name="sing_back">Visszaéneklés: a sor hosszával egyező csend minden lejátszás után</string>
+    <string name="lyrics_timing">Szöveg időzítése: %1$s mp</string>
+    <string name="lyrics_earlier">Korábban −0,5 mp</string>
+    <string name="lyrics_later">Később +0,5 mp</string>
+    <string name="lyrics_query">Dalszöveg-keresés (opcionális, dalhoz: előadó és cím)</string>
+    <string name="song_no_lyrics_tip">A LRCLIB-ben a dal más írásmóddal szerepelhet, pl. rōmajiban: illeszd be a linket, írd az előadót és a címet a dalszöveg-keresőbe, és tölts le dalként.</string>
+    <string name="song_auto_captions">Nem található dalszöveg, ezért a videó automatikus feliratát használtuk; énekhez gyakran pontatlan. Keresd meg a szöveget magad.</string>
+    <string name="song_length_differs">A videó %1$d mp-cel tér el a szöveg felvételének hosszától, így az időzítés eltolódhat: állítsd a szöveg időzítését a lejátszás menüben.</string>
+    <string name="auto_time">Automatikus időzítés a videó feliratából</string>
+    <string name="auto_time_working">Feliratok vizsgálata…</string>
+    <string name="auto_time_done">Az időzítés %1$s mp-re állítva a videó felirata alapján.</string>
+    <string name="auto_time_no_captions">A videónak nincs felirata, amelyből az időzítés átvehető.</string>
+    <string name="auto_time_no_match">A felirat túl kevéssé hasonlít a szöveghez az időzítés megállapításához.</string>
+    <string name="auto_time_failed">Az automatikus időzítés nem sikerült: %1$s</string>
 </resources>

@@ -8,6 +8,17 @@
     <string name="remove">Remove</string>
     <string name="reset">Reset</string>
     <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="sing_back">Sing back: a silence as long as the line after each play</string>
+    <string name="lyrics_timing">Lyrics timing: %1$s s</string>
+    <string name="lyrics_earlier">Earlier −0.5 s</string>
+    <string name="lyrics_later">Later +0.5 s</string>
+    <string name="auto_time">Auto-time from the video\'s captions</string>
+    <string name="auto_time_working">Listening to the captions…</string>
+    <string name="auto_time_done">Timing set to %1$s s from the video\'s captions.</string>
+    <string name="auto_time_no_captions">The video has no captions to take the timing from.</string>
+    <string name="auto_time_no_match">The captions are too unlike the lyrics to tell the timing.</string>
+    <string name="auto_time_failed">Auto-timing failed: %1$s</string>
     <string name="crystal_clear">Crystal Clear</string>
     <string name="blacklist">Blacklist</string>
     <string name="anki_cards">Anki cards</string>
@@ -82,10 +93,16 @@
     <string name="videos_audio">Videos &amp; audio</string>
     <string name="media_help">Pick a video or audio file, then its subtitles in the language you study (.srt, .vtt or .ass). Each subtitle line becomes one sentence, in order. Choose it from the menu at the top of the practice screen.</string>
     <string name="subtitle_lines">Subtitle lines: %1$d</string>
+    <string name="song_lines">Lyric lines: %1$d · song</string>
     <string name="translations_in">Translations: %1$s</string>
     <string name="add_media">Add video/audio + subtitles</string>
     <string name="youtube_link">YouTube link with subtitles</string>
     <string name="download_youtube">Download from YouTube</string>
+    <string name="download_song">Download as a song (with lyrics)</string>
+    <string name="lyrics_query">Lyrics search (optional, for a song: artist and title)</string>
+    <string name="song_no_lyrics_tip">LRCLIB may have the song under another spelling, e.g. in romaji: paste the link, write the artist and title in the lyrics search and download it as a song.</string>
+    <string name="song_auto_captions">No lyrics were found, so the video\'s automatic captions were used; they are often rough for singing. Searching for the lyrics yourself may do better.</string>
+    <string name="song_length_differs">The video is %1$d s different in length from the lyrics\' recording, so their times may be off: adjust Lyrics timing in the playback sheet.</string>
     <string name="translations_from">Translations from</string>
     <string name="translation_off_help">Downloads only the subtitles in the language you study.</string>
     <string name="translation_help">Also downloads subtitles in this language (or in English, if a video has none), YouTube\'s machine translations included, and shows them as each line\'s translation.</string>
@@ -102,6 +119,9 @@
     <string name="yt_looking">Looking for subtitles…</string>
     <string name="yt_no_subtitles">\"%1$s\" has no subtitles in the language you study (%2$s).</string>
     <string name="yt_downloading">Downloading audio and subtitles…</string>
+    <string name="yt_lyrics">Finding the lyrics…</string>
+    <string name="song_no_lyrics">No synced lyrics found for \"%1$s\".</string>
+    <string name="song_wrong_language">The lyrics of \"%1$s\" are not in %2$s.</string>
     <string name="yt_progress">Downloading… %1$d%%</string>
     <string name="yt_translation">Downloading subtitles for the translation…</string>
 
@@ -237,6 +257,9 @@
     <string name="search_youtube">Search YouTube</string>
     <string name="search_youtube_label">Search for videos</string>
     <string name="search_youtube_help">Videos with subtitles. Each result is checked for %1$s speech and subtitles; tap one to download it.</string>
+    <string name="search_videos">Videos</string>
+    <string name="search_songs">Songs</string>
+    <string name="search_songs_help">Songs with %1$s lyrics. Tap one to download its audio; the lyrics with times come from LRCLIB.</string>
     <string name="subs_manual">Subtitles</string>
     <string name="subs_auto">Auto subtitles</string>
     <string name="subs_none">No subtitles</string>

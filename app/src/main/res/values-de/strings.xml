@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Videos in anderen Sprachen ausblenden</string>
     <string name="subs_other_language">Andere Sprache</string>
     <string name="subs_no_speech">Keine Sprache gefunden</string>
+    <string name="yt_lyrics">Songtext wird gesucht…</string>
+    <string name="song_no_lyrics">Keinen synchronisierten Songtext für „%1$s“ gefunden.</string>
+    <string name="song_wrong_language">Der Songtext von „%1$s“ ist nicht auf %2$s.</string>
+    <string name="song_lines">Textzeilen: %1$d · Song</string>
+    <string name="download_song">Als Song laden (mit Text)</string>
+    <string name="search_videos">Videos</string>
+    <string name="search_songs">Songs</string>
+    <string name="search_songs_help">Songs mit Text auf %1$s. Tippe auf einen, um das Audio zu laden; der Text mit Zeiten kommt von LRCLIB.</string>
+    <string name="on">An</string>
+    <string name="sing_back">Zurücksingen: nach jedem Abspielen Stille so lang wie die Zeile</string>
+    <string name="lyrics_timing">Text-Timing: %1$s s</string>
+    <string name="lyrics_earlier">Früher −0,5 s</string>
+    <string name="lyrics_later">Später +0,5 s</string>
+    <string name="lyrics_query">Textsuche (optional, für einen Song: Künstler und Titel)</string>
+    <string name="song_no_lyrics_tip">LRCLIB hat den Song vielleicht unter anderer Schreibweise, z. B. in Romaji: Link einfügen, Künstler und Titel in die Textsuche schreiben und als Song laden.</string>
+    <string name="song_auto_captions">Kein Songtext gefunden, daher wurden die automatischen Untertitel des Videos verwendet; für Gesang sind sie oft ungenau. Suche den Text am besten selbst.</string>
+    <string name="song_length_differs">Das Video weicht um %1$d s in der Länge von der Aufnahme des Textes ab, die Zeiten können daher verschoben sein: Text-Timing im Wiedergabemenü anpassen.</string>
+    <string name="auto_time">Automatisch nach den Untertiteln des Videos timen</string>
+    <string name="auto_time_working">Untertitel werden verglichen…</string>
+    <string name="auto_time_done">Timing auf %1$s s gesetzt, anhand der Untertitel des Videos.</string>
+    <string name="auto_time_no_captions">Das Video hat keine Untertitel, aus denen sich das Timing ableiten lässt.</string>
+    <string name="auto_time_no_match">Die Untertitel unterscheiden sich zu sehr vom Songtext, um das Timing zu bestimmen.</string>
+    <string name="auto_time_failed">Automatisches Timing fehlgeschlagen: %1$s</string>
 </resources>

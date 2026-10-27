@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Απόκρυψη βίντεο σε άλλες γλώσσες</string>
     <string name="subs_other_language">Άλλη γλώσσα</string>
     <string name="subs_no_speech">Δεν βρέθηκε ομιλία</string>
+    <string name="yt_lyrics">Αναζήτηση στίχων…</string>
+    <string name="song_no_lyrics">Δεν βρέθηκαν συγχρονισμένοι στίχοι για το «%1$s».</string>
+    <string name="song_wrong_language">Οι στίχοι του «%1$s» δεν είναι στα %2$s.</string>
+    <string name="song_lines">Γραμμές στίχων: %1$d · τραγούδι</string>
+    <string name="download_song">Λήψη ως τραγούδι (με στίχους)</string>
+    <string name="search_videos">Βίντεο</string>
+    <string name="search_songs">Τραγούδια</string>
+    <string name="search_songs_help">Τραγούδια με στίχους στα %1$s. Πατήστε ένα για λήψη του ήχου· οι στίχοι με χρόνους προέρχονται από το LRCLIB.</string>
+    <string name="on">Ενεργό</string>
+    <string name="sing_back">Τραγούδι πίσω: σιωπή όσο η γραμμή μετά από κάθε αναπαραγωγή</string>
+    <string name="lyrics_timing">Χρονισμός στίχων: %1$s δ</string>
+    <string name="lyrics_earlier">Νωρίτερα −0,5 δ</string>
+    <string name="lyrics_later">Αργότερα +0,5 δ</string>
+    <string name="lyrics_query">Αναζήτηση στίχων (προαιρετικά, για τραγούδι: καλλιτέχνης και τίτλος)</string>
+    <string name="song_no_lyrics_tip">Το LRCLIB μπορεί να έχει το τραγούδι με άλλη γραφή, π.χ. σε ρομάτζι: επικολλήστε τον σύνδεσμο, γράψτε καλλιτέχνη και τίτλο στην αναζήτηση στίχων και κατεβάστε το ως τραγούδι.</string>
+    <string name="song_auto_captions">Δεν βρέθηκαν στίχοι, οπότε χρησιμοποιήθηκαν οι αυτόματοι υπότιτλοι του βίντεο, που συχνά είναι κακοί για τραγούδι. Αναζητήστε τους στίχους μόνοι σας.</string>
+    <string name="song_length_differs">Το βίντεο διαφέρει κατά %1$d δ στη διάρκεια από την ηχογράφηση των στίχων, οπότε οι χρόνοι μπορεί να είναι μετατοπισμένοι: ρυθμίστε τον χρονισμό στίχων στο μενού αναπαραγωγής.</string>
+    <string name="auto_time">Αυτόματος χρονισμός από τους υπότιτλους του βίντεο</string>
+    <string name="auto_time_working">Έλεγχος υποτίτλων…</string>
+    <string name="auto_time_done">Ο χρονισμός ορίστηκε σε %1$s δ από τους υπότιτλους του βίντεο.</string>
+    <string name="auto_time_no_captions">Το βίντεο δεν έχει υπότιτλους από τους οποίους να παρθεί ο χρονισμός.</string>
+    <string name="auto_time_no_match">Οι υπότιτλοι μοιάζουν πολύ λίγο με τους στίχους για να βρεθεί ο χρονισμός.</string>
+    <string name="auto_time_failed">Ο αυτόματος χρονισμός απέτυχε: %1$s</string>
 </resources>

@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Ukryj filmy w innych językach</string>
     <string name="subs_other_language">Inny język</string>
     <string name="subs_no_speech">Nie znaleziono mowy</string>
+    <string name="yt_lyrics">Szukanie tekstu piosenki…</string>
+    <string name="song_no_lyrics">Nie znaleziono zsynchronizowanego tekstu dla „%1$s”.</string>
+    <string name="song_wrong_language">Tekst „%1$s” nie jest w języku: %2$s.</string>
+    <string name="song_lines">Wiersze tekstu: %1$d · piosenka</string>
+    <string name="download_song">Pobierz jako piosenkę (z tekstem)</string>
+    <string name="search_videos">Filmy</string>
+    <string name="search_songs">Piosenki</string>
+    <string name="search_songs_help">Piosenki z tekstem w języku: %1$s. Dotknij, aby pobrać dźwięk; tekst z czasami pochodzi z LRCLIB.</string>
+    <string name="on">Wł.</string>
+    <string name="sing_back">Śpiewaj z powrotem: cisza tak długa jak wiersz po każdym odtworzeniu</string>
+    <string name="lyrics_timing">Synchronizacja tekstu: %1$s s</string>
+    <string name="lyrics_earlier">Wcześniej −0,5 s</string>
+    <string name="lyrics_later">Później +0,5 s</string>
+    <string name="lyrics_query">Szukanie tekstu (opcjonalnie, dla piosenki: wykonawca i tytuł)</string>
+    <string name="song_no_lyrics_tip">LRCLIB może mieć piosenkę pod inną pisownią, np. w romaji: wklej link, wpisz wykonawcę i tytuł w polu szukania tekstu i pobierz jako piosenkę.</string>
+    <string name="song_auto_captions">Nie znaleziono tekstu, więc użyto automatycznych napisów filmu; do śpiewu są często słabe. Wyszukaj tekst samodzielnie.</string>
+    <string name="song_length_differs">Film różni się o %1$d s długością od nagrania tekstu, więc czasy mogą być przesunięte: dostosuj synchronizację tekstu w menu odtwarzania.</string>
+    <string name="auto_time">Zsynchronizuj automatycznie z napisami filmu</string>
+    <string name="auto_time_working">Analizuję napisy…</string>
+    <string name="auto_time_done">Przesunięcie ustawione na %1$s s na podstawie napisów filmu.</string>
+    <string name="auto_time_no_captions">Film nie ma napisów, z których można wziąć synchronizację.</string>
+    <string name="auto_time_no_match">Napisy są zbyt mało podobne do tekstu, by określić przesunięcie.</string>
+    <string name="auto_time_failed">Automatyczna synchronizacja nie powiodła się: %1$s</string>
 </resources>

@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Masquer les vidéos dans d\'autres langues</string>
     <string name="subs_other_language">Autre langue</string>
     <string name="subs_no_speech">Aucune parole trouvée</string>
+    <string name="yt_lyrics">Recherche des paroles…</string>
+    <string name="song_no_lyrics">Aucune parole synchronisée trouvée pour « %1$s ».</string>
+    <string name="song_wrong_language">Les paroles de « %1$s » ne sont pas en %2$s.</string>
+    <string name="song_lines">Lignes de paroles : %1$d · chanson</string>
+    <string name="download_song">Télécharger comme chanson (avec paroles)</string>
+    <string name="search_videos">Vidéos</string>
+    <string name="search_songs">Chansons</string>
+    <string name="search_songs_help">Chansons avec des paroles en %1$s. Touchez-en une pour télécharger l’audio ; les paroles synchronisées viennent de LRCLIB.</string>
+    <string name="on">Activé</string>
+    <string name="sing_back">Chanter en retour : un silence aussi long que la ligne après chaque lecture</string>
+    <string name="lyrics_timing">Synchro des paroles : %1$s s</string>
+    <string name="lyrics_earlier">Plus tôt −0,5 s</string>
+    <string name="lyrics_later">Plus tard +0,5 s</string>
+    <string name="lyrics_query">Recherche de paroles (facultatif, pour une chanson : artiste et titre)</string>
+    <string name="song_no_lyrics_tip">LRCLIB a peut-être la chanson sous une autre graphie, p. ex. en romaji : collez le lien, saisissez l’artiste et le titre dans la recherche de paroles et téléchargez-la comme chanson.</string>
+    <string name="song_auto_captions">Aucune parole trouvée : les sous-titres automatiques de la vidéo ont été utilisés, souvent approximatifs pour le chant. Cherchez les paroles vous-même.</string>
+    <string name="song_length_differs">La vidéo diffère de %1$d s en durée de l’enregistrement des paroles, leurs temps peuvent donc être décalés : réglez la synchro des paroles dans le menu de lecture.</string>
+    <string name="auto_time">Caler automatiquement sur les sous-titres de la vidéo</string>
+    <string name="auto_time_working">Analyse des sous-titres…</string>
+    <string name="auto_time_done">Décalage réglé sur %1$s s d’après les sous-titres de la vidéo.</string>
+    <string name="auto_time_no_captions">La vidéo n’a pas de sous-titres dont tirer le calage.</string>
+    <string name="auto_time_no_match">Les sous-titres sont trop différents des paroles pour déterminer le décalage.</string>
+    <string name="auto_time_failed">Échec du calage automatique : %1$s</string>
 </resources>

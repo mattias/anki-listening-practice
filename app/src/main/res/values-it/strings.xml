@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Nascondi i video in altre lingue</string>
     <string name="subs_other_language">Altra lingua</string>
     <string name="subs_no_speech">Nessun parlato trovato</string>
+    <string name="yt_lyrics">Cerco il testo…</string>
+    <string name="song_no_lyrics">Nessun testo sincronizzato trovato per «%1$s».</string>
+    <string name="song_wrong_language">Il testo di «%1$s» non è in %2$s.</string>
+    <string name="song_lines">Righe di testo: %1$d · canzone</string>
+    <string name="download_song">Scarica come canzone (con testo)</string>
+    <string name="search_videos">Video</string>
+    <string name="search_songs">Canzoni</string>
+    <string name="search_songs_help">Canzoni con testo in %1$s. Tocca per scaricare l’audio; il testo con i tempi arriva da LRCLIB.</string>
+    <string name="on">Attivo</string>
+    <string name="sing_back">Canta di rimando: un silenzio lungo quanto la riga dopo ogni riproduzione</string>
+    <string name="lyrics_timing">Sincronia del testo: %1$s s</string>
+    <string name="lyrics_earlier">Prima −0,5 s</string>
+    <string name="lyrics_later">Dopo +0,5 s</string>
+    <string name="lyrics_query">Ricerca del testo (facoltativa, per una canzone: artista e titolo)</string>
+    <string name="song_no_lyrics_tip">LRCLIB potrebbe avere la canzone con un’altra grafia, ad es. in romaji: incolla il link, scrivi artista e titolo nella ricerca del testo e scaricala come canzone.</string>
+    <string name="song_auto_captions">Nessun testo trovato, quindi sono stati usati i sottotitoli automatici del video, spesso imprecisi per il canto. Cerca il testo tu stesso.</string>
+    <string name="song_length_differs">Il video differisce di %1$d s in durata dalla registrazione del testo, quindi i tempi possono essere sfasati: regola la sincronia del testo nel menu di riproduzione.</string>
+    <string name="auto_time">Sincronizza con i sottotitoli del video</string>
+    <string name="auto_time_working">Analisi dei sottotitoli…</string>
+    <string name="auto_time_done">Sincronia impostata a %1$s s in base ai sottotitoli del video.</string>
+    <string name="auto_time_no_captions">Il video non ha sottotitoli da cui ricavare la sincronia.</string>
+    <string name="auto_time_no_match">I sottotitoli sono troppo diversi dal testo per stabilire la sincronia.</string>
+    <string name="auto_time_failed">Sincronizzazione automatica non riuscita: %1$s</string>
 </resources>

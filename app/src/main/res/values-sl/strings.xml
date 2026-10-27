@@ -238,4 +238,27 @@
     <string name="hide_other_languages">Skrij videoposnetke v drugih jezikih</string>
     <string name="subs_other_language">Drug jezik</string>
     <string name="subs_no_speech">Govora ni bilo najti</string>
+    <string name="yt_lyrics">Iščem besedilo pesmi…</string>
+    <string name="song_no_lyrics">Za »%1$s« ni sinhroniziranega besedila.</string>
+    <string name="song_wrong_language">Besedilo pesmi »%1$s« ni v jeziku: %2$s.</string>
+    <string name="song_lines">Vrstic besedila: %1$d · pesem</string>
+    <string name="download_song">Prenesi kot pesem (z besedilom)</string>
+    <string name="search_videos">Videoposnetki</string>
+    <string name="search_songs">Pesmi</string>
+    <string name="search_songs_help">Pesmi z besedilom v jeziku: %1$s. Tapnite za prenos zvoka; besedilo s časi je z LRCLIB.</string>
+    <string name="on">Vklopljeno</string>
+    <string name="sing_back">Zapoj nazaj: tišina, dolga kot vrstica, po vsakem predvajanju</string>
+    <string name="lyrics_timing">Časovni zamik besedila: %1$s s</string>
+    <string name="lyrics_earlier">Prej −0,5 s</string>
+    <string name="lyrics_later">Pozneje +0,5 s</string>
+    <string name="lyrics_query">Iskanje besedila (neobvezno, za pesem: izvajalec in naslov)</string>
+    <string name="song_no_lyrics_tip">LRCLIB ima pesem morda pod drugačnim zapisom, npr. v romaji: prilepite povezavo, v iskanje besedila vpišite izvajalca in naslov ter jo prenesite kot pesem.</string>
+    <string name="song_auto_captions">Besedila ni bilo mogoče najti, zato so bili uporabljeni samodejni podnapisi videa; za petje so pogosto slabi. Besedilo poiščite sami.</string>
+    <string name="song_length_differs">Video se po dolžini razlikuje za %1$d s od posnetka besedila, zato so časi lahko zamaknjeni: prilagodite časovni zamik besedila v meniju predvajanja.</string>
+    <string name="auto_time">Samodejno časovno uskladi po podnapisih videa</string>
+    <string name="auto_time_working">Preverjam podnapise…</string>
+    <string name="auto_time_done">Časovni zamik nastavljen na %1$s s po podnapisih videa.</string>
+    <string name="auto_time_no_captions">Video nima podnapisov, iz katerih bi vzeli časovni zamik.</string>
+    <string name="auto_time_no_match">Podnapisi so besedilu premalo podobni, da bi določili zamik.</string>
+    <string name="auto_time_failed">Samodejno usklajevanje ni uspelo: %1$s</string>
 </resources>

@@ -121,7 +121,7 @@ object Subtitles {
         }
     }
 
-    private fun tidy(cues: List<SubtitleCue>): List<SubtitleCue> {
+    internal fun tidy(cues: List<SubtitleCue>): List<SubtitleCue> {
         val out = mutableListOf<SubtitleCue>()
         for (cue in cues.sortedBy { it.startMs }) {
             if (cue.text.isBlank() || cue.endMs <= cue.startMs) continue

@@ -16,6 +16,8 @@ data class Sentence(
     val audio: Uri,
     /** Play only this range of [audio]; null plays the whole file. */
     val clip: LongRange? = null,
+    /** The audio track to play when [audio] has several (a dub and the original): the language practiced, such as "ja". */
+    val audioLanguage: String? = null,
 )
 
 /**

@@ -588,7 +588,7 @@ class PracticeController @Inject constructor(
             .setTitle(sources.value.firstOrNull { it.first == source.value }?.second?.ifEmpty { null } ?: strings(R.string.anki_cards))
             .setArtist(strings(R.string.notification_subtitle, language.value.displayName()))
             .build()
-        player.load(sentence.audio, sentence.clip, autoPlay)
+        player.load(sentence.audio, sentence.clip, autoPlay, sentence.audioLanguage)
         updateWords(sentence)
     }
 

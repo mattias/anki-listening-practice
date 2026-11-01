@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">视频没有可用来校准时间的字幕。</string>
     <string name="auto_time_no_match">字幕与歌词差异太大，无法判断时间。</string>
     <string name="auto_time_failed">自动校准失败：%1$s</string>
+    <string name="embedded_used">已使用视频内嵌的字幕。</string>
+    <string name="embedded_empty">文件内嵌的字幕没有任何行。</string>
+    <string name="not_subtitles">“%1$s”是视频或音频文件，或对字幕来说太大。请选择字幕文件（.srt、.vtt、.ass 或 .lrc）。</string>
 </resources>

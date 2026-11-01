@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">El vídeo no té subtítols dels quals prendre la sincronia.</string>
     <string name="auto_time_no_match">Els subtítols s’assemblen massa poc a la lletra per saber la sincronia.</string>
     <string name="auto_time_failed">Ha fallat la sincronització automàtica: %1$s</string>
+    <string name="embedded_used">S’han fet servir els subtítols inclosos al vídeo.</string>
+    <string name="embedded_empty">Els subtítols del fitxer no tenen cap línia.</string>
+    <string name="not_subtitles">«%1$s» és un fitxer de vídeo o àudio, o massa gran per ser subtítols. Tria el fitxer de subtítols (.srt, .vtt, .ass o .lrc).</string>
 </resources>

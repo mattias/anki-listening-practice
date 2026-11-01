@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Film nie ma napisów, z których można wziąć synchronizację.</string>
     <string name="auto_time_no_match">Napisy są zbyt mało podobne do tekstu, by określić przesunięcie.</string>
     <string name="auto_time_failed">Automatyczna synchronizacja nie powiodła się: %1$s</string>
+    <string name="embedded_used">Użyto napisów wbudowanych w film.</string>
+    <string name="embedded_empty">Napisy w pliku nie mają żadnych wierszy.</string>
+    <string name="not_subtitles">„%1$s” to plik wideo lub audio albo jest zbyt duży na napisy. Wybierz plik z napisami (.srt, .vtt, .ass lub .lrc).</string>
 </resources>

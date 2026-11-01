@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Video tidak punya takarir untuk mengambil waktunya.</string>
     <string name="auto_time_no_match">Takarir terlalu berbeda dari lirik untuk menentukan waktu.</string>
     <string name="auto_time_failed">Pengaturan waktu otomatis gagal: %1$s</string>
+    <string name="embedded_used">Takarir di dalam video digunakan.</string>
+    <string name="embedded_empty">Takarir di dalam berkas tidak memiliki baris.</string>
+    <string name="not_subtitles">“%1$s” adalah berkas video atau audio, atau terlalu besar untuk takarir. Pilih berkas takarir (.srt, .vtt, .ass, atau .lrc).</string>
 </resources>

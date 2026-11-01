@@ -109,6 +109,9 @@
     <string name="remove_download_body">The downloaded audio and subtitles are deleted.</string>
     <string name="remove_local_body">Only the app\'s subtitle copy is deleted; your video file stays where it is.</string>
     <string name="reading_subtitles">Reading subtitles…</string>
+    <string name="embedded_used">The subtitles inside the video were used.</string>
+    <string name="embedded_empty">The subtitles inside the file have no lines.</string>
+    <string name="not_subtitles">\"%1$s\" is a video or audio file, or too big to be subtitles. Pick the subtitle file (.srt, .vtt, .ass or .lrc).</string>
     <string name="starting">Starting…</string>
     <string name="media_added">Added %1$s (subtitle lines: %2$d). Pick it from the menu at the top of the practice screen.</string>
     <string name="media_added_translated">Added %1$s (subtitle lines: %2$d, translations: %3$s). Pick it from the menu at the top of the practice screen.</string>

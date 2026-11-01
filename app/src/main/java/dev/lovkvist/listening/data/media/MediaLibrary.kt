@@ -63,12 +63,30 @@ class MediaLibrary @Inject constructor(
     /** Imports a video/audio document the user picked together with a subtitle document. */
     suspend fun importLocal(media: Uri, subtitles: Uri, language: Language): MediaEntry = withContext(Dispatchers.IO) {
         val subName = displayName(subtitles)
-        val cues = Subtitles.parse(subName, readText(context.contentResolver.openInputStream(subtitles)?.use { it.readBytes() }
+        // A video or audio file is not subtitles, and is far too big to read as text.
+        val type = context.contentResolver.getType(subtitles).orEmpty()
+        if (type.startsWith("video/") || type.startsWith("audio/") || sizeOf(subtitles) > MAX_SUBTITLE_BYTES) {
+            throw IOException(strings(R.string.not_subtitles, subName))
+        }
+        val cues = Subtitles.parse(subName, readText(context.contentResolver.openInputStream(subtitles)?.use { readLimited(it, subName) }
             ?: throw IOException(strings(R.string.could_not_open_file)), language))
         // Keep access to the media after restarts; subtitles are copied into chunks.json.
         context.contentResolver.takePersistableUriPermission(media, Intent.FLAG_GRANT_READ_URI_PERMISSION)
         // Lyrics in an LRC file make it a song.
         save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language, song = subName.endsWith(".lrc", ignoreCase = true))
+    }
+
+    /** The subtitle track inside the video/audio file [media] that is in [language], or null: no need to ask for a subtitle file. */
+    suspend fun embeddedTrack(media: Uri, language: Language): EmbeddedTrack? = withContext(Dispatchers.IO) {
+        EmbeddedSubtitles.inLanguage(EmbeddedSubtitles.tracks(context, media), language)
+    }
+
+    /** Imports [media] with the subtitles that are inside it ([track], from [embeddedTrack]). */
+    suspend fun importEmbedded(media: Uri, track: EmbeddedTrack, language: Language): MediaEntry = withContext(Dispatchers.IO) {
+        val cues = EmbeddedSubtitles.read(context, media, track)
+        if (cues.isEmpty()) throw IOException(strings(R.string.embedded_empty))
+        context.contentResolver.takePersistableUriPermission(media, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language)
     }
 
     /** Registers a downloaded song: its audio (already inside [dir]) and the [lyrics] cues. */
@@ -152,6 +170,8 @@ class MediaLibrary @Inject constructor(
                 translation = c.optString("tr"),
                 audio = entry.media,
                 clip = maxOf(0, c.getLong("s") - PAD_BEFORE_MS + entry.offsetMs)..maxOf(1, c.getLong("e") + PAD_AFTER_MS + entry.offsetMs),
+                // A file with a dub and the original has both: the language that is practiced is the one to hear.
+                audioLanguage = entry.language.code,
             )
         }
     }
@@ -215,6 +235,24 @@ class MediaLibrary @Inject constructor(
             }.getOrNull()
         }.sortedByDescending { it.importedAt }
 
+    private fun sizeOf(uri: Uri): Long =
+        context.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)?.use { c ->
+            if (c.moveToFirst() && !c.isNull(0)) c.getLong(0) else -1L
+        } ?: -1L
+
+    /** All of [stream], but at most [MAX_SUBTITLE_BYTES]: more than that isn't a subtitle file. */
+    private fun readLimited(stream: java.io.InputStream, name: String): ByteArray {
+        val out = java.io.ByteArrayOutputStream()
+        val buffer = ByteArray(16 * 1024)
+        while (true) {
+            val n = stream.read(buffer)
+            if (n < 0) break
+            out.write(buffer, 0, n)
+            if (out.size() > MAX_SUBTITLE_BYTES) throw IOException(strings(R.string.not_subtitles, name))
+        }
+        return out.toByteArray()
+    }
+
     private fun displayName(uri: Uri): String =
         context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
             if (c.moveToFirst()) c.getString(0) else null
@@ -242,6 +280,9 @@ class MediaLibrary @Inject constructor(
         private const val INFO_FILE = "info.json"
         private const val CHUNKS_FILE = "chunks.json"
         private const val MAX_CHUNKS = 100_000L
+
+        /** Subtitle files are small; a feature-length .ass with styles is well under this. */
+        private const val MAX_SUBTITLE_BYTES = 20L * 1024 * 1024
 
         // Subtitle timings are often tight; a little padding avoids clipped first/last syllables.
         private const val PAD_BEFORE_MS = 150L

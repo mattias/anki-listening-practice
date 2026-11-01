@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">ویدیو زیرنویسی ندارد که زمان‌بندی از آن گرفته شود.</string>
     <string name="auto_time_no_match">زیرنویس برای تعیین زمان‌بندی شباهت کافی به متن ندارد.</string>
     <string name="auto_time_failed">زمان‌بندی خودکار ناموفق بود: %1$s</string>
+    <string name="embedded_used">زیرنویس داخل ویدیو استفاده شد.</string>
+    <string name="embedded_empty">زیرنویس داخل فایل هیچ خطی ندارد.</string>
+    <string name="not_subtitles">«%1$s» فایل ویدیو یا صوت است یا برای زیرنویس بیش از حد بزرگ است. فایل زیرنویس (‎.srt، ‎.vtt، ‎.ass یا ‎.lrc) را انتخاب کنید.</string>
 </resources>

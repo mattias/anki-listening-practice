@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Video nema titlove iz kojih bi se uzelo vrijeme.</string>
     <string name="auto_time_no_match">Titlovi su previše različiti od teksta da bi se odredilo vrijeme.</string>
     <string name="auto_time_failed">Automatsko usklađivanje nije uspjelo: %1$s</string>
+    <string name="embedded_used">Korišteni su titlovi ugrađeni u videozapis.</string>
+    <string name="embedded_empty">Titlovi u datoteci nemaju nijedan redak.</string>
+    <string name="not_subtitles">„%1$s” je video ili audio datoteka ili prevelika za titlove. Odaberite datoteku s titlovima (.srt, .vtt, .ass ili .lrc).</string>
 </resources>

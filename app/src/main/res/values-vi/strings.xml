@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Video không có phụ đề để lấy thời gian.</string>
     <string name="auto_time_no_match">Phụ đề quá khác với lời nên không xác định được thời gian.</string>
     <string name="auto_time_failed">Tự động chỉnh thời gian thất bại: %1$s</string>
+    <string name="embedded_used">Đã dùng phụ đề nằm trong video.</string>
+    <string name="embedded_empty">Phụ đề trong tệp không có dòng nào.</string>
+    <string name="not_subtitles">“%1$s” là tệp video hoặc âm thanh, hoặc quá lớn để là phụ đề. Hãy chọn tệp phụ đề (.srt, .vtt, .ass hoặc .lrc).</string>
 </resources>

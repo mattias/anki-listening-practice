@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Το βίντεο δεν έχει υπότιτλους από τους οποίους να παρθεί ο χρονισμός.</string>
     <string name="auto_time_no_match">Οι υπότιτλοι μοιάζουν πολύ λίγο με τους στίχους για να βρεθεί ο χρονισμός.</string>
     <string name="auto_time_failed">Ο αυτόματος χρονισμός απέτυχε: %1$s</string>
+    <string name="embedded_used">Χρησιμοποιήθηκαν οι υπότιτλοι μέσα στο βίντεο.</string>
+    <string name="embedded_empty">Οι υπότιτλοι μέσα στο αρχείο δεν έχουν γραμμές.</string>
+    <string name="not_subtitles">Το «%1$s» είναι αρχείο βίντεο ή ήχου ή πολύ μεγάλο για υπότιτλους. Επιλέξτε το αρχείο υποτίτλων (.srt, .vtt, .ass ή .lrc).</string>
 </resources>

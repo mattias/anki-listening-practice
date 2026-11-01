@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">A videónak nincs felirata, amelyből az időzítés átvehető.</string>
     <string name="auto_time_no_match">A felirat túl kevéssé hasonlít a szöveghez az időzítés megállapításához.</string>
     <string name="auto_time_failed">Az automatikus időzítés nem sikerült: %1$s</string>
+    <string name="embedded_used">A videóba ágyazott feliratot használtuk.</string>
+    <string name="embedded_empty">A fájlban lévő feliratnak nincsenek sorai.</string>
+    <string name="not_subtitles">A(z) „%1$s” videó- vagy hangfájl, vagy túl nagy ahhoz, hogy felirat legyen. Válaszd ki a feliratfájlt (.srt, .vtt, .ass vagy .lrc).</string>
 </resources>

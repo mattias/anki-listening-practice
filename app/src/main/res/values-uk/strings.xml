@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">У відео немає субтитрів, за якими можна визначити час.</string>
     <string name="auto_time_no_match">Субтитри надто мало схожі на текст, щоб визначити зсув.</string>
     <string name="auto_time_failed">Автопідгонка не вдалася: %1$s</string>
+    <string name="embedded_used">Використано субтитри, вбудовані у відео.</string>
+    <string name="embedded_empty">У субтитрах усередині файлу немає рядків.</string>
+    <string name="not_subtitles">«%1$s» — це відео- чи аудіофайл або надто великий для субтитрів. Виберіть файл субтитрів (.srt, .vtt, .ass або .lrc).</string>
 </resources>

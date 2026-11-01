@@ -155,7 +155,7 @@ copy.
 ### Videos, audio and YouTube
 
 Under **Settings → Videos & audio**, either tap **Add video/audio + subtitles** and pick the
-media file and then its subtitle file, or search YouTube (the results show which videos have subtitles in your language; tap one to download it), or
+media file and then its subtitle file (if the file has subtitles inside in your language, they are used and no subtitle file is asked for; with a dub and the original, the audio in your language plays), or search YouTube (the results show which videos have subtitles in your language; tap one to download it), or
 paste a **YouTube link** and tap **Download from YouTube**. Then choose the video from the menu at the top of the practice screen. Sentences come
 in the order they're spoken; ones with unknown words are skipped.
 

@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">วิดีโอไม่มีคำบรรยายให้ใช้อ้างอิงเวลา</string>
     <string name="auto_time_no_match">คำบรรยายไม่คล้ายเนื้อเพลงพอที่จะระบุเวลาได้</string>
     <string name="auto_time_failed">ปรับเวลาอัตโนมัติไม่สำเร็จ: %1$s</string>
+    <string name="embedded_used">ใช้คำบรรยายที่ฝังอยู่ในวิดีโอแล้ว</string>
+    <string name="embedded_empty">คำบรรยายในไฟล์ไม่มีบรรทัดเลย</string>
+    <string name="not_subtitles">“%1$s” เป็นไฟล์วิดีโอหรือเสียง หรือใหญ่เกินกว่าจะเป็นคำบรรยาย โปรดเลือกไฟล์คำบรรยาย (.srt, .vtt, .ass หรือ .lrc)</string>
 </resources>

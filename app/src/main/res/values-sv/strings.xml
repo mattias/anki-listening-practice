@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Videon har inga undertexter att ta tiden från.</string>
     <string name="auto_time_no_match">Undertexterna liknar sångtexten för lite för att avgöra tiden.</string>
     <string name="auto_time_failed">Automatisk tidsättning misslyckades: %1$s</string>
+    <string name="embedded_used">Undertexterna inuti videon användes.</string>
+    <string name="embedded_empty">Undertexterna i filen har inga rader.</string>
+    <string name="not_subtitles">“%1$s” är en video- eller ljudfil, eller för stor för att vara undertexter. Välj undertextfilen (.srt, .vtt, .ass eller .lrc).</string>
 </resources>

@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">タイミングの基準にできる動画の字幕がありません。</string>
     <string name="auto_time_no_match">字幕が歌詞とあまり似ておらず、タイミングを判断できません。</string>
     <string name="auto_time_failed">自動タイミング調整に失敗しました：%1$s</string>
+    <string name="embedded_used">動画に埋め込まれた字幕を使いました。</string>
+    <string name="embedded_empty">ファイル内の字幕に行がありません。</string>
+    <string name="not_subtitles">「%1$s」は動画または音声ファイルか、字幕にしては大きすぎます。字幕ファイル（.srt、.vtt、.ass、.lrc）を選んでください。</string>
 </resources>

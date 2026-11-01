@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">El vídeo no tiene subtítulos de los que tomar la sincronía.</string>
     <string name="auto_time_no_match">Los subtítulos se parecen demasiado poco a la letra para saber la sincronía.</string>
     <string name="auto_time_failed">Falló la sincronización automática: %1$s</string>
+    <string name="embedded_used">Se usaron los subtítulos incluidos en el vídeo.</string>
+    <string name="embedded_empty">Los subtítulos del archivo no tienen líneas.</string>
+    <string name="not_subtitles">«%1$s» es un archivo de vídeo o audio, o demasiado grande para ser subtítulos. Elige el archivo de subtítulos (.srt, .vtt, .ass o .lrc).</string>
 </resources>

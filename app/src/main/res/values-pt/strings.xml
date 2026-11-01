@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">O vídeo não tem legendas das quais tirar a sincronia.</string>
     <string name="auto_time_no_match">As legendas são parecidas demais pouco com a letra para saber a sincronia.</string>
     <string name="auto_time_failed">Falha na sincronização automática: %1$s</string>
+    <string name="embedded_used">Foram usadas as legendas incluídas no vídeo.</string>
+    <string name="embedded_empty">As legendas do arquivo não têm linhas.</string>
+    <string name="not_subtitles">“%1$s” é um arquivo de vídeo ou áudio, ou grande demais para ser legenda. Escolha o arquivo de legendas (.srt, .vtt, .ass ou .lrc).</string>
 </resources>

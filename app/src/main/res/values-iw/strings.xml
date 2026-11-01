@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">אין לסרטון כתוביות שאפשר לקחת מהן את התזמון.</string>
     <string name="auto_time_no_match">הכתוביות לא דומות מספיק למילים כדי לקבוע תזמון.</string>
     <string name="auto_time_failed">התזמון האוטומטי נכשל: %1$s</string>
+    <string name="embedded_used">נעשה שימוש בכתוביות שבתוך הסרטון.</string>
+    <string name="embedded_empty">בכתוביות שבתוך הקובץ אין שורות.</string>
+    <string name="not_subtitles">“%1$s” הוא קובץ וידאו או שמע, או גדול מדי מכדי להיות כתוביות. בחר את קובץ הכתוביות (.srt, ‏.vtt, ‏.ass או .lrc).</string>
 </resources>

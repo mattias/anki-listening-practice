@@ -198,6 +198,32 @@ class SettingsViewModel @Inject constructor(
     /** What a running media import/download is doing, or null when idle. */
     val mediaBusy: StateFlow<String?> = _mediaBusy.asStateFlow()
 
+    /**
+     * A video/audio file was picked: if it holds subtitles in the language studied, they are used and no
+     * subtitle file is needed; otherwise [askForSubtitles] lets the user pick one.
+     */
+    fun mediaPicked(file: Uri, askForSubtitles: () -> Unit) = viewModelScope.launch {
+        _mediaBusy.value = strings(R.string.reading_subtitles)
+        var ask = false
+        try {
+            val language = settingsRepo.current().language
+            val track = media.embeddedTrack(file, language)
+            if (track == null) {
+                ask = true
+            } else {
+                val item = media.importEmbedded(file, track, language)
+                _message.value = strings(R.string.media_added, item.name, item.chunkCount) + " " + strings(R.string.embedded_used)
+            }
+        } catch (e: Exception) {
+            _message.value = strings(R.string.import_failed, e.message ?: e.toString())
+        } catch (e: Throwable) {
+            _message.value = strings(R.string.import_failed, strings(R.string.could_not_open_file))
+        } finally {
+            _mediaBusy.value = null
+        }
+        if (ask) askForSubtitles()
+    }
+
     fun importMedia(file: Uri, subtitles: Uri) = viewModelScope.launch {
         _mediaBusy.value = strings(R.string.reading_subtitles)
         _message.value = try {
@@ -205,6 +231,9 @@ class SettingsViewModel @Inject constructor(
             strings(R.string.media_added, item.name, item.chunkCount)
         } catch (e: Exception) {
             strings(R.string.import_failed, e.message ?: e.toString())
+        } catch (e: Throwable) {
+            // Never a reason to close the app: say what was probably picked.
+            strings(R.string.import_failed, strings(R.string.could_not_open_file))
         } finally {
             _mediaBusy.value = null
         }

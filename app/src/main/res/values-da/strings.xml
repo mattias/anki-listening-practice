@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Videoen har ingen undertekster at tage timingen fra.</string>
     <string name="auto_time_no_match">Underteksterne ligner sangteksten for lidt til at afgøre timingen.</string>
     <string name="auto_time_failed">Automatisk tidsætning mislykkedes: %1$s</string>
+    <string name="embedded_used">Underteksterne i videoen blev brugt.</string>
+    <string name="embedded_empty">Underteksterne i filen har ingen linjer.</string>
+    <string name="not_subtitles">“%1$s” er en video- eller lydfil, eller for stor til at være undertekster. Vælg undertekstfilen (.srt, .vtt, .ass eller .lrc).</string>
 </resources>

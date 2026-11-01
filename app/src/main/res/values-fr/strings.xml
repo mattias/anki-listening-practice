@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">La vidéo n’a pas de sous-titres dont tirer le calage.</string>
     <string name="auto_time_no_match">Les sous-titres sont trop différents des paroles pour déterminer le décalage.</string>
     <string name="auto_time_failed">Échec du calage automatique : %1$s</string>
+    <string name="embedded_used">Les sous-titres intégrés à la vidéo ont été utilisés.</string>
+    <string name="embedded_empty">Les sous-titres du fichier ne contiennent aucune ligne.</string>
+    <string name="not_subtitles">« %1$s » est un fichier vidéo ou audio, ou trop volumineux pour être des sous-titres. Choisissez le fichier de sous-titres (.srt, .vtt, .ass ou .lrc).</string>
 </resources>

@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">De video heeft geen ondertitels om de timing van af te leiden.</string>
     <string name="auto_time_no_match">De ondertitels lijken te weinig op de tekst om de timing te bepalen.</string>
     <string name="auto_time_failed">Automatisch timen mislukt: %1$s</string>
+    <string name="embedded_used">De ondertitels in de video zijn gebruikt.</string>
+    <string name="embedded_empty">De ondertitels in het bestand hebben geen regels.</string>
+    <string name="not_subtitles">“%1$s” is een video- of audiobestand, of te groot voor ondertitels. Kies het ondertitelbestand (.srt, .vtt, .ass of .lrc).</string>
 </resources>

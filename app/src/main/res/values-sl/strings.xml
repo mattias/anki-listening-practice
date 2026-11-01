@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Video nima podnapisov, iz katerih bi vzeli časovni zamik.</string>
     <string name="auto_time_no_match">Podnapisi so besedilu premalo podobni, da bi določili zamik.</string>
     <string name="auto_time_failed">Samodejno usklajevanje ni uspelo: %1$s</string>
+    <string name="embedded_used">Uporabljeni so bili podnapisi, vgrajeni v videoposnetek.</string>
+    <string name="embedded_empty">Podnapisi v datoteki nimajo nobene vrstice.</string>
+    <string name="not_subtitles">»%1$s« je video ali zvočna datoteka ali prevelika za podnapise. Izberite datoteko s podnapisi (.srt, .vtt, .ass ali .lrc).</string>
 </resources>

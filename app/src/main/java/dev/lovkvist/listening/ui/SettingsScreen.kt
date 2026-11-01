@@ -821,7 +821,8 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
             pickedMedia = uri
-            pickSubtitles.launch(arrayOf("*/*"))
+            // Subtitles inside the file are used right away; otherwise a subtitle file is asked for.
+            vm.mediaPicked(uri) { pickSubtitles.launch(arrayOf("*/*")) }
         }
     }
 

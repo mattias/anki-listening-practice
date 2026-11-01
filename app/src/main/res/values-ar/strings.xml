@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">لا تتوفر للفيديو ترجمة يمكن أخذ التوقيت منها.</string>
     <string name="auto_time_no_match">الترجمة لا تشبه الكلمات بما يكفي لتحديد التوقيت.</string>
     <string name="auto_time_failed">فشل الضبط التلقائي: %1$s</string>
+    <string name="embedded_used">تم استخدام الترجمة المضمّنة في الفيديو.</string>
+    <string name="embedded_empty">الترجمة داخل الملف لا تحتوي على أسطر.</string>
+    <string name="not_subtitles">«%1$s» ملف فيديو أو صوت، أو كبير جداً ليكون ترجمة. اختر ملف الترجمة (.srt أو .vtt أو .ass أو .lrc).</string>
 </resources>

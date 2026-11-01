@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Videolla ei ole tekstityksiä, joista ajoituksen voisi ottaa.</string>
     <string name="auto_time_no_match">Tekstitys muistuttaa sanoja liian vähän ajoituksen päättelemiseksi.</string>
     <string name="auto_time_failed">Automaattinen ajoitus epäonnistui: %1$s</string>
+    <string name="embedded_used">Käytettiin videon sisäisiä tekstityksiä.</string>
+    <string name="embedded_empty">Tiedoston tekstityksessä ei ole rivejä.</string>
+    <string name="not_subtitles">“%1$s” on video- tai äänitiedosto tai liian suuri tekstitykseksi. Valitse tekstitystiedosto (.srt, .vtt, .ass tai .lrc).</string>
 </resources>

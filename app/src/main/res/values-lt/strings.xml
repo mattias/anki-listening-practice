@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Vaizdo įrašas neturi subtitrų, iš kurių būtų galima paimti laiką.</string>
     <string name="auto_time_no_match">Subtitrai per mažai panašūs į žodžius, kad būtų galima nustatyti laiką.</string>
     <string name="auto_time_failed">Automatinis laiko suderinimas nepavyko: %1$s</string>
+    <string name="embedded_used">Naudoti vaizdo įrašo viduje esantys subtitrai.</string>
+    <string name="embedded_empty">Faile esantys subtitrai neturi eilučių.</string>
+    <string name="not_subtitles">„%1$s“ yra vaizdo ar garso failas arba per didelis subtitrams. Pasirinkite subtitrų failą (.srt, .vtt, .ass arba .lrc).</string>
 </resources>

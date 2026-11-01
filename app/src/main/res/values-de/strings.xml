@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Das Video hat keine Untertitel, aus denen sich das Timing ableiten lässt.</string>
     <string name="auto_time_no_match">Die Untertitel unterscheiden sich zu sehr vom Songtext, um das Timing zu bestimmen.</string>
     <string name="auto_time_failed">Automatisches Timing fehlgeschlagen: %1$s</string>
+    <string name="embedded_used">Es wurden die Untertitel im Video verwendet.</string>
+    <string name="embedded_empty">Die Untertitel in der Datei enthalten keine Zeilen.</string>
+    <string name="not_subtitles">„%1$s“ ist eine Video- oder Audiodatei oder zu groß für Untertitel. Wähle die Untertiteldatei (.srt, .vtt, .ass oder .lrc).</string>
 </resources>

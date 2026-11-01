@@ -261,4 +261,7 @@
     <string name="auto_time_no_captions">Walang caption ang video na mapagkukunan ng timing.</string>
     <string name="auto_time_no_match">Masyadong hindi kahawig ng lyrics ang mga caption para matukoy ang timing.</string>
     <string name="auto_time_failed">Hindi nagtagumpay ang awtomatikong timing: %1$s</string>
+    <string name="embedded_used">Ginamit ang mga subtitle na nasa loob ng video.</string>
+    <string name="embedded_empty">Walang linya ang mga subtitle sa loob ng file.</string>
+    <string name="not_subtitles">Ang “%1$s” ay video o audio file, o masyadong malaki para maging subtitle. Piliin ang subtitle file (.srt, .vtt, .ass, o .lrc).</string>
 </resources>

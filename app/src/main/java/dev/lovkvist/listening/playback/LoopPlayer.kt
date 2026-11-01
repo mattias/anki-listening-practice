@@ -106,7 +106,11 @@ class LoopPlayer(private val context: Context) {
      * Loads [uri], or just the [clip] range of it (milliseconds), and loops that. Plays only if
      * [autoPlay]; callers pass whether audio was already playing, so it never starts by surprise.
      */
-    fun load(uri: Uri, clip: LongRange?, autoPlay: Boolean) {
+    fun load(uri: Uri, clip: LongRange?, autoPlay: Boolean, audioLanguage: String? = null) {
+        // A file with several audio tracks (a dub and the original) plays the one in the practiced language.
+        player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
+            .setPreferredAudioLanguage(audioLanguage)
+            .build()
         val item = MediaItem.Builder().setUri(uri).setMediaId(CLIP).setMediaMetadata(metadata)
         if (clip != null) {
             item.setClippingConfiguration(

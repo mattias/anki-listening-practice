@@ -11,6 +11,15 @@
     <!-- The media notification (play/pause, skip, Crystal Clear) needs it on Android 13+. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!--
+      Lets the Immersion Dashboard's app read the statistics. Asked for at run time, so it is declared as dangerous.
+    -->
+    <permission
+        android:name="dev.lovkvist.listening.permission.READ_STATISTICS"
+        android:description="@string/permission_statistics_description"
+        android:label="@string/permission_statistics_label"
+        android:protectionLevel="dangerous" />
+
     <application
         android:name=".ListeningApp"
         android:allowBackup="false"
@@ -29,6 +38,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Read-only statistics for the Immersion Dashboard's app (content://dev.lovkvist.listening.statistics/entries). -->
+        <provider
+            android:name=".data.stats.StatisticsProvider"
+            android:authorities="dev.lovkvist.listening.statistics"
+            android:exported="true"
+            android:readPermission="dev.lovkvist.listening.permission.READ_STATISTICS" />
 
         <!-- Media notification and headset controls; runs in the foreground while audio plays. -->
         <service

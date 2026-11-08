@@ -112,11 +112,61 @@ interface WordStatusDao {
     suspend fun delete(language: String, word: String)
 }
 
-@Database(entities = [SentenceState::class, PracticeDay::class, WordStatus::class], version = 4, exportSchema = false)
+/**
+ * What was practiced, per day, study language and kind of source: the numbers behind the statistics and what the
+ * Immersion Dashboard fetches. One row per day, language and kind, with totals.
+ */
+@Entity(tableName = "listening_stats", primaryKeys = ["day", "language", "kind"])
+data class ListeningStat(
+    /** ISO date in local time. */
+    val day: String,
+    /** [dev.lovkvist.listening.text.Language.code]. */
+    val language: String,
+    /** What was practiced: anki, video, song or sound. "other" for days from before the statistics were kept per source. */
+    val kind: String,
+    /** Sentences finished: Crystal Clear, skipped or blacklisted (as in [PracticeDay]). */
+    @ColumnInfo(defaultValue = "0") val sentences: Int = 0,
+    /** Plays of a sentence, repeats included. */
+    @ColumnInfo(defaultValue = "0") val plays: Int = 0,
+    /** Of the sentences, those marked Crystal Clear. */
+    @ColumnInfo(defaultValue = "0") val clear: Int = 0,
+    /** Time the audio of a sentence was heard, in milliseconds (as long as it really took, at the speed it played). */
+    @ColumnInfo(defaultValue = "0") val listenMs: Long = 0,
+    /** Time playback was going, pauses between repeats included. */
+    @ColumnInfo(defaultValue = "0") val activeMs: Long = 0,
+)
+
+@Dao
+interface ListeningStatDao {
+    @Query("INSERT OR IGNORE INTO listening_stats (day, language, kind) VALUES (:day, :language, :kind)")
+    suspend fun ensure(day: String, language: String, kind: String)
+
+    @Query(
+        "UPDATE listening_stats SET sentences = sentences + :sentences, plays = plays + :plays, clear = clear + :clear, " +
+            "listenMs = listenMs + :listenMs, activeMs = activeMs + :activeMs WHERE day = :day AND language = :language AND kind = :kind",
+    )
+    suspend fun add(day: String, language: String, kind: String, sentences: Int, plays: Int, clear: Int, listenMs: Long, activeMs: Long)
+
+    /** Takes back what an undone step counted. */
+    @Query(
+        "UPDATE listening_stats SET sentences = MAX(sentences - :sentences, 0), clear = MAX(clear - :clear, 0) " +
+            "WHERE day = :day AND language = :language AND kind = :kind",
+    )
+    suspend fun subtract(day: String, language: String, kind: String, sentences: Int, clear: Int)
+
+    @Query("SELECT * FROM listening_stats ORDER BY day")
+    fun observe(): Flow<List<ListeningStat>>
+
+    @Query("SELECT * FROM listening_stats ORDER BY day")
+    suspend fun all(): List<ListeningStat>
+}
+
+@Database(entities = [SentenceState::class, PracticeDay::class, WordStatus::class, ListeningStat::class], version = 5, exportSchema = false)
 abstract class PracticeDatabase : RoomDatabase() {
     abstract fun sentenceStateDao(): SentenceStateDao
     abstract fun practiceDayDao(): PracticeDayDao
     abstract fun wordStatusDao(): WordStatusDao
+    abstract fun listeningStatDao(): ListeningStatDao
 
     companion object {
         /** 0.4.0: blacklisted sentences keep their text and source so they can be listed. */
@@ -133,6 +183,24 @@ abstract class PracticeDatabase : RoomDatabase() {
                 db.execSQL(
                     "CREATE TABLE IF NOT EXISTS word_status (language TEXT NOT NULL, word TEXT NOT NULL, " +
                         "ignored INTEGER NOT NULL, updatedAt INTEGER NOT NULL, PRIMARY KEY(language, word))",
+                )
+            }
+        }
+
+        /**
+         * 0.11.0: statistics per day, language and kind, with listening time. Earlier days only counted sentences, not their
+         * language: they are kept as Japanese, the language the app started with, under the kind "other".
+         */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS listening_stats (day TEXT NOT NULL, language TEXT NOT NULL, kind TEXT NOT NULL, " +
+                        "sentences INTEGER NOT NULL DEFAULT 0, plays INTEGER NOT NULL DEFAULT 0, clear INTEGER NOT NULL DEFAULT 0, " +
+                        "listenMs INTEGER NOT NULL DEFAULT 0, activeMs INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(day, language, kind))",
+                )
+                db.execSQL(
+                    "INSERT INTO listening_stats (day, language, kind, sentences, clear) " +
+                        "SELECT day, 'ja', 'other', heard, clear FROM practice_day WHERE heard > 0",
                 )
             }
         }

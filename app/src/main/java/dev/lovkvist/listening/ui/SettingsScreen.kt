@@ -119,6 +119,7 @@ private enum class Page(val title: Int) {
     PROGRESS(R.string.progress),
     UPDATES(R.string.app_updates),
     SOUND(R.string.sound_training),
+    STATS(R.string.statistics),
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -263,6 +264,10 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                             "%.2f×".format(s.speed) + if (s.autoClearAfter > 0) " · ${s.autoClearAfter}×" else "",
                         ) { page = Page.PLAYBACK }
                         RowDivider()
+                        NavRow(R.drawable.ic_insights, stringResource(R.string.statistics), "") {
+                            page = Page.STATS
+                        }
+                        RowDivider()
                         NavRow(R.drawable.ic_insights, stringResource(R.string.progress), "") {
                             page = Page.PROGRESS
                         }
@@ -384,6 +389,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                         Text(stringResource(R.string.clear_blacklist))
                     }
                 }
+
+                Page.STATS -> StatsPage(vm)
 
                 Page.UPDATES -> Updates(updateVm)
 

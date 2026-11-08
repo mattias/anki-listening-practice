@@ -33,7 +33,11 @@ import dev.lovkvist.listening.data.media.SubtitleCache
 import dev.lovkvist.listening.data.media.SubtitleStatus
 import dev.lovkvist.listening.data.media.TitleLanguage
 import dev.lovkvist.listening.data.media.VideoResult
+import dev.lovkvist.listening.data.local.ListeningStat
+import dev.lovkvist.listening.data.local.ListeningStatDao
 import dev.lovkvist.listening.data.media.YouTubeImporter
+import dev.lovkvist.listening.data.stats.StatsExport
+import dev.lovkvist.listening.data.stats.StatsRecorder
 import dev.lovkvist.listening.data.sound.SoundItem
 import dev.lovkvist.listening.data.sound.SoundLibrary
 import dev.lovkvist.listening.data.sound.SoundPhenomenon
@@ -99,7 +103,27 @@ class SettingsViewModel @Inject constructor(
     private val myWords: MyWords,
     private val soundTraining: SoundTraining,
     private val soundLibrary: SoundLibrary,
+    private val statDao: ListeningStatDao,
+    private val recorder: StatsRecorder,
 ) : ViewModel() {
+
+
+    /** Everything practiced, per day, language and kind of source. */
+    val statRows: StateFlow<List<ListeningStat>> = statDao.observe().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** Saves the statistics as a file the Immersion Dashboard can read, to the document the user chose. */
+    fun exportStats(uri: Uri) = viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+        recorder.flush()
+        _message.value = try {
+            val json = StatsExport.toJson(statDao.all(), java.time.Instant.now(), android.os.Build.MODEL)
+            context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(json.toByteArray(Charsets.UTF_8)) }
+                ?: throw java.io.IOException(strings(R.string.could_not_open_file))
+            strings(R.string.stats_exported)
+        } catch (e: Exception) {
+            strings(R.string.import_failed, e.message ?: e.toString())
+        }
+    }
+
 
     val soundState: StateFlow<SoundState> = soundTraining.state
     val soundStatus: StateFlow<Result<SoundStatus>?> = soundTraining.status

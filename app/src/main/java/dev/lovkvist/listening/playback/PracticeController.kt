@@ -20,6 +20,7 @@ import dev.lovkvist.listening.data.local.PracticeDayDao
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.media.YouTubeImporter
 import dev.lovkvist.listening.data.sound.SoundLibrary
+import dev.lovkvist.listening.data.stats.StatsRecorder
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.l10n.displayName
@@ -102,6 +103,7 @@ class PracticeController @Inject constructor(
     private val library: MediaLibrary,
     private val youTube: YouTubeImporter,
     private val soundLibrary: SoundLibrary,
+    private val recorder: StatsRecorder,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
@@ -149,7 +151,15 @@ class PracticeController @Inject constructor(
     val chainOn: StateFlow<Boolean> = _chainOn.asStateFlow()
 
     /** What was done to a sentence, so [undo] can take it back. */
-    private data class Step(val sentences: List<Sentence>, val clear: Boolean, val before: Map<Long, SentenceState?>, val day: String)
+    private data class Step(
+        val sentences: List<Sentence>,
+        val clear: Boolean,
+        val before: Map<Long, SentenceState?>,
+        val day: String,
+        /** What the statistics counted it under, so an undo takes back the same. */
+        val language: String,
+        val kind: String,
+    )
 
     /** Sentences left behind, newest last. */
     private val history = ArrayDeque<Step>()
@@ -214,11 +224,38 @@ class PracticeController @Inject constructor(
         }
     }
 
+    /** What the statistics count the current source as: anki, video, song or sound. */
+    private fun statsKind(): String = when (val s = source.value) {
+        PracticeSource.Anki -> "anki"
+        PracticeSource.Sound -> "sound"
+        is PracticeSource.Media -> if (isSong.value) "song" else "video"
+    }
+
     /** Serializes moving between sentences, so quick taps can't skip two at once. */
     private val lock = Mutex()
 
     init {
         player.onPlayLimit = { if (_autoAdvanceSkip.value) skip() else crystalClear() }
+        player.onPlayed = { recorder.addPlay(language.value.code, statsKind()) }
+        // Listening time: every second playback goes on, and the part of it where a sentence's audio is heard.
+        scope.launch {
+            var last = SystemClock.elapsedRealtime()
+            var ticks = 0
+            var wasRunning = false
+            while (true) {
+                delay(1000)
+                val now = SystemClock.elapsedRealtime()
+                val dt = (now - last).coerceIn(0, 2_000)
+                last = now
+                val running = player.isRunning
+                if (running && _state.value is PracticeState.Ready) {
+                    recorder.addTime(language.value.code, statsKind(), if (player.isInClip) dt else 0, dt)
+                }
+                // Written to the database every 15 seconds and when playback stops.
+                if ((wasRunning && !running) || ++ticks % 15 == 0) recorder.flush()
+                wasRunning = running
+            }
+        }
         scope.launch {
             val s = settings.current()
             setSpeed(s.speed, persist = false)
@@ -488,6 +525,7 @@ class PracticeController @Inject constructor(
                 // What that action counted: every sentence of its chain, whatever the chain is now.
                 val n = step.sentences.size
                 days.subtract(step.day, n, if (step.clear) n else 0)
+                recorder.takeBack(step.language, step.kind, step.day, n, if (step.clear) n else 0)
                 show(step.sentences.first(), autoPlay = wasPlaying, chainLength = step.sentences.size)
             }
         }
@@ -526,12 +564,13 @@ class PracticeController @Inject constructor(
                 val before = lines.associate { it.id to repository.stateOf(it.id) }
                 lines.forEach { action(it) }
                 val today = LocalDate.now().toString()
-                history.addLast(Step(lines, clear, before, today))
+                history.addLast(Step(lines, clear, before, today, language.value.code, statsKind()))
                 while (history.size > MAX_UNDO) history.removeFirst()
                 _canUndo.value = true
                 days.ensure(today)
                 // Every sentence of a chain counts.
                 days.add(today, lines.size, if (clear) lines.size else 0)
+                recorder.sentences(language.value.code, statsKind(), today, lines.size, if (clear) lines.size else 0)
                 show(fetch(afterId = lines.last().id), autoPlay = wasPlaying, chainLength = lines.size)
             }
         }

@@ -55,6 +55,15 @@ class LoopPlayer(private val context: Context) {
     var playLimit: Int = 0
     var onPlayLimit: (() -> Unit)? = null
 
+    /** Called each time a play of the clip has ended, repeats included. */
+    var onPlayed: (() -> Unit)? = null
+
+    /** Playback is going right now: a clip or the pause after it, not paused or waiting for a call to end. */
+    val isRunning: Boolean get() = player.isPlaying
+
+    /** The audio of the clip itself is what plays (not the silence between plays). */
+    val isInClip: Boolean get() = player.isPlaying && player.currentMediaItem?.mediaId == CLIP
+
     var speed: Float = 1f
         set(value) {
             field = value
@@ -189,6 +198,7 @@ class LoopPlayer(private val context: Context) {
     /** A clip just finished playing: count it, and hand over to the next sentence at the limit. */
     private fun onClipEnded() {
         _repeats.value += 1
+        onPlayed?.invoke()
         if (playLimit > 0 && _repeats.value >= playLimit && !advancing) {
             advancing = true
             // Silence after the gap while the next sentence loads, instead of repeating this one.

@@ -164,6 +164,14 @@ default; if a video has none in that language, English; *Off* skips them) and sh
 translation of each line. Lines are matched by time, so a translation can cover a little more or
 less than its line.
 
+### Statistics
+
+**Settings → Statistics** shows what you practice: **listening time**, sentences, plays and Crystal Clear, for today, this week, this month,
+this year or all time, with a chart over time, a list per language and per source, and a filter for one language. The numbers can be
+**exported as JSON**, and the [Immersion Dashboard](https://github.com/mattias/immersion-dashboard)'s Android app can fetch them from this
+app (a read-only content provider that the user allows once); this app sends nothing anywhere. What is counted and how to read it are in
+[docs/statistics.md](docs/statistics.md).
+
 ### Sound training (Japanese)
 
 Spoken Japanese runs together: 薬を is said *kusuryo*, これは *korya*, 食べている *tabeteru*, のだ *nda*. Sound training lets you

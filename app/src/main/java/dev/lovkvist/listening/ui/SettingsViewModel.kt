@@ -34,6 +34,12 @@ import dev.lovkvist.listening.data.media.SubtitleStatus
 import dev.lovkvist.listening.data.media.TitleLanguage
 import dev.lovkvist.listening.data.media.VideoResult
 import dev.lovkvist.listening.data.media.YouTubeImporter
+import dev.lovkvist.listening.data.sound.SoundItem
+import dev.lovkvist.listening.data.sound.SoundLibrary
+import dev.lovkvist.listening.data.sound.SoundPhenomenon
+import dev.lovkvist.listening.data.sound.SoundState
+import dev.lovkvist.listening.data.sound.SoundStatus
+import dev.lovkvist.listening.data.sound.SoundTraining
 import dev.lovkvist.listening.data.settings.Settings
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
@@ -91,7 +97,29 @@ class SettingsViewModel @Inject constructor(
     /** The practice session: playback defaults set here apply to it right away. */
     val practice: PracticeController,
     private val myWords: MyWords,
+    private val soundTraining: SoundTraining,
+    private val soundLibrary: SoundLibrary,
 ) : ViewModel() {
+
+    val soundState: StateFlow<SoundState> = soundTraining.state
+    val soundStatus: StateFlow<Result<SoundStatus>?> = soundTraining.status
+    val soundPhenomena: StateFlow<List<SoundPhenomenon>> = soundTraining.phenomena
+    val soundItems: StateFlow<List<SoundItem>> = soundLibrary.items
+
+    fun setSoundServer(url: String) = viewModelScope.launch { settingsRepo.setSoundServerUrl(url.trim()) }
+    fun setSoundToken(token: String) = viewModelScope.launch { settingsRepo.setSoundToken(token.trim()) }
+    fun testSound() = soundTraining.test()
+    fun generateSound(phenomena: List<String>, count: Int) = soundTraining.generate(phenomena, count)
+    fun cancelSound() = soundTraining.cancel()
+    fun dismissSound() = soundTraining.dismiss()
+
+    /** Removes every sound training sentence, and leaves the source if it was practicing them. */
+    fun clearSound() = viewModelScope.launch {
+        soundLibrary.clear()
+        if (settingsRepo.current().source == PracticeSource.Sound) settingsRepo.setSource(PracticeSource.Anki)
+        sentences.invalidate(collection = true, known = false)
+    }
+
 
     val settings: StateFlow<Settings?> =
         settingsRepo.settings.stateIn(viewModelScope, SharingStarted.Eagerly, null)

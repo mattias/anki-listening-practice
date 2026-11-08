@@ -19,10 +19,12 @@ import dev.lovkvist.listening.data.anki.AnkiText
 import dev.lovkvist.listening.data.local.PracticeDayDao
 import dev.lovkvist.listening.data.media.MediaLibrary
 import dev.lovkvist.listening.data.media.YouTubeImporter
+import dev.lovkvist.listening.data.sound.SoundLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
 import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.text.Language
+import dev.lovkvist.listening.text.Phenomenon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -99,6 +101,7 @@ class PracticeController @Inject constructor(
     private val dictionaries: DictionaryRepository,
     private val library: MediaLibrary,
     private val youTube: YouTubeImporter,
+    private val soundLibrary: SoundLibrary,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
@@ -158,8 +161,10 @@ class PracticeController @Inject constructor(
      * Everything that can be practiced: Anki cards plus each video/audio in the current language.
      * Anki cards have no name here; it's translated where it's shown.
      */
-    val sources: StateFlow<List<Pair<PracticeSource, String>>> = combine(library.items, settings.settings) { items, s ->
+    val sources: StateFlow<List<Pair<PracticeSource, String>>> = combine(library.items, settings.settings, soundLibrary.items) { items, s, sound ->
         listOf(PracticeSource.Anki to "") +
+            // Sound training is for Japanese, and listed once there is something to practice.
+            (if (s.language == Language.JAPANESE && sound.isNotEmpty()) listOf(PracticeSource.Sound to strings(R.string.sound_training_source)) else emptyList()) +
             items.filter { it.language == s.language }.map { PracticeSource.Media(it.id) to it.name }
     }.stateIn(scope, SharingStarted.Eagerly, listOf(PracticeSource.Anki to ""))
 
@@ -222,6 +227,7 @@ class PracticeController @Inject constructor(
             _autoAdvanceSkip.value = s.autoAdvanceSkip
             _headsetDoubleTapClear.value = s.headsetDoubleTapClear
             _singBack.value = s.singBack
+            _soundFilter.value = Phenomenon.entries.firstOrNull { it.id == s.soundFilter }
         }
         scope.launch {
             // Initial load, and again whenever the collection, mapping or known words change.
@@ -275,6 +281,19 @@ class PracticeController @Inject constructor(
     fun setAutoAdvanceSkip(skip: Boolean) {
         _autoAdvanceSkip.value = skip
         scope.launch { settings.setAutoAdvanceSkip(skip) }
+    }
+
+    private val _soundFilter = MutableStateFlow<Phenomenon?>(null)
+    /** Japanese: only sentences where this sound phenomenon can be heard; null = all. */
+    val soundFilter: StateFlow<Phenomenon?> = _soundFilter.asStateFlow()
+
+    fun setSoundFilter(p: Phenomenon?) {
+        _soundFilter.value = p
+        scope.launch {
+            settings.setSoundFilter(p?.id.orEmpty())
+            // A new set of sentences: start over from its first.
+            repository.invalidate(collection = false, known = false)
+        }
     }
 
     private val _singBack = MutableStateFlow(true)

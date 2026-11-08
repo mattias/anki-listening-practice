@@ -164,6 +164,25 @@ default; if a video has none in that language, English; *Off* skips them) and sh
 translation of each line. Lines are matched by time, so a translation can cover a little more or
 less than its line.
 
+### Sound training (Japanese)
+
+Spoken Japanese runs together: 薬を is said *kusuryo*, これは *korya*, 食べている *tabeteru*, のだ *nda*. Sound training lets you
+hear it. Under **Settings → Library → Sound training** (shown only when you study Japanese) you pick what to practice (one way
+sounds run together, several, or everything mixed) and the app fetches sentences made from **your known words**, each with a
+translation and speech.
+
+It needs no AI on the phone. A small program on your computer does the work:
+[Listening Practice Companion](https://github.com/mattias/listening-practice-companion) writes the sentences with a language model
+(Ollama on your computer, or another AI service), checks and proofreads them, translates them and has the Irodori voice model speak
+them, made to say them the way they are said (これは → こりゃ). Its README has step-by-step instructions for installing it and
+connecting the phone: install the voice server, Ollama and the Companion, allow it through the firewall, then enter the address and
+token it shows in the app and press **Make sentences**. Choose **Sound training** in the source menu to practice; the card shows
+*Said as: …* when you reveal the text.
+
+**Practicing works offline**: the sentences and their audio are stored on the phone, so you can practice when you are out walking.
+Only making new sentences needs the computer. The **sound filter** in the playback sheet works on your Anki cards and videos without
+it.
+
 ### Songs
 
 Switch the YouTube search to **Songs** (or paste a link and tap **Download as a song**): the app

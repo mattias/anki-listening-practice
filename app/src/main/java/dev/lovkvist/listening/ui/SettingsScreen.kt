@@ -33,6 +33,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import dev.lovkvist.listening.data.sound.SoundState
+import dev.lovkvist.listening.text.Phenomenon
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -112,6 +118,7 @@ private enum class Page(val title: Int) {
     PRESET(R.string.field_preset),
     PROGRESS(R.string.progress),
     UPDATES(R.string.app_updates),
+    SOUND(R.string.sound_training),
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -226,6 +233,10 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                         NavRow(R.drawable.ic_video_library, stringResource(R.string.videos_audio), mediaItems.count { it.language == s.language }.toString()) {
                             page = Page.MEDIA
                         }
+                        if (s.language == Language.JAPANESE) {
+                            RowDivider()
+                            NavRow(R.drawable.ic_tune, stringResource(R.string.sound_training), "") { page = Page.SOUND }
+                        }
                     }
 
                     Group(stringResource(R.string.words)) {
@@ -288,6 +299,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                 }
 
                 Page.MEDIA -> MediaItems(vm, s.language, s.translation)
+
+                Page.SOUND -> SoundTrainingPage(vm, s.soundServerUrl, s.soundToken)
 
                 Page.KNOWN -> {
                     Text(
@@ -800,6 +813,161 @@ private fun Decks(vm: SettingsViewModel, language: Language) {
             dismissButton = { TextButton(onClick = { confirmRemove = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
+}
+
+/** Sound training: hearing how Japanese runs together in speech. The computer writes and speaks the sentences. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SoundTrainingPage(vm: SettingsViewModel, savedUrl: String, savedToken: String) {
+    val state by vm.soundState.collectAsStateWithLifecycle()
+    val status by vm.soundStatus.collectAsStateWithLifecycle()
+    val offered by vm.soundPhenomena.collectAsStateWithLifecycle()
+    val items by vm.soundItems.collectAsStateWithLifecycle()
+    var url by rememberSaveable { mutableStateOf(savedUrl) }
+    var token by rememberSaveable { mutableStateOf(savedToken) }
+    var chosen by rememberSaveable { mutableStateOf(listOf("random")) }
+    var count by rememberSaveable { mutableStateOf(20) }
+    var confirmClear by remember { mutableStateOf(false) }
+    // Until the service has been asked, the phenomena the app knows of are offered.
+    val choices = offered.map { it.id to it.example }.ifEmpty { Phenomenon.entries.map { it.id to it.example } }
+
+    Text(stringResource(R.string.sound_training_help), style = MaterialTheme.typography.bodyMedium)
+
+    Text(stringResource(R.string.sound_connection), style = MaterialTheme.typography.titleMedium)
+    OutlinedTextField(
+        value = url,
+        onValueChange = {
+            url = it
+            vm.setSoundServer(it)
+        },
+        label = { Text(stringResource(R.string.sound_server_url)) },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+        modifier = Modifier.fillMaxWidth(),
+    )
+    OutlinedTextField(
+        value = token,
+        onValueChange = {
+            token = it
+            vm.setSoundToken(it)
+        },
+        label = { Text(stringResource(R.string.sound_token)) },
+        singleLine = true,
+        visualTransformation = PasswordVisualTransformation(),
+        modifier = Modifier.fillMaxWidth(),
+    )
+    Button(onClick = vm::testSound, enabled = url.isNotBlank() && token.isNotBlank()) { Text(stringResource(R.string.sound_test)) }
+    status?.let { result ->
+        Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainer, modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                result.fold(
+                    onSuccess = { st ->
+                        Text(stringResource(R.string.sound_status_ok), style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            if (st.llmAvailable) stringResource(R.string.sound_status_model, st.llmModel)
+                            else stringResource(R.string.sound_status_model_missing, st.llmModel),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (st.llmAvailable) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error,
+                        )
+                        if (!st.voiceOk) {
+                            Text(stringResource(R.string.sound_status_voice_off), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    onFailure = { Text(soundErrorText(it.message.orEmpty()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error) },
+                )
+            }
+        }
+    }
+    HorizontalDivider()
+
+    Text(stringResource(R.string.sound_make), style = MaterialTheme.typography.titleMedium)
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FilterChip(
+            selected = chosen == listOf("random"),
+            onClick = { chosen = listOf("random") },
+            label = { Text(stringResource(R.string.sound_everything)) },
+        )
+        for ((id, example) in choices) {
+            val on = id in chosen
+            FilterChip(
+                selected = on,
+                onClick = { chosen = (if (on) chosen - id else chosen.filter { it != "random" } + id).ifEmpty { listOf("random") } },
+                label = { Text(example) },
+            )
+        }
+    }
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        for (n in listOf(10, 20, 50)) {
+            FilterChip(selected = count == n, onClick = { count = n }, label = { Text(stringResource(R.string.sound_count, n)) })
+        }
+    }
+    val working = state is SoundState.Preparing || state is SoundState.Working
+    Button(
+        onClick = { vm.generateSound(chosen, count) },
+        enabled = !working && url.isNotBlank() && token.isNotBlank(),
+    ) { Text(stringResource(R.string.sound_generate)) }
+    when (val st = state) {
+        SoundState.Idle -> Unit
+        SoundState.Preparing -> SoundProgress(stringResource(R.string.sound_preparing), null, vm::cancelSound)
+        is SoundState.Working -> SoundProgress(
+            if (st.writing) stringResource(R.string.sound_writing) else stringResource(R.string.sound_speaking, st.done, st.total),
+            if (st.writing || st.total == 0) null else st.done.toFloat() / st.total,
+            vm::cancelSound,
+        )
+        is SoundState.Finished -> {
+            Text(stringResource(R.string.sound_finished, st.added), style = MaterialTheme.typography.bodyMedium)
+            TextButton(onClick = vm::dismissSound) { Text(stringResource(R.string.ok)) }
+        }
+        is SoundState.Failed -> {
+            Text(soundErrorText(st.reason), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            TextButton(onClick = vm::dismissSound) { Text(stringResource(R.string.ok)) }
+        }
+    }
+    HorizontalDivider()
+
+    Text(stringResource(R.string.sound_library, items.size), style = MaterialTheme.typography.titleMedium)
+    val byPhenomenon = items.groupingBy { it.target }.eachCount()
+    if (byPhenomenon.isNotEmpty()) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            for (p in Phenomenon.entries) {
+                val n = byPhenomenon[p.id] ?: continue
+                SuggestionChip(onClick = {}, label = { Text("${p.example.substringBefore(" →")} · $n") })
+            }
+        }
+        TextButton(onClick = { confirmClear = true }) { Text(stringResource(R.string.sound_clear)) }
+    }
+    if (confirmClear) {
+        AlertDialog(
+            onDismissRequest = { confirmClear = false },
+            title = { Text(stringResource(R.string.sound_clear_title)) },
+            text = { Text(stringResource(R.string.sound_clear_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.clearSound()
+                    confirmClear = false
+                }) { Text(stringResource(R.string.remove)) }
+            },
+            dismissButton = { TextButton(onClick = { confirmClear = false }) { Text(stringResource(R.string.cancel)) } },
+        )
+    }
+}
+
+@Composable
+private fun SoundProgress(text: String, fraction: Float?, onCancel: () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(text, style = MaterialTheme.typography.bodyMedium)
+        if (fraction == null) LinearProgressIndicator(Modifier.fillMaxWidth()) else LinearProgressIndicator(progress = { fraction }, modifier = Modifier.fillMaxWidth())
+        TextButton(onClick = onCancel) { Text(stringResource(R.string.cancel)) }
+    }
+}
+
+/** The service's problems as text: [reason] is a code from SoundClient or the service's own words. */
+@Composable
+private fun soundErrorText(reason: String): String = when {
+    reason.startsWith("UNREACHABLE:") -> stringResource(R.string.sound_err_unreachable, reason.removePrefix("UNREACHABLE:"))
+    reason == "WRONG_TOKEN" -> stringResource(R.string.sound_err_token)
+    reason.startsWith("NOT_FOUND:") -> stringResource(R.string.sound_err_other, reason.removePrefix("NOT_FOUND:").ifBlank { "404" })
+    else -> stringResource(R.string.sound_err_other, reason)
 }
 
 @Composable

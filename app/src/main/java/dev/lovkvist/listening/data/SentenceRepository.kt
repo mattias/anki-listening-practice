@@ -7,9 +7,13 @@ import dev.lovkvist.listening.data.known.MyWords
 import dev.lovkvist.listening.data.local.SentenceState
 import dev.lovkvist.listening.data.local.SentenceStateDao
 import dev.lovkvist.listening.data.media.MediaLibrary
+import dev.lovkvist.listening.data.sound.SoundLibrary
 import dev.lovkvist.listening.data.settings.SettingsRepository
 import dev.lovkvist.listening.l10n.Strings
+import dev.lovkvist.listening.text.JapaneseTokenizer
 import dev.lovkvist.listening.text.Language
+import dev.lovkvist.listening.text.Phenomenon
+import dev.lovkvist.listening.text.SoundPhenomena
 import dev.lovkvist.listening.text.SentenceTokenizer
 import dev.lovkvist.listening.text.Tokenizers
 import dev.lovkvist.listening.text.WordSpan
@@ -44,9 +48,11 @@ data class SentenceWords(val words: List<TappableWord> = emptyList(), val unknow
 class SentenceRepository @Inject constructor(
     private val decks: DeckLibrary,
     private val media: MediaLibrary,
+    private val soundLibrary: SoundLibrary,
     private val knownWords: KnownWordsRepository,
     private val myWords: MyWords,
     private val tokenizers: Tokenizers,
+    private val japanese: JapaneseTokenizer,
     private val dao: SentenceStateDao,
     private val settings: SettingsRepository,
     private val strings: Strings,
@@ -66,6 +72,9 @@ class SentenceRepository @Inject constructor(
 
     /** Memoized unknown-word counts (null: no words), keyed by sentence id. Cleared when known words change. */
     private val knownCache = HashMap<Long, Int?>()
+
+    /** Memoized sound phenomena per sentence id, for the sound filter. */
+    private val phenomenaCache = HashMap<Long, Set<Phenomenon>>()
 
     private val _generation = MutableStateFlow(0)
     /** Bumped whenever the source data changes, so the practice queue knows to rebuild. */
@@ -102,6 +111,7 @@ class SentenceRepository @Inject constructor(
             // Card words and verdicts depend on the language.
             cardWords = null
             knownCache.clear()
+            phenomenaCache.clear()
         }
         if (pool == null || poolSource != source || poolLanguage != language) {
             pool = loadPool(source, language)
@@ -114,19 +124,39 @@ class SentenceRepository @Inject constructor(
             val start = list.indexOfFirst { it.id == afterId } + 1
             return@withLock list.getOrNull(start) ?: list.firstOrNull()
         }
+        // Sound training sentences were made from the known words already: they are only cooled down and filtered.
+        if (source == PracticeSource.Sound) {
+            val blocked = dao.excludedIds(System.currentTimeMillis()).toHashSet()
+            val wanted = Phenomenon.entries.firstOrNull { it.id == current.soundFilter }
+            fun eligible(s: Sentence) = s.id !in blocked && (wanted == null || wanted.id in s.tags)
+            var list = pool.orEmpty()
+            val start = list.indexOfFirst { it.id == afterId } + 1
+            list.drop(start).firstOrNull { it.id != afterId && eligible(it) }?.let { return@withLock it }
+            if (start > 0) {
+                list = list.shuffled()
+                pool = list
+            }
+            return@withLock list.firstOrNull { it.id != afterId && eligible(it) } ?: list.firstOrNull { it.id == afterId && eligible(it) }
+        }
         val tokenizer = tokenizers.forLanguage(language)
         val known = knownSet(language, tokenizer)
         if (known.isEmpty()) return@withLock null
         val blocked = dao.excludedIds(System.currentTimeMillis()).toHashSet()
         val maxUnknown = current.maxUnknownWords
+        // Japanese only: sentences where the chosen sound phenomenon can be heard.
+        val wanted = if (language == Language.JAPANESE) Phenomenon.entries.firstOrNull { it.id == current.soundFilter } else null
 
         withContext(Dispatchers.Default) {
             var list = pool.orEmpty()
             val start = list.indexOfFirst { it.id == afterId } + 1 // 0 when there's no current one
             fun unknownWords(s: Sentence): Int? =
                 if (s.id in knownCache) knownCache[s.id] else tokenizer.unknownWords(s.text, known).also { knownCache[s.id] = it }
+            fun hasPhenomenon(s: Sentence): Boolean =
+                wanted == null || wanted in phenomenaCache.getOrPut(s.id) {
+                    SoundPhenomena.phenomena(japanese.morphs(s.text.replace("\n", " ")))
+                }
             fun eligible(s: Sentence) =
-                s.id !in blocked && unknownWords(s)?.let { it <= maxUnknown } == true
+                s.id !in blocked && unknownWords(s)?.let { it <= maxUnknown } == true && hasPhenomenon(s)
 
             list.drop(start).firstOrNull { it.id != afterId && eligible(it) }?.let { return@withContext it }
             // Reached the end: Anki cards get a new random order, a video starts over.
@@ -224,6 +254,7 @@ class SentenceRepository @Inject constructor(
         val current = dao.get(sentence.id) ?: SentenceState(sentence.id)
         val sourceName = when (val s = settings.current().source) {
             PracticeSource.Anki -> strings(R.string.anki_cards)
+            PracticeSource.Sound -> strings(R.string.sound_training_source)
             is PracticeSource.Media -> media.items.value.firstOrNull { it.id == s.id }?.name.orEmpty()
         }
         dao.upsert(current.copy(blacklisted = true, text = sentence.text, source = sourceName))
@@ -239,6 +270,7 @@ class SentenceRepository @Inject constructor(
     private suspend fun loadPool(source: PracticeSource, language: Language): List<Sentence> = when (source) {
         PracticeSource.Anki -> decks.readSentences(settings.current().mapping, language).shuffled()
         is PracticeSource.Media -> media.sentences(source.id)
+        PracticeSource.Sound -> soundLibrary.sentences().shuffled()
     }
 
     /** Your word list, the cards' words and the words you marked known or ignored. */

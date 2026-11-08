@@ -20,6 +20,8 @@ data class Word(
 
 @Singleton
 class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
+    private val PARTICLE_SOUNDS = mapOf("は" to "わ", "へ" to "え", "を" to "お")
+
     // Loading the IPADIC dictionary takes a moment, so do it on first use (off the main thread).
     private val tokenizer by lazy { Tokenizer() }
 
@@ -31,6 +33,16 @@ class JapaneseTokenizer @Inject constructor() : SentenceTokenizer {
                 val reading = t.reading.takeUnless { it.isNullOrBlank() || it == "*" }?.let(::toHiragana)
                 Word(base, setOfNotNull(base, t.surface, reading), t.position until t.position + t.surface.length, t.surface, reading)
             }
+
+    /** Every morpheme of [sentence], particles included, for finding how it is pronounced (see [SoundPhenomena]). */
+    fun morphs(sentence: String): List<Morph> =
+        tokenizer.tokenize(sentence).map { t ->
+            val reading = t.reading.takeUnless { it.isNullOrBlank() || it == "*" }?.let(::toHiragana) ?: t.surface
+            val base = t.baseForm.takeUnless { it.isNullOrBlank() || it == "*" } ?: t.surface
+            // The particles は, へ and を are said わ, え and お.
+            val said = if (t.partOfSpeechLevel1 == "助詞") PARTICLE_SOUNDS[t.surface] ?: reading else reading
+            Morph(t.surface, said, t.partOfSpeechLevel1, t.partOfSpeechLevel2, base)
+        }
 
     /** Known lists are matched as written: kanji and kana spellings are told apart by [words]. */
     override fun normalize(word: String): String = word.trim()

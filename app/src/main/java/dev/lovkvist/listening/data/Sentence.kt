@@ -18,6 +18,10 @@ data class Sentence(
     val clip: LongRange? = null,
     /** The audio track to play when [audio] has several (a dub and the original): the language practiced, such as "ja". */
     val audioLanguage: String? = null,
+    /** Sound training: the sentence written the way it is said (これは → こりゃ), if that differs from [text]. */
+    val spoken: String? = null,
+    /** Sound training: the sound phenomena ([dev.lovkvist.listening.text.Phenomenon] ids) the sentence is made to show. */
+    val tags: Set<String> = emptySet(),
 )
 
 /**
@@ -28,8 +32,11 @@ sealed interface PracticeSource {
     data object Anki : PracticeSource
     data class Media(val id: String) : PracticeSource
 
+    /** Sentences for hearing how Japanese sounds run together, made by the service on the user's computer. */
+    data object Sound : PracticeSource
+
     /** Sentences come in timeline order (a video, a song) rather than shuffled (Anki cards). */
-    val ordered: Boolean get() = this !is Anki
+    val ordered: Boolean get() = this is Media
 
     /** Neighboring sentences can be chained into one repeated stretch; needs [ordered]. */
     val supportsChain: Boolean get() = ordered
@@ -37,10 +44,15 @@ sealed interface PracticeSource {
     fun key(): String = when (this) {
         Anki -> "anki"
         is Media -> "media:$id"
+        Sound -> "sound"
     }
 
     companion object {
         fun fromKey(key: String?): PracticeSource =
-            if (key != null && key.startsWith("media:")) Media(key.removePrefix("media:")) else Anki
+            when {
+                key == "sound" -> Sound
+                key != null && key.startsWith("media:") -> Media(key.removePrefix("media:"))
+                else -> Anki
+            }
     }
 }

@@ -108,6 +108,7 @@ import dev.lovkvist.listening.data.dict.LookupResult
 import dev.lovkvist.listening.l10n.displayName
 import dev.lovkvist.listening.l10n.label
 import dev.lovkvist.listening.playback.AutoTimeState
+import dev.lovkvist.listening.text.Phenomenon
 import dev.lovkvist.listening.playback.PracticeController
 import dev.lovkvist.listening.playback.PracticeState
 import dev.lovkvist.listening.playback.PracticeStats
@@ -140,6 +141,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     val sleepAt by practice.sleepAt.collectAsStateWithLifecycle()
     val canChain by practice.canChain.collectAsStateWithLifecycle()
     val isSong by practice.isSong.collectAsStateWithLifecycle()
+    val soundFilter by practice.soundFilter.collectAsStateWithLifecycle()
     val singBack by practice.singBack.collectAsStateWithLifecycle()
     val songOffsetMs by practice.songOffsetMs.collectAsStateWithLifecycle()
     val autoTimable by practice.songAutoTimable.collectAsStateWithLifecycle()
@@ -253,6 +255,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                     autoAdvanceSkip = autoAdvanceSkip,
                     onAutoAdvanceSkip = practice::setAutoAdvanceSkip,
                 )
+                if (language == Language.JAPANESE && !isSong) SoundFilterSettings(soundFilter, practice::setSoundFilter)
                 if (isSong) SongSettings(singBack, practice::setSingBack, songOffsetMs, practice::adjustSongOffset, autoTimable, autoTiming, practice::autoTimeSong)
                 HeadsetSettings(headsetDoubleTapClear, practice::setHeadsetDoubleTapClear)
                 SleepTimerSettings(sleepMinutes, practice::setSleepTimer)
@@ -297,7 +300,11 @@ private fun Header(
         Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
             PillMenu(
                 label = nameOf(sources.firstOrNull { it.first == source }?.second.orEmpty()),
-                icon = if (source is PracticeSource.Media) R.drawable.ic_video_library else R.drawable.ic_style,
+                icon = when (source) {
+                    is PracticeSource.Media -> R.drawable.ic_video_library
+                    PracticeSource.Sound -> R.drawable.ic_tune
+                    else -> R.drawable.ic_style
+                },
                 items = sources.map { (s, name) -> nameOf(name) to { if (s != source) onSource(s) } },
                 modifier = Modifier.weight(1f, fill = false),
                 emphasized = true,
@@ -550,6 +557,16 @@ private fun SentenceText(sentence: Sentence, words: SentenceWords, language: Lan
             textAlign = TextAlign.Center,
         )
     }
+    // Sound training: what the voice was made to say, with the phenomenon, once the text is shown.
+    if (sentence.spoken != null) {
+        Spacer(Modifier.height(12.dp))
+        Text(
+            stringResource(R.string.said_as, sentence.spoken),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 private fun secondsLabel(ms: Long) = if (ms % 1000 == 0L) "${ms / 1000}" else "%.1f".format(ms / 1000.0)
@@ -665,6 +682,20 @@ private fun SleepCountdown(at: Long, onClick: () -> Unit) {
             stringResource(R.string.sleep_stops_in, "%d:%02d".format(left / 60, left % 60)),
             style = MaterialTheme.typography.labelLarge,
         )
+    }
+}
+
+/** Japanese: practice only sentences where a way of running sounds together can be heard. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SoundFilterSettings(selected: Phenomenon?, onSelect: (Phenomenon?) -> Unit) {
+    Text(stringResource(R.string.sound_filter), style = MaterialTheme.typography.labelLarge)
+    Text(stringResource(R.string.sound_filter_help), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        FilterChip(selected = selected == null, onClick = { onSelect(null) }, label = { Text(stringResource(R.string.off)) })
+        for (p in Phenomenon.entries) {
+            FilterChip(selected = selected == p, onClick = { onSelect(p) }, label = { Text(p.example) })
+        }
     }
 }
 

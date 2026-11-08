@@ -53,6 +53,12 @@ data class Settings(
     val headsetDoubleTapClear: Boolean = false,
     /** Songs: after each play, a silence as long as the line, to sing it back. */
     val singBack: Boolean = true,
+    /** Address of the voice server on the user's computer for sound training; empty when none is set. */
+    val soundServerUrl: String = "",
+    /** The secret the sound training service asks for. */
+    val soundToken: String = "",
+    /** Japanese: practice only sentences where this sound phenomenon can be heard (a [dev.lovkvist.listening.text.Phenomenon] id); empty = all. */
+    val soundFilter: String = "",
     /** Languages starred in the language menus; they're listed first. */
     val favoriteLanguages: Set<Language> = emptySet(),
 )
@@ -76,6 +82,9 @@ class SettingsRepository @Inject constructor(
         val favoriteLanguages = stringSetPreferencesKey("favorite_languages")
         val headsetDoubleTapClear = booleanPreferencesKey("headset_double_tap_clear")
         val singBack = booleanPreferencesKey("sing_back")
+        val soundServerUrl = stringPreferencesKey("sound_server_url")
+        val soundToken = stringPreferencesKey("sound_token")
+        val soundFilter = stringPreferencesKey("sound_filter")
 
         // Japanese keeps the key from before other languages existed.
         fun preset(l: Language) = stringPreferencesKey(if (l == Language.JAPANESE) "preset" else "preset_${l.code}")
@@ -116,9 +125,18 @@ class SettingsRepository @Inject constructor(
             onboardingDone = prefs[Keys.onboardingDone] ?: false,
             headsetDoubleTapClear = prefs[Keys.headsetDoubleTapClear] ?: false,
             singBack = prefs[Keys.singBack] ?: true,
+            soundServerUrl = prefs[Keys.soundServerUrl] ?: "",
+            soundToken = prefs[Keys.soundToken] ?: "",
+            soundFilter = prefs[Keys.soundFilter] ?: "",
             favoriteLanguages = prefs[Keys.favoriteLanguages].orEmpty().mapNotNull { code -> Language.entries.firstOrNull { it.code == code } }.toSet(),
         )
     }
+
+    suspend fun setSoundFilter(id: String) = context.dataStore.edit { it[Keys.soundFilter] = id }
+
+    suspend fun setSoundToken(token: String) = context.dataStore.edit { it[Keys.soundToken] = token }
+
+    suspend fun setSoundServerUrl(url: String) = context.dataStore.edit { it[Keys.soundServerUrl] = url }
 
     suspend fun setSingBack(on: Boolean) = context.dataStore.edit { it[Keys.singBack] = on }
 

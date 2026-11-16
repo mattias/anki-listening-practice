@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,11 +42,12 @@ import dev.lovkvist.listening.text.Language
  */
 @Composable
 internal fun AddMediaDialog(vm: SettingsViewModel, language: Language, translation: Language?, onDismiss: () -> Unit) {
-    var media by remember { mutableStateOf<Uri?>(null) }
+    // Saved, so that turning the phone while a file is being picked does not lose the steps already done.
+    var media by rememberSaveable { mutableStateOf<Uri?>(null) }
     var tracks by remember { mutableStateOf<List<EmbeddedTrack>>(emptyList()) }
-    var subtitles by remember { mutableStateOf<Uri?>(null) }
-    var trLanguage by remember { mutableStateOf(translation) }
-    var trFile by remember { mutableStateOf<Uri?>(null) }
+    var subtitles by rememberSaveable { mutableStateOf<Uri?>(null) }
+    var trLanguage by rememberSaveable { mutableStateOf(translation) }
+    var trFile by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
@@ -116,8 +118,8 @@ internal fun AddMediaDialog(vm: SettingsViewModel, language: Language, translati
 @Composable
 internal fun AddTranslationDialog(vm: SettingsViewModel, item: MediaEntry, translation: Language?, onDismiss: () -> Unit) {
     var tracks by remember { mutableStateOf<List<EmbeddedTrack>>(emptyList()) }
-    var language by remember { mutableStateOf(item.translation ?: translation) }
-    var file by remember { mutableStateOf<Uri?>(null) }
+    var language by rememberSaveable { mutableStateOf(item.translation ?: translation) }
+    var file by rememberSaveable { mutableStateOf<Uri?>(null) }
     val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> if (uri != null) file = uri }
     LaunchedEffect(item.id) { tracks = if (item.media.scheme == "content") vm.inspectMedia(item.media) else emptyList() }
 

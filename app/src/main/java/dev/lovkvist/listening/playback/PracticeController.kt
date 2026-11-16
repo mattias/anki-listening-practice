@@ -604,7 +604,8 @@ class PracticeController @Inject constructor(
     private fun applyPlayingSpeed(play: Int = player.repeats.value) {
         val speed = if (_patternOn.value) _playPattern.value.speedFor(play) else _speed.value
         _playingSpeed.value = speed
-        player.speed = speed
+        // Not set again when it is the same: changing the speed also redoes the pause between plays.
+        if (player.speed != speed) player.speed = speed
     }
 
     /** Records [action] for the current sentence and moves to the next one. */

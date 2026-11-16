@@ -254,8 +254,8 @@ class PracticeController @Inject constructor(
         player.onPlayLimit = { if (_autoAdvanceSkip.value) skip() else crystalClear() }
         player.onPlayed = {
             recorder.addPlay(language.value.code, statsKind())
-            // The next play of the pattern gets its speed in the pause before it.
-            applyPlayingSpeed()
+            // The next play of the pattern gets its speed as it starts.
+            applyPlayingSpeed(betweenPlays = true)
         }
         // Listening time: every second playback goes on, and the part of it where a sentence's audio is heard.
         scope.launch {
@@ -601,11 +601,11 @@ class PracticeController @Inject constructor(
      * Sets the speed for the play with index [play] (default: the one coming up). Only the player is told: the speed set by
      * hand in [speed] stays as it is, and comes back when the pattern is turned off.
      */
-    private fun applyPlayingSpeed(play: Int = player.repeats.value) {
+    private fun applyPlayingSpeed(play: Int = player.repeats.value, betweenPlays: Boolean = false) {
         val speed = if (_patternOn.value) _playPattern.value.speedFor(play) else _speed.value
         _playingSpeed.value = speed
         // Not set again when it is the same: changing the speed also redoes the pause between plays.
-        if (player.speed != speed) player.speed = speed
+        if (betweenPlays) player.setSpeedForNextPlay(speed) else if (player.speed != speed) player.speed = speed
     }
 
     /** Records [action] for the current sentence and moves to the next one. */

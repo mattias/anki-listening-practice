@@ -27,7 +27,15 @@ import java.io.RandomAccessFile
  * has focus and resumes after. Must be used on the main thread.
  */
 class LoopPlayer(private val context: Context) {
-    val player: ExoPlayer = ExoPlayer.Builder(context).build()
+    /**
+     * The slow speeds are made by the audio output itself (AudioTrack playback parameters) and not by ExoPlayer's own Sonic. With Sonic a
+     * long clip (a chain of lines) played slower than normal left the player standing still in the first pause on at least one phone.
+     */
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    val player: ExoPlayer = ExoPlayer.Builder(
+        context,
+        androidx.media3.exoplayer.DefaultRenderersFactory(context).setEnableAudioTrackPlaybackParams(true),
+    ).build()
     private val silence = silenceFile(context)
 
     private val _isPlaying = MutableStateFlow(false)
@@ -64,12 +72,27 @@ class LoopPlayer(private val context: Context) {
     /** The audio of the clip itself is what plays (not the silence between plays). */
     val isInClip: Boolean get() = player.isPlaying && player.currentMediaItem?.mediaId == CLIP
 
-    var speed: Float = 1f
+    private var speedValue = 1f
+    /** A speed to start using when the next play starts (see [setSpeedForNextPlay]). */
+    private var pendingSpeed: Float? = null
+
+    var speed: Float
+        get() = speedValue
         set(value) {
-            field = value
+            speedValue = value
+            pendingSpeed = null
             player.playbackParameters = PlaybackParameters(value)
             refreshGap() // the gap plays at this speed too
         }
+
+    /**
+     * The speed of the plays to come, for a pattern of speeds. It is taken into use just as the next play of the clip starts, and the
+     * pause is left as it is (a few percent off in length). Changing the speed during the pause, or replacing the pause when the
+     * clip starts, left the player standing still there with a long clip (a chain).
+     */
+    fun setSpeedForNextPlay(value: Float) {
+        pendingSpeed = value.takeIf { it != speedValue }
+    }
 
     /** Shown in the media notification (never the sentence itself: it's audio first). */
     var metadata: MediaMetadata = MediaMetadata.EMPTY
@@ -131,6 +154,7 @@ class LoopPlayer(private val context: Context) {
         }
         val next = item.build()
         this.clip = next
+        pendingSpeed = null
         clipLengthMs = clip?.let { it.last - it.first } ?: 0L
         _repeats.value = 0
         gapStale = false
@@ -209,6 +233,11 @@ class LoopPlayer(private val context: Context) {
     }
 
     private fun onClipStarted() {
+        pendingSpeed?.let { next ->
+            pendingSpeed = null
+            speedValue = next
+            player.playbackParameters = PlaybackParameters(next)
+        }
         val index = player.currentMediaItemIndex
         if (index > 0) {
             // The silence before a seamlessly loaded sentence is done.

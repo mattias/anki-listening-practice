@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistika je shranjena.</string>
     <string name="permission_statistics_label">prebirati vašo statistiko v Listening Practice</string>
     <string name="permission_statistics_description">Tej aplikaciji dovoli brati, koliko ste vadili: čas poslušanja in stavke po dnevu in jeziku.</string>
+    <string name="play_pattern">Vzorec</string>
+    <string name="add_step">Dodaj korak</string>
 </resources>

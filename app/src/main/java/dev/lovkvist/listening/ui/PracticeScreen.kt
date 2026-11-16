@@ -123,12 +123,12 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
     val state by practice.state.collectAsStateWithLifecycle()
     val playing by practice.player.isPlaying.collectAsStateWithLifecycle()
     val repeats by practice.player.repeats.collectAsStateWithLifecycle()
-    val speed by practice.speed.collectAsStateWithLifecycle()
     val delayMs by practice.delayMs.collectAsStateWithLifecycle()
     val sources by practice.sources.collectAsStateWithLifecycle()
     val source by practice.source.collectAsStateWithLifecycle()
     val language by practice.language.collectAsStateWithLifecycle()
-    val autoClearAfter by practice.autoClearAfter.collectAsStateWithLifecycle()
+    val playLimit by practice.playLimit.collectAsStateWithLifecycle()
+    val playingSpeed by practice.playingSpeed.collectAsStateWithLifecycle()
     val stats by practice.stats.collectAsStateWithLifecycle()
     var confirmBlacklist by remember { mutableStateOf(false) }
     var showPlayback by remember { mutableStateOf(false) }
@@ -174,14 +174,14 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Spacer(Modifier.height(16.dp))
-                        PlayRing(playing, repeats, autoClearAfter, practice.player::clipProgress, practice::togglePlay)
+                        PlayRing(playing, repeats, playLimit, practice.player::clipProgress, practice::togglePlay)
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            if (autoClearAfter > 0) {
+                            if (playLimit > 0) {
                                 stringResource(
                                     if (autoAdvanceSkip) R.string.play_n_of_m_skip else R.string.play_n_of_m,
-                                    minOf(repeats + 1, autoClearAfter),
-                                    autoClearAfter,
+                                    minOf(repeats + 1, playLimit),
+                                    playLimit,
                                 )
                             } else {
                                 stringResource(R.string.repeats, repeats)
@@ -211,7 +211,7 @@ fun PracticeScreen(practice: PracticeController, onOpenSettings: () -> Unit) {
                         )
                         Spacer(Modifier.height(4.dp))
                     }
-                    PlaybackChips(speed, delayMs, autoClearAfter) { showPlayback = true }
+                    PlaybackChips(playingSpeed, delayMs, playLimit) { showPlayback = true }
                     Spacer(Modifier.height(12.dp))
                     ActionButtons(
                         onClear = practice::crystalClear,

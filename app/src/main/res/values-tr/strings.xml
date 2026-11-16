@@ -322,4 +322,6 @@
     <string name="stats_exported">İstatistikler kaydedildi.</string>
     <string name="permission_statistics_label">Listening Practice istatistiklerinizi okuma</string>
     <string name="permission_statistics_description">Bu uygulamanın ne kadar alıştırma yaptığınızı okumasına izin verir: gün ve dile göre dinleme süresi ve cümleler.</string>
+    <string name="play_pattern">Desen</string>
+    <string name="add_step">Adım ekle</string>
 </resources>

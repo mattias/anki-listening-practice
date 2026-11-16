@@ -53,6 +53,10 @@ data class Settings(
     val headsetDoubleTapClear: Boolean = false,
     /** Songs: after each play, a silence as long as the line, to sing it back. */
     val singBack: Boolean = true,
+    /** The pattern of plays and speeds ([dev.lovkvist.listening.playback.PlayPattern.format]); empty = the default one. */
+    val playPattern: String = "",
+    /** Auto-advance follows [playPattern] instead of [autoClearAfter] plays at one speed. */
+    val patternOn: Boolean = false,
     /** Address of the voice server on the user's computer for sound training; empty when none is set. */
     val soundServerUrl: String = "",
     /** The secret the sound training service asks for. */
@@ -78,6 +82,8 @@ class SettingsRepository @Inject constructor(
         val darkMode = stringPreferencesKey("dark_mode")
         val maxUnknownWords = intPreferencesKey("max_unknown_words")
         val autoAdvanceSkip = booleanPreferencesKey("auto_advance_skip")
+        val playPattern = stringPreferencesKey("play_pattern")
+        val patternOn = booleanPreferencesKey("pattern_on")
         val onboardingDone = booleanPreferencesKey("setup_guide_seen")
         val favoriteLanguages = stringSetPreferencesKey("favorite_languages")
         val headsetDoubleTapClear = booleanPreferencesKey("headset_double_tap_clear")
@@ -122,6 +128,8 @@ class SettingsRepository @Inject constructor(
             darkMode = prefs[Keys.darkMode]?.let { runCatching { DarkMode.valueOf(it) }.getOrNull() } ?: DarkMode.SYSTEM,
             maxUnknownWords = (prefs[Keys.maxUnknownWords] ?: 0).coerceIn(0, MAX_UNKNOWN_WORDS),
             autoAdvanceSkip = prefs[Keys.autoAdvanceSkip] ?: false,
+            playPattern = prefs[Keys.playPattern] ?: "",
+            patternOn = prefs[Keys.patternOn] ?: false,
             onboardingDone = prefs[Keys.onboardingDone] ?: false,
             headsetDoubleTapClear = prefs[Keys.headsetDoubleTapClear] ?: false,
             singBack = prefs[Keys.singBack] ?: true,
@@ -149,6 +157,10 @@ class SettingsRepository @Inject constructor(
     }
 
     suspend fun setAutoClearAfter(plays: Int) = context.dataStore.edit { it[Keys.autoClearAfter] = plays }
+
+    suspend fun setPlayPattern(pattern: String) = context.dataStore.edit { it[Keys.playPattern] = pattern }
+
+    suspend fun setPatternOn(on: Boolean) = context.dataStore.edit { it[Keys.patternOn] = on }
 
     /** Sets the source for the current language. */
     suspend fun setSource(source: PracticeSource) = context.dataStore.edit {

@@ -333,4 +333,6 @@
     <string name="hide_other_languages">Hide the videos in other languages</string>
     <string name="subs_other_language">Another language</string>
     <string name="subs_no_speech">No speech found</string>
+    <string name="play_pattern">Pattern</string>
+    <string name="add_step">Add step</string>
 </resources>

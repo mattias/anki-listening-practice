@@ -322,4 +322,6 @@
     <string name="stats_exported">Đã lưu thống kê.</string>
     <string name="permission_statistics_label">đọc thống kê Listening Practice của bạn</string>
     <string name="permission_statistics_description">Cho phép ứng dụng này đọc bạn đã luyện tập bao nhiêu: thời gian nghe và số câu theo ngày và ngôn ngữ.</string>
+    <string name="play_pattern">Mẫu</string>
+    <string name="add_step">Thêm bước</string>
 </resources>

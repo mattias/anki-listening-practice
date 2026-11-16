@@ -17,6 +17,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -32,11 +35,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.lovkvist.listening.R
 import dev.lovkvist.listening.playback.AutoTimeState
+import dev.lovkvist.listening.playback.PlayPattern
 import dev.lovkvist.listening.playback.PracticeController
 import dev.lovkvist.listening.text.Language
 import dev.lovkvist.listening.text.Phenomenon
@@ -64,6 +69,7 @@ internal fun PlaybackSheet(practice: PracticeController, onDismiss: () -> Unit) 
         ) {
             Text(stringResource(R.string.playback), style = MaterialTheme.typography.titleLarge)
             PlaybackSettings(practice)
+            HorizontalDivider(Modifier.padding(vertical = 4.dp))
             if (language == Language.JAPANESE && !isSong) SoundFilterSettings(soundFilter, practice::setSoundFilter)
             if (isSong) SongSettings(singBack, practice::setSingBack, songOffsetMs, practice::adjustSongOffset, autoTimable, autoTiming, practice::autoTimeSong)
             HeadsetSettings(headsetDoubleTapClear, practice::setHeadsetDoubleTapClear)
@@ -194,12 +200,16 @@ internal fun PlaybackSettings(practice: PracticeController) {
     val delayMs by practice.delayMs.collectAsStateWithLifecycle()
     val autoClearAfter by practice.autoClearAfter.collectAsStateWithLifecycle()
     val autoAdvanceSkip by practice.autoAdvanceSkip.collectAsStateWithLifecycle()
+    val patternOn by practice.patternOn.collectAsStateWithLifecycle()
+    val pattern by practice.playPattern.collectAsStateWithLifecycle()
+    val playingSpeed by practice.playingSpeed.collectAsStateWithLifecycle()
     val onSpeed = { v: Float -> practice.setSpeed(v) }
     val onDelay = { v: Long -> practice.setDelay(v) }
     val onAutoClear = { v: Int -> practice.setAutoClearAfter(v) }
     val onAutoAdvanceSkip = { v: Boolean -> practice.setAutoAdvanceSkip(v) }
-    Text(stringResource(R.string.speed, "%.2f".format(speed)), style = MaterialTheme.typography.labelLarge)
-    Slider(value = speed, onValueChange = onSpeed, valueRange = 0.5f..1.5f, steps = 19)
+    // While a pattern is on it decides the speed; the slider keeps the speed to come back to.
+    Text(stringResource(R.string.speed, "%.2f".format(if (patternOn) playingSpeed else speed)), style = MaterialTheme.typography.labelLarge)
+    Slider(value = speed, onValueChange = onSpeed, valueRange = 0.5f..1.5f, steps = 19, enabled = !patternOn)
     Text(stringResource(R.string.pause_between_repeats), style = MaterialTheme.typography.labelLarge)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         for (d in delayOptions) {
@@ -210,21 +220,54 @@ internal fun PlaybackSettings(practice: PracticeController) {
             )
         }
     }
-    // Hands-free: after this many plays the sentence counts as Crystal Clear (or is skipped) and the next one starts.
+    HorizontalDivider(Modifier.padding(vertical = 4.dp))
+    // Hands-free: after this many plays, or after the pattern, the sentence counts as Crystal Clear (or is skipped) and the next one starts.
     Text(stringResource(R.string.auto_advance_after), style = MaterialTheme.typography.labelLarge)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         for (n in autoClearOptions) {
             FilterChip(
-                selected = n == autoClearAfter,
-                onClick = { onAutoClear(n) },
+                selected = !patternOn && n == autoClearAfter,
+                onClick = { practice.setPatternOn(false); onAutoClear(n) },
                 label = { Text(if (n == 0) stringResource(R.string.off) else "$n×") },
             )
         }
+        FilterChip(selected = patternOn, onClick = { practice.setPatternOn(true) }, label = { Text(stringResource(R.string.play_pattern)) })
     }
+    if (patternOn) PatternEditor(pattern, practice::setPlayPattern)
     Text(stringResource(R.string.auto_then), style = MaterialTheme.typography.labelLarge)
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         FilterChip(selected = !autoAdvanceSkip, onClick = { onAutoAdvanceSkip(false) }, label = { Text(stringResource(R.string.crystal_clear)) })
         FilterChip(selected = autoAdvanceSkip, onClick = { onAutoAdvanceSkip(true) }, label = { Text(stringResource(R.string.skip)) })
+    }
+}
+
+/** The steps of the pattern: how many plays at which speed, in order. */
+@Composable
+private fun PatternEditor(pattern: PlayPattern, onChange: (PlayPattern) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        pattern.steps.forEachIndexed { i, step ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Stepper("${step.plays}×", { onChange(pattern.withStep(i, step.copy(plays = step.plays - 1))) }, { onChange(pattern.withStep(i, step.copy(plays = step.plays + 1))) },
+                    step.plays > 1, step.plays < PlayPattern.MAX_PLAYS, Modifier.weight(1f))
+                Stepper("%.2f×".format(step.speed), { onChange(pattern.withStep(i, step.copy(percent = step.percent - PlayPattern.STEP_PERCENT))) },
+                    { onChange(pattern.withStep(i, step.copy(percent = step.percent + PlayPattern.STEP_PERCENT))) },
+                    step.percent > PlayPattern.MIN_PERCENT, step.percent < PlayPattern.MAX_PERCENT, Modifier.weight(1f))
+                TextButton(onClick = { onChange(pattern.withoutStep(i)) }, enabled = pattern.steps.size > 1) { Text("✕") }
+            }
+        }
+        if (pattern.steps.size < PlayPattern.MAX_STEPS) {
+            OutlinedButton(onClick = { onChange(pattern.withNewStep()) }) { Text(stringResource(R.string.add_step)) }
+        }
+    }
+}
+
+/** A value with − and + around it. */
+@Composable
+private fun Stepper(text: String, onMinus: () -> Unit, onPlus: () -> Unit, canMinus: Boolean, canPlus: Boolean, modifier: Modifier = Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+        IconButton(onClick = onMinus, enabled = canMinus) { Text("−", style = MaterialTheme.typography.titleLarge) }
+        Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.width(64.dp), textAlign = TextAlign.Center)
+        IconButton(onClick = onPlus, enabled = canPlus) { Text("+", style = MaterialTheme.typography.titleLarge) }
     }
 }
 

@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistik disimpan.</string>
     <string name="permission_statistics_label">membaca statistik Listening Practice Anda</string>
     <string name="permission_statistics_description">Mengizinkan aplikasi ini membaca seberapa banyak Anda berlatih: waktu mendengarkan dan kalimat per hari dan bahasa.</string>
+    <string name="play_pattern">Pola</string>
+    <string name="add_step">Tambah langkah</string>
 </resources>

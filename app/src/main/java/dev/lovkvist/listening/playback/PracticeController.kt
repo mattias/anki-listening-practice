@@ -140,6 +140,22 @@ class PracticeController @Inject constructor(
     /** After [autoClearAfter] plays: skip the sentence instead of marking it Crystal Clear. */
     val autoAdvanceSkip: StateFlow<Boolean> = _autoAdvanceSkip.asStateFlow()
 
+    private val _playPattern = MutableStateFlow(PlayPattern.DEFAULT)
+    /** The pattern of plays and speeds, used while [patternOn]. */
+    val playPattern: StateFlow<PlayPattern> = _playPattern.asStateFlow()
+
+    private val _patternOn = MutableStateFlow(false)
+    /** Auto-advance follows [playPattern]: the speed changes between plays, and the last play is followed by the "then". */
+    val patternOn: StateFlow<Boolean> = _patternOn.asStateFlow()
+
+    private val _playingSpeed = MutableStateFlow(1f)
+    /** The speed the sentence plays at now: [speed], or the pattern's speed for the current play. */
+    val playingSpeed: StateFlow<Float> = _playingSpeed.asStateFlow()
+
+    private val _playLimit = MutableStateFlow(0)
+    /** Plays of a sentence before the "then" (Crystal Clear or skip); 0 = never. */
+    val playLimit: StateFlow<Int> = _playLimit.asStateFlow()
+
     /** The current timeline source's sentences, or empty when the source is shuffled. */
     private var timeline: List<Sentence> = emptyList()
     /** The chain: [chainStart]..[chainEnd] in [timeline], inclusive. A single sentence when chaining is off. */
@@ -236,7 +252,11 @@ class PracticeController @Inject constructor(
 
     init {
         player.onPlayLimit = { if (_autoAdvanceSkip.value) skip() else crystalClear() }
-        player.onPlayed = { recorder.addPlay(language.value.code, statsKind()) }
+        player.onPlayed = {
+            recorder.addPlay(language.value.code, statsKind())
+            // The next play of the pattern gets its speed in the pause before it.
+            applyPlayingSpeed()
+        }
         // Listening time: every second playback goes on, and the part of it where a sentence's audio is heard.
         scope.launch {
             var last = SystemClock.elapsedRealtime()
@@ -262,6 +282,10 @@ class PracticeController @Inject constructor(
             setDelay(s.delayMs, persist = false)
             setAutoClearAfter(s.autoClearAfter, persist = false)
             _autoAdvanceSkip.value = s.autoAdvanceSkip
+            _playPattern.value = PlayPattern.parse(s.playPattern) ?: PlayPattern.DEFAULT
+            _patternOn.value = s.patternOn
+            applyLimit()
+            applyPlayingSpeed(0)
             _headsetDoubleTapClear.value = s.headsetDoubleTapClear
             _singBack.value = s.singBack
             _soundFilter.value = Phenomenon.entries.firstOrNull { it.id == s.soundFilter }
@@ -305,7 +329,7 @@ class PracticeController @Inject constructor(
     fun setSpeed(value: Float, persist: Boolean = true) {
         val rounded = (value * 20).toInt() / 20f // 0.05 steps
         _speed.value = rounded
-        player.speed = rounded
+        applyPlayingSpeed()
         if (persist) scope.launch { settings.setSpeed(rounded) }
     }
 
@@ -548,8 +572,39 @@ class PracticeController @Inject constructor(
 
     fun setAutoClearAfter(plays: Int, persist: Boolean = true) {
         _autoClearAfter.value = plays
-        player.playLimit = plays
+        applyLimit()
         if (persist) scope.launch { settings.setAutoClearAfter(plays) }
+    }
+
+    /** Turns the pattern on or off for auto-advance; off goes back to [autoClearAfter] plays at the speed set by hand. */
+    fun setPatternOn(on: Boolean) {
+        _patternOn.value = on
+        applyLimit()
+        applyPlayingSpeed()
+        scope.launch { settings.setPatternOn(on) }
+    }
+
+    fun setPlayPattern(pattern: PlayPattern) {
+        _playPattern.value = pattern
+        applyLimit()
+        applyPlayingSpeed()
+        scope.launch { settings.setPlayPattern(pattern.format()) }
+    }
+
+    private fun applyLimit() {
+        val limit = if (_patternOn.value) _playPattern.value.totalPlays else _autoClearAfter.value
+        _playLimit.value = limit
+        player.playLimit = limit
+    }
+
+    /**
+     * Sets the speed for the play with index [play] (default: the one coming up). Only the player is told: the speed set by
+     * hand in [speed] stays as it is, and comes back when the pattern is turned off.
+     */
+    private fun applyPlayingSpeed(play: Int = player.repeats.value) {
+        val speed = if (_patternOn.value) _playPattern.value.speedFor(play) else _speed.value
+        _playingSpeed.value = speed
+        player.speed = speed
     }
 
     /** Records [action] for the current sentence and moves to the next one. */
@@ -646,6 +701,8 @@ class PracticeController @Inject constructor(
             .setTitle(sources.value.firstOrNull { it.first == source.value }?.second?.ifEmpty { null } ?: strings(R.string.anki_cards))
             .setArtist(strings(R.string.notification_subtitle, language.value.displayName()))
             .build()
+        // A new sentence starts at the first step of the pattern.
+        applyPlayingSpeed(0)
         player.load(sentence.audio, sentence.clip, autoPlay, sentence.audioLanguage)
         updateWords(sentence)
     }

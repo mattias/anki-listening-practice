@@ -322,4 +322,6 @@
     <string name="stats_exported">統計已儲存。</string>
     <string name="permission_statistics_label">讀取你的 Listening Practice 統計</string>
     <string name="permission_statistics_description">允許此應用程式讀取你的練習量：依日和語言統計的收聽時間和句子數。</string>
+    <string name="play_pattern">模式</string>
+    <string name="add_step">新增步驟</string>
 </resources>

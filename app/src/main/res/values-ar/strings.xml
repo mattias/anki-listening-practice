@@ -322,4 +322,6 @@
     <string name="stats_exported">تم حفظ الإحصاءات.</string>
     <string name="permission_statistics_label">قراءة إحصاءات Listening Practice الخاصة بك</string>
     <string name="permission_statistics_description">يسمح لهذا التطبيق بقراءة مقدار ما تدرّبت عليه: وقت الاستماع والجمل لكل يوم ولغة.</string>
+    <string name="play_pattern">نمط</string>
+    <string name="add_step">إضافة خطوة</string>
 </resources>

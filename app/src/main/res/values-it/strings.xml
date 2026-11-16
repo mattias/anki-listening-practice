@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistiche salvate.</string>
     <string name="permission_statistics_label">leggere le tue statistiche di Listening Practice</string>
     <string name="permission_statistics_description">Permette a questa app di leggere quanto ti sei esercitato: tempo di ascolto e frasi per giorno e lingua.</string>
+    <string name="play_pattern">Schema</string>
+    <string name="add_step">Aggiungi passo</string>
 </resources>

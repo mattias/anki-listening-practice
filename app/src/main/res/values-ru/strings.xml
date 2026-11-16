@@ -322,4 +322,6 @@
     <string name="stats_exported">Статистика сохранена.</string>
     <string name="permission_statistics_label">читать вашу статистику Listening Practice</string>
     <string name="permission_statistics_description">Позволяет этому приложению читать, сколько вы занимались: время прослушивания и предложения по дням и языкам.</string>
+    <string name="play_pattern">Шаблон</string>
+    <string name="add_step">Добавить шаг</string>
 </resources>

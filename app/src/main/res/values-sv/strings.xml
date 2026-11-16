@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistiken sparades.</string>
     <string name="permission_statistics_label">läsa din statistik i Listening Practice</string>
     <string name="permission_statistics_description">Låter appen läsa hur mycket du har övat: lyssnartid och meningar per dag och språk.</string>
+    <string name="play_pattern">Mönster</string>
+    <string name="add_step">Lägg till steg</string>
 </resources>

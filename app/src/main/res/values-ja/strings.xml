@@ -322,4 +322,6 @@
     <string name="stats_exported">統計を保存しました。</string>
     <string name="permission_statistics_label">Listening Practiceの統計を読み取る</string>
     <string name="permission_statistics_description">このアプリが、練習量（日ごと・言語ごとの聞いた時間と文の数）を読み取れるようにします。</string>
+    <string name="play_pattern">パターン</string>
+    <string name="add_step">ステップを追加</string>
 </resources>

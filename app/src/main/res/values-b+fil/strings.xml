@@ -322,4 +322,6 @@
     <string name="stats_exported">Na-save ang mga istatistika.</string>
     <string name="permission_statistics_label">basahin ang iyong mga istatistika sa Listening Practice</string>
     <string name="permission_statistics_description">Pinapayagan ang app na ito na basahin kung gaano ka na nagsanay: oras ng pakikinig at mga pangungusap bawat araw at wika.</string>
+    <string name="play_pattern">Padron</string>
+    <string name="add_step">Magdagdag ng hakbang</string>
 </resources>

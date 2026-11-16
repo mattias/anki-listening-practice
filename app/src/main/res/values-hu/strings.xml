@@ -322,4 +322,6 @@
     <string name="stats_exported">A statisztika mentve.</string>
     <string name="permission_statistics_label">olvassa a Listening Practice statisztikáidat</string>
     <string name="permission_statistics_description">Lehetővé teszi, hogy ez az alkalmazás elolvassa, mennyit gyakoroltál: hallgatási idő és mondatok naponta és nyelvenként.</string>
+    <string name="play_pattern">Minta</string>
+    <string name="add_step">Lépés hozzáadása</string>
 </resources>

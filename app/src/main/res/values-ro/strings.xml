@@ -322,4 +322,6 @@
     <string name="stats_exported">Statisticile au fost salvate.</string>
     <string name="permission_statistics_label">să citească statisticile tale din Listening Practice</string>
     <string name="permission_statistics_description">Permite acestei aplicații să citească cât ai exersat: timp de ascultare și propoziții pe zi și limbă.</string>
+    <string name="play_pattern">Model</string>
+    <string name="add_step">Adaugă un pas</string>
 </resources>

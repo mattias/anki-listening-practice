@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistika je spremljena.</string>
     <string name="permission_statistics_label">čitati vašu statistiku u Listening Practice</string>
     <string name="permission_statistics_description">Dopušta ovoj aplikaciji da čita koliko ste vježbali: vrijeme slušanja i rečenice po danu i jeziku.</string>
+    <string name="play_pattern">Obrazac</string>
+    <string name="add_step">Dodaj korak</string>
 </resources>

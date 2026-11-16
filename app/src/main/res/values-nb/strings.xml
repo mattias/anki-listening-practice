@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistikken er lagret.</string>
     <string name="permission_statistics_label">lese statistikken din i Listening Practice</string>
     <string name="permission_statistics_description">Lar denne appen lese hvor mye du har øvd: lyttetid og setninger per dag og språk.</string>
+    <string name="play_pattern">Mønster</string>
+    <string name="add_step">Legg til trinn</string>
 </resources>

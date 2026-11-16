@@ -322,4 +322,6 @@
     <string name="stats_exported">Τα στατιστικά αποθηκεύτηκαν.</string>
     <string name="permission_statistics_label">να διαβάζει τα στατιστικά σας στο Listening Practice</string>
     <string name="permission_statistics_description">Επιτρέπει σε αυτή την εφαρμογή να διαβάζει πόσο έχετε εξασκηθεί: χρόνος ακρόασης και προτάσεις ανά ημέρα και γλώσσα.</string>
+    <string name="play_pattern">Μοτίβο</string>
+    <string name="add_step">Προσθήκη βήματος</string>
 </resources>

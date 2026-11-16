@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistika išsaugota.</string>
     <string name="permission_statistics_label">skaityti jūsų Listening Practice statistiką</string>
     <string name="permission_statistics_description">Leidžia šiai programai skaityti, kiek treniravotės: klausymo laiką ir sakinius pagal dieną ir kalbą.</string>
+    <string name="play_pattern">Šablonas</string>
+    <string name="add_step">Pridėti žingsnį</string>
 </resources>

@@ -322,4 +322,6 @@
     <string name="stats_exported">บันทึกสถิติแล้ว</string>
     <string name="permission_statistics_label">อ่านสถิติ Listening Practice ของคุณ</string>
     <string name="permission_statistics_description">อนุญาตให้แอปนี้อ่านว่าคุณฝึกไปมากแค่ไหน: เวลาฟังและจำนวนประโยคต่อวันและภาษา</string>
+    <string name="play_pattern">รูปแบบ</string>
+    <string name="add_step">เพิ่มขั้นตอน</string>
 </resources>

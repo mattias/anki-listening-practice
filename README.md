@@ -94,6 +94,10 @@ github.com), [open the video directly](https://cdn.jsdelivr.net/gh/mattias/anki-
 - **Hands-free** — move on automatically after 3, 5, 10 or 20 plays: each sentence repeats that
   many times, then counts as Crystal Clear (or is skipped, if you choose *Skip*) and the next one
   starts, so you can listen on the go.
+- **Play patterns** — instead of a number, choose *Pattern* and set steps such as 3 plays at 0.85×,
+  3 at 0.90× and 5 at 1.00×. The speed changes between plays; after the last one the sentence moves
+  on as above, and the next sentence starts at the first step. While a pattern is on it decides the
+  speed, and the speed you set by hand is kept for when you turn it off.
 - **Playback defaults** — speed, pause, auto advance and the headset double tap also have their own
   page under **Settings → Playback**.
 - **Sleep timer** — pause playback after 10 to 60 minutes, from the playback settings (the

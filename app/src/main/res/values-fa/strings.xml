@@ -322,4 +322,6 @@
     <string name="stats_exported">آمار ذخیره شد.</string>
     <string name="permission_statistics_label">خواندن آمار Listening Practice شما</string>
     <string name="permission_statistics_description">به این برنامه اجازه می‌دهد بخواند چقدر تمرین کرده‌اید: زمان گوش‌دادن و جمله‌ها در هر روز و هر زبان.</string>
+    <string name="play_pattern">الگو</string>
+    <string name="add_step">افزودن مرحله</string>
 </resources>

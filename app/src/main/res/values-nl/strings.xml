@@ -322,4 +322,6 @@
     <string name="stats_exported">Statistieken opgeslagen.</string>
     <string name="permission_statistics_label">je statistieken van Listening Practice lezen</string>
     <string name="permission_statistics_description">Laat deze app lezen hoeveel je hebt geoefend: luistertijd en zinnen per dag en taal.</string>
+    <string name="play_pattern">Patroon</string>
+    <string name="add_step">Stap toevoegen</string>
 </resources>

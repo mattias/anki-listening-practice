@@ -322,4 +322,6 @@
     <string name="stats_exported">Tilastot tallennettu.</string>
     <string name="permission_statistics_label">lukea Listening Practice -tilastosi</string>
     <string name="permission_statistics_description">Antaa tämän sovelluksen lukea, kuinka paljon olet harjoitellut: kuunteluaika ja lauseet päivää ja kieltä kohti.</string>
+    <string name="play_pattern">Kuvio</string>
+    <string name="add_step">Lisää vaihe</string>
 </resources>

@@ -322,4 +322,6 @@
     <string name="stats_exported">Estadístiques desades.</string>
     <string name="permission_statistics_label">llegir les teves estadístiques de Listening Practice</string>
     <string name="permission_statistics_description">Permet a aquesta aplicació llegir quant has practicat: temps d’escolta i frases per dia i llengua.</string>
+    <string name="play_pattern">Patró</string>
+    <string name="add_step">Afegeix un pas</string>
 </resources>

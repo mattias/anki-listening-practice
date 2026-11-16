@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Permet à cette application de lire combien vous vous êtes entraîné : temps d’écoute et phrases par jour et par langue.</string>
     <string name="play_pattern">Motif</string>
     <string name="add_step">Ajouter une étape</string>
+    <string name="add_step_media">1. Fichier vidéo ou audio</string>
+    <string name="add_step_subtitles">2. Sous-titres en %1$s</string>
+    <string name="add_step_translation">3. Traduction (facultatif)</string>
+    <string name="choose_file">Choisir un fichier</string>
+    <string name="change">Modifier</string>
+    <string name="found_inside">Trouvé dans le fichier : %1$s</string>
+    <string name="add">Ajouter</string>
+    <string name="add_translation">Ajouter une traduction</string>
+    <string name="add_translation_help">Sous-titres dans une autre langue, affichés comme traduction de chaque ligne.</string>
+    <string name="translation_added">Traductions en %1$s ajoutées à %2$d lignes sur %3$d.</string>
+    <string name="translation_no_match">Aucune ligne de sous-titres ne correspond aux lignes de ce fichier. Vérifiez qu’ils sont pour la même vidéo.</string>
 </resources>

@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Дозволяє цьому застосунку читати, скільки ви займалися: час прослуховування та речення за днями й мовами.</string>
     <string name="play_pattern">Шаблон</string>
     <string name="add_step">Додати крок</string>
+    <string name="add_step_media">1. Відео- або аудіофайл</string>
+    <string name="add_step_subtitles">2. Субтитри мовою: %1$s</string>
+    <string name="add_step_translation">3. Переклад (необов’язково)</string>
+    <string name="choose_file">Вибрати файл</string>
+    <string name="change">Змінити</string>
+    <string name="found_inside">Знайдено у файлі: %1$s</string>
+    <string name="add">Додати</string>
+    <string name="add_translation">Додати переклад</string>
+    <string name="add_translation_help">Субтитри іншою мовою, які показуються як переклад кожного рядка.</string>
+    <string name="translation_added">Переклади (%1$s) додано до %2$d з %3$d рядків.</string>
+    <string name="translation_no_match">Жоден рядок субтитрів не збігся з рядками цього файлу. Перевірте, що вони від того самого відео.</string>
 </resources>

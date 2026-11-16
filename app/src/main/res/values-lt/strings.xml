@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Leidžia šiai programai skaityti, kiek treniravotės: klausymo laiką ir sakinius pagal dieną ir kalbą.</string>
     <string name="play_pattern">Šablonas</string>
     <string name="add_step">Pridėti žingsnį</string>
+    <string name="add_step_media">1. Vaizdo arba garso failas</string>
+    <string name="add_step_subtitles">2. Subtitrai kalba: %1$s</string>
+    <string name="add_step_translation">3. Vertimas (neprivaloma)</string>
+    <string name="choose_file">Pasirinkti failą</string>
+    <string name="change">Keisti</string>
+    <string name="found_inside">Rasta faile: %1$s</string>
+    <string name="add">Pridėti</string>
+    <string name="add_translation">Pridėti vertimą</string>
+    <string name="add_translation_help">Subtitrai kita kalba, rodomi kaip kiekvienos eilutės vertimas.</string>
+    <string name="translation_added">Pridėti vertimai (%1$s) %2$d iš %3$d eilučių.</string>
+    <string name="translation_no_match">Nė viena subtitrų eilutė neatitiko šio failo eilučių. Patikrinkite, ar jie to paties vaizdo įrašo.</string>
 </resources>

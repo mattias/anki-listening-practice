@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">允許此應用程式讀取你的練習量：依日和語言統計的收聽時間和句子數。</string>
     <string name="play_pattern">模式</string>
     <string name="add_step">新增步驟</string>
+    <string name="add_step_media">1. 影片或音訊檔案</string>
+    <string name="add_step_subtitles">2. %1$s字幕</string>
+    <string name="add_step_translation">3. 翻譯（選填）</string>
+    <string name="choose_file">選擇檔案</string>
+    <string name="change">變更</string>
+    <string name="found_inside">在檔案中找到：%1$s</string>
+    <string name="add">新增</string>
+    <string name="add_translation">新增翻譯</string>
+    <string name="add_translation_help">另一種語言的字幕，顯示為每一行的翻譯。</string>
+    <string name="translation_added">已為 %3$d 行中的 %2$d 行新增%1$s翻譯。</string>
+    <string name="translation_no_match">沒有字幕行與此檔案的行相符。請確認它們屬於同一部影片。</string>
 </resources>

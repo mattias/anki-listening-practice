@@ -575,7 +575,7 @@ private fun Updates(vm: UpdateViewModel) {
 
 /** The language of YouTube subtitles used as translations, or Off. */
 @Composable
-private fun TranslationPicker(current: Language?, onSelect: (Language?) -> Unit) {
+internal fun TranslationPicker(current: Language?, onSelect: (Language?) -> Unit) {
     var open by remember { mutableStateOf(false) }
     OutlinedButton(onClick = { open = true }) { Text("${current?.displayName() ?: stringResource(R.string.off)} ▾") }
     DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
@@ -969,24 +969,11 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
     val allItems by vm.mediaItems.collectAsStateWithLifecycle()
     val items = allItems.filter { it.language == language }
     val busy by vm.mediaBusy.collectAsStateWithLifecycle()
-    var pickedMedia by remember { mutableStateOf<Uri?>(null) }
+    var adding by remember { mutableStateOf(false) }
+    var translating by remember { mutableStateOf<MediaEntry?>(null) }
     var confirmRemove by remember { mutableStateOf<MediaEntry?>(null) }
     // Leaving the page ends the search: no checking goes on in the background, and the results are forgotten.
     DisposableEffect(Unit) { onDispose { vm.clearYouTubeSearch() } }
-
-    // Two steps: the video/audio first, then its subtitle file.
-    val pickSubtitles = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        val media = pickedMedia
-        pickedMedia = null
-        if (uri != null && media != null) vm.importMedia(media, uri)
-    }
-    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) {
-            pickedMedia = uri
-            // Subtitles inside the file are used right away; otherwise a subtitle file is asked for.
-            vm.mediaPicked(uri) { pickSubtitles.launch(arrayOf("*/*")) }
-        }
-    }
 
     Text(
         stringResource(R.string.media_help),
@@ -1006,6 +993,8 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+            // Songs have no translation to add.
+            if (!item.song) TextButton(onClick = { translating = item }) { Text(stringResource(R.string.add_translation)) }
             TextButton(onClick = { confirmRemove = item }) { Text(stringResource(R.string.remove)) }
         }
     }
@@ -1015,7 +1004,7 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
             Text(busy.orEmpty())
         }
     } else {
-        Button(onClick = { pickMedia.launch(arrayOf("video/*", "audio/*")) }) { Text(stringResource(R.string.add_media)) }
+        Button(onClick = { adding = true }) { Text(stringResource(R.string.add_media)) }
         HorizontalDivider()
         YouTubeSearchSection(vm, language)
         HorizontalDivider()
@@ -1060,6 +1049,9 @@ private fun MediaItems(vm: SettingsViewModel, language: Language, translation: L
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
+
+    if (adding) AddMediaDialog(vm, language, translation) { adding = false }
+    translating?.let { item -> AddTranslationDialog(vm, item, translation) { translating = null } }
 
     confirmRemove?.let { item ->
         AlertDialog(

@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Lehetővé teszi, hogy ez az alkalmazás elolvassa, mennyit gyakoroltál: hallgatási idő és mondatok naponta és nyelvenként.</string>
     <string name="play_pattern">Minta</string>
     <string name="add_step">Lépés hozzáadása</string>
+    <string name="add_step_media">1. Videó- vagy hangfájl</string>
+    <string name="add_step_subtitles">2. Felirat ezen a nyelven: %1$s</string>
+    <string name="add_step_translation">3. Fordítás (nem kötelező)</string>
+    <string name="choose_file">Fájl kiválasztása</string>
+    <string name="change">Módosítás</string>
+    <string name="found_inside">A fájlban található: %1$s</string>
+    <string name="add">Hozzáadás</string>
+    <string name="add_translation">Fordítás hozzáadása</string>
+    <string name="add_translation_help">Másik nyelvű felirat, amely minden sor fordításaként jelenik meg.</string>
+    <string name="translation_added">%1$s fordítás hozzáadva %3$d sorból %2$d sorhoz.</string>
+    <string name="translation_no_match">Egyik feliratsor sem egyezett a fájl soraival. Ellenőrizd, hogy ugyanahhoz a videóhoz tartoznak-e.</string>
 </resources>

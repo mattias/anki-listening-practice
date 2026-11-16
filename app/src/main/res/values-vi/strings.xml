@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Cho phép ứng dụng này đọc bạn đã luyện tập bao nhiêu: thời gian nghe và số câu theo ngày và ngôn ngữ.</string>
     <string name="play_pattern">Mẫu</string>
     <string name="add_step">Thêm bước</string>
+    <string name="add_step_media">1. Tệp video hoặc âm thanh</string>
+    <string name="add_step_subtitles">2. Phụ đề tiếng %1$s</string>
+    <string name="add_step_translation">3. Bản dịch (tùy chọn)</string>
+    <string name="choose_file">Chọn tệp</string>
+    <string name="change">Thay đổi</string>
+    <string name="found_inside">Tìm thấy trong tệp: %1$s</string>
+    <string name="add">Thêm</string>
+    <string name="add_translation">Thêm bản dịch</string>
+    <string name="add_translation_help">Phụ đề ngôn ngữ khác, hiển thị làm bản dịch của từng dòng.</string>
+    <string name="translation_added">Đã thêm bản dịch %1$s cho %2$d trên %3$d dòng.</string>
+    <string name="translation_no_match">Không dòng phụ đề nào khớp với các dòng của tệp này. Hãy kiểm tra xem chúng có cùng video không.</string>
 </resources>

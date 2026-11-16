@@ -1,7 +1,15 @@
 package dev.lovkvist.listening.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -30,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -117,12 +126,34 @@ internal fun PlaybackChips(speed: Float, delayMs: Long, autoClearAfter: Int, onC
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SoundFilterSettings(selected: Phenomenon?, onSelect: (Phenomenon?) -> Unit) {
-    Text(stringResource(R.string.sound_filter), style = MaterialTheme.typography.labelLarge)
-    Text(stringResource(R.string.sound_filter_help), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        FilterChip(selected = selected == null, onClick = { onSelect(null) }, label = { Text(stringResource(R.string.off)) })
-        for (p in Phenomenon.entries) {
-            FilterChip(selected = selected == p, onClick = { onSelect(p) }, label = { Text(p.example) })
+    // Folded away until it is wanted; the line shows what is chosen, so a filter that is on is never hidden.
+    var open by rememberSaveable { mutableStateOf(false) }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { open = !open }
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(stringResource(R.string.sound_filter), style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
+        Text(
+            selected?.example ?: stringResource(R.string.off),
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (selected != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(if (open) "▴" else "▾", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    AnimatedVisibility(visible = open) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.sound_filter_help), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                FilterChip(selected = selected == null, onClick = { onSelect(null) }, label = { Text(stringResource(R.string.off)) })
+                for (p in Phenomenon.entries) {
+                    FilterChip(selected = selected == p, onClick = { onSelect(p) }, label = { Text(p.example) })
+                }
+            }
         }
     }
 }

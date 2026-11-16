@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Dopušta ovoj aplikaciji da čita koliko ste vježbali: vrijeme slušanja i rečenice po danu i jeziku.</string>
     <string name="play_pattern">Obrazac</string>
     <string name="add_step">Dodaj korak</string>
+    <string name="add_step_media">1. Video ili audio datoteka</string>
+    <string name="add_step_subtitles">2. Titlovi na jeziku: %1$s</string>
+    <string name="add_step_translation">3. Prijevod (neobavezno)</string>
+    <string name="choose_file">Odaberi datoteku</string>
+    <string name="change">Promijeni</string>
+    <string name="found_inside">Pronađeno u datoteci: %1$s</string>
+    <string name="add">Dodaj</string>
+    <string name="add_translation">Dodaj prijevod</string>
+    <string name="add_translation_help">Titlovi na drugom jeziku, prikazani kao prijevod svakog retka.</string>
+    <string name="translation_added">Dodani prijevodi (%1$s) za %2$d od %3$d redaka.</string>
+    <string name="translation_no_match">Nijedan redak titlova nije odgovarao recima ove datoteke. Provjerite jesu li za isti video.</string>
 </resources>

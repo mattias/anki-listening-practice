@@ -44,6 +44,15 @@ data class MediaEntry(
     val offsetMs: Long = 0,
 )
 
+/** Where subtitles come from: a document the user picked, or a track inside the video/audio file. */
+sealed interface SubtitleSource {
+    class File(val uri: Uri) : SubtitleSource
+    class Inside(val track: EmbeddedTrack) : SubtitleSource
+}
+
+/** Subtitles in another language to show as the lines' translations. */
+class Translation(val language: Language, val cues: List<SubtitleCue>)
+
 /**
  * Videos and audio files paired with subtitles, one folder per item:
  * `media/<id>/info.json` and `media/<id>/chunks.json` (plus the audio file for downloads).
@@ -60,33 +69,77 @@ class MediaLibrary @Inject constructor(
     private val _items = MutableStateFlow(loadItems())
     val items: StateFlow<List<MediaEntry>> = _items.asStateFlow()
 
-    /** Imports a video/audio document the user picked together with a subtitle document. */
-    suspend fun importLocal(media: Uri, subtitles: Uri, language: Language): MediaEntry = withContext(Dispatchers.IO) {
+    /** The name of a picked document, for showing it. */
+    fun nameOf(uri: Uri): String = displayName(uri)
+
+    /** The lines of the subtitle document [subtitles], or an IOException that says what was probably picked instead. */
+    suspend fun readSubtitles(subtitles: Uri, language: Language): List<SubtitleCue> = withContext(Dispatchers.IO) {
         val subName = displayName(subtitles)
         // A video or audio file is not subtitles, and is far too big to read as text.
         val type = context.contentResolver.getType(subtitles).orEmpty()
         if (type.startsWith("video/") || type.startsWith("audio/") || sizeOf(subtitles) > MAX_SUBTITLE_BYTES) {
             throw IOException(strings(R.string.not_subtitles, subName))
         }
-        val cues = Subtitles.parse(subName, readText(context.contentResolver.openInputStream(subtitles)?.use { readLimited(it, subName) }
+        Subtitles.parse(subName, readText(context.contentResolver.openInputStream(subtitles)?.use { readLimited(it, subName) }
             ?: throw IOException(strings(R.string.could_not_open_file)), language))
+    }
+
+    /**
+     * Imports a video/audio document the user picked together with the [cues] of its subtitles, and optionally subtitles in
+     * another language for the translations. A `.lrc` file ([lyrics]) makes it a song.
+     */
+    suspend fun importLocal(
+        media: Uri,
+        cues: List<SubtitleCue>,
+        language: Language,
+        translation: Translation? = null,
+        lyrics: Boolean = false,
+    ): MediaEntry = withContext(Dispatchers.IO) {
         // Keep access to the media after restarts; subtitles are copied into chunks.json.
         context.contentResolver.takePersistableUriPermission(media, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        // Lyrics in an LRC file make it a song.
-        save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language, song = subName.endsWith(".lrc", ignoreCase = true))
+        val translations = translation?.let { alignTranslation(cues, it) }
+        save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language, translations, translations?.let { translation.language }, lyrics)
     }
 
-    /** The subtitle track inside the video/audio file [media] that is in [language], or null: no need to ask for a subtitle file. */
-    suspend fun embeddedTrack(media: Uri, language: Language): EmbeddedTrack? = withContext(Dispatchers.IO) {
-        EmbeddedSubtitles.inLanguage(EmbeddedSubtitles.tracks(context, media), language)
+    /** One translation per line of [cues], or null when none of the lines got one. */
+    private fun alignTranslation(cues: List<SubtitleCue>, translation: Translation): List<String>? =
+        runCatching { Subtitles.align(cues, translation.cues, translation.language.unspaced) }.getOrNull()?.takeIf { l -> l.any { it.isNotEmpty() } }
+
+    /**
+     * Adds translations to the item [id] afterwards, from subtitles in another language; replaces the ones it has. Returns how many
+     * of its lines got a translation.
+     */
+    suspend fun addTranslation(id: String, translation: Translation): Int = withContext(Dispatchers.IO) {
+        val dir = File(root, id)
+        val cues = rawCues(id)
+        val translations = alignTranslation(cues, translation) ?: throw IOException(strings(R.string.translation_no_match))
+        val chunks = JSONArray(File(dir, CHUNKS_FILE).readText())
+        for (i in 0 until chunks.length()) {
+            val chunk = chunks.getJSONObject(i)
+            chunk.remove("tr")
+            translations.getOrNull(i)?.takeIf { it.isNotEmpty() }?.let { chunk.put("tr", it) }
+        }
+        File(dir, CHUNKS_FILE).writeText(chunks.toString())
+        val info = File(dir, INFO_FILE)
+        info.writeText(JSONObject(info.readText()).put("translation", translation.language.code).toString())
+        _items.value = loadItems()
+        translations.count { it.isNotEmpty() }
     }
 
-    /** Imports [media] with the subtitles that are inside it ([track], from [embeddedTrack]). */
-    suspend fun importEmbedded(media: Uri, track: EmbeddedTrack, language: Language): MediaEntry = withContext(Dispatchers.IO) {
-        val cues = EmbeddedSubtitles.read(context, media, track)
-        if (cues.isEmpty()) throw IOException(strings(R.string.embedded_empty))
-        context.contentResolver.takePersistableUriPermission(media, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        save(newDir(), displayName(media).substringBeforeLast('.'), media, cues, sourceUrl = null, language)
+    /** All subtitle tracks inside the video/audio file [media]. */
+    suspend fun embeddedTracks(media: Uri): List<EmbeddedTrack> = withContext(Dispatchers.IO) {
+        EmbeddedSubtitles.tracks(context, media)
+    }
+
+    /** The lines of [source], for the video/audio file [media] (the source may be a track inside it). */
+    suspend fun cuesOf(media: Uri, source: SubtitleSource, language: Language): List<SubtitleCue> = when (source) {
+        is SubtitleSource.File -> readSubtitles(source.uri, language)
+        is SubtitleSource.Inside -> readEmbedded(media, source.track)
+    }
+
+    /** The lines of the subtitle track [track] inside [media]. */
+    suspend fun readEmbedded(media: Uri, track: EmbeddedTrack): List<SubtitleCue> = withContext(Dispatchers.IO) {
+        EmbeddedSubtitles.read(context, media, track).also { if (it.isEmpty()) throw IOException(strings(R.string.embedded_empty)) }
     }
 
     /** Registers a downloaded song: its audio (already inside [dir]) and the [lyrics] cues. */

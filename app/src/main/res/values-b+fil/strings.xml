@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Pinapayagan ang app na ito na basahin kung gaano ka na nagsanay: oras ng pakikinig at mga pangungusap bawat araw at wika.</string>
     <string name="play_pattern">Padron</string>
     <string name="add_step">Magdagdag ng hakbang</string>
+    <string name="add_step_media">1. Video o audio file</string>
+    <string name="add_step_subtitles">2. Mga subtitle sa %1$s</string>
+    <string name="add_step_translation">3. Pagsasalin (opsyonal)</string>
+    <string name="choose_file">Pumili ng file</string>
+    <string name="change">Baguhin</string>
+    <string name="found_inside">Nakita sa loob ng file: %1$s</string>
+    <string name="add">Idagdag</string>
+    <string name="add_translation">Magdagdag ng pagsasalin</string>
+    <string name="add_translation_help">Mga subtitle sa ibang wika, ipinapakita bilang pagsasalin ng bawat linya.</string>
+    <string name="translation_added">Nagdagdag ng mga pagsasalin sa %1$s sa %2$d sa %3$d linya.</string>
+    <string name="translation_no_match">Walang linya ng subtitle ang tumugma sa mga linya ng file na ito. Tiyaking para sa parehong video ang mga ito.</string>
 </resources>

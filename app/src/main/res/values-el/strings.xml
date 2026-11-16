@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Επιτρέπει σε αυτή την εφαρμογή να διαβάζει πόσο έχετε εξασκηθεί: χρόνος ακρόασης και προτάσεις ανά ημέρα και γλώσσα.</string>
     <string name="play_pattern">Μοτίβο</string>
     <string name="add_step">Προσθήκη βήματος</string>
+    <string name="add_step_media">1. Αρχείο βίντεο ή ήχου</string>
+    <string name="add_step_subtitles">2. Υπότιτλοι σε %1$s</string>
+    <string name="add_step_translation">3. Μετάφραση (προαιρετικό)</string>
+    <string name="choose_file">Επιλογή αρχείου</string>
+    <string name="change">Αλλαγή</string>
+    <string name="found_inside">Βρέθηκε μέσα στο αρχείο: %1$s</string>
+    <string name="add">Προσθήκη</string>
+    <string name="add_translation">Προσθήκη μετάφρασης</string>
+    <string name="add_translation_help">Υπότιτλοι σε άλλη γλώσσα, που εμφανίζονται ως μετάφραση κάθε γραμμής.</string>
+    <string name="translation_added">Προστέθηκαν μεταφράσεις (%1$s) σε %2$d από %3$d γραμμές.</string>
+    <string name="translation_no_match">Καμία γραμμή υποτίτλων δεν ταίριαξε με τις γραμμές αυτού του αρχείου. Ελέγξτε ότι είναι για το ίδιο βίντεο.</string>
 </resources>

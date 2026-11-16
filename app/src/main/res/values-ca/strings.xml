@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Permet a aquesta aplicació llegir quant has practicat: temps d’escolta i frases per dia i llengua.</string>
     <string name="play_pattern">Patró</string>
     <string name="add_step">Afegeix un pas</string>
+    <string name="add_step_media">1. Fitxer de vídeo o àudio</string>
+    <string name="add_step_subtitles">2. Subtítols en %1$s</string>
+    <string name="add_step_translation">3. Traducció (opcional)</string>
+    <string name="choose_file">Tria un fitxer</string>
+    <string name="change">Canvia</string>
+    <string name="found_inside">Trobat dins del fitxer: %1$s</string>
+    <string name="add">Afegeix</string>
+    <string name="add_translation">Afegeix traducció</string>
+    <string name="add_translation_help">Subtítols en un altre idioma, mostrats com a traducció de cada línia.</string>
+    <string name="translation_added">S’han afegit traduccions en %1$s a %2$d de %3$d línies.</string>
+    <string name="translation_no_match">Cap línia dels subtítols coincideix amb les d’aquest fitxer. Comprova que siguin del mateix vídeo.</string>
 </resources>

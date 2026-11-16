@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">يسمح لهذا التطبيق بقراءة مقدار ما تدرّبت عليه: وقت الاستماع والجمل لكل يوم ولغة.</string>
     <string name="play_pattern">نمط</string>
     <string name="add_step">إضافة خطوة</string>
+    <string name="add_step_media">1. ملف فيديو أو صوت</string>
+    <string name="add_step_subtitles">2. الترجمة النصية بلغة %1$s</string>
+    <string name="add_step_translation">3. الترجمة (اختياري)</string>
+    <string name="choose_file">اختيار ملف</string>
+    <string name="change">تغيير</string>
+    <string name="found_inside">تم العثور عليها داخل الملف: %1$s</string>
+    <string name="add">إضافة</string>
+    <string name="add_translation">إضافة ترجمة</string>
+    <string name="add_translation_help">ترجمة نصية بلغة أخرى تُعرض كترجمة لكل سطر.</string>
+    <string name="translation_added">أُضيفت ترجمات %1$s إلى %2$d من %3$d سطرًا.</string>
+    <string name="translation_no_match">لم يتطابق أي سطر من الترجمة النصية مع أسطر هذا الملف. تأكد من أنها لنفس الفيديو.</string>
 </resources>

@@ -23,6 +23,7 @@ import dev.lovkvist.listening.data.known.MyWords
 import dev.lovkvist.listening.data.local.SentenceState
 import dev.lovkvist.listening.data.local.SentenceStateDao
 import dev.lovkvist.listening.data.local.WordStatus
+import dev.lovkvist.listening.data.media.EmbeddedTrack
 import dev.lovkvist.listening.data.media.LikelyLanguage
 import dev.lovkvist.listening.data.media.MediaEntry
 import dev.lovkvist.listening.data.media.MediaLibrary
@@ -30,8 +31,10 @@ import dev.lovkvist.listening.data.media.NoLyricsException
 import dev.lovkvist.listening.data.media.RateLimitedException
 import dev.lovkvist.listening.data.media.SongSource
 import dev.lovkvist.listening.data.media.SubtitleCache
+import dev.lovkvist.listening.data.media.SubtitleSource
 import dev.lovkvist.listening.data.media.SubtitleStatus
 import dev.lovkvist.listening.data.media.TitleLanguage
+import dev.lovkvist.listening.data.media.Translation
 import dev.lovkvist.listening.data.media.VideoResult
 import dev.lovkvist.listening.data.local.ListeningStat
 import dev.lovkvist.listening.data.local.ListeningStatDao
@@ -250,41 +253,51 @@ class SettingsViewModel @Inject constructor(
     /** What a running media import/download is doing, or null when idle. */
     val mediaBusy: StateFlow<String?> = _mediaBusy.asStateFlow()
 
-    /**
-     * A video/audio file was picked: if it holds subtitles in the language studied, they are used and no
-     * subtitle file is needed; otherwise [askForSubtitles] lets the user pick one.
-     */
-    fun mediaPicked(file: Uri, askForSubtitles: () -> Unit) = viewModelScope.launch {
-        _mediaBusy.value = strings(R.string.reading_subtitles)
-        var ask = false
-        try {
-            val language = settingsRepo.current().language
-            val track = media.embeddedTrack(file, language)
-            if (track == null) {
-                ask = true
-            } else {
-                val item = media.importEmbedded(file, track, language)
-                _message.value = strings(R.string.media_added, item.name, item.chunkCount) + " " + strings(R.string.embedded_used)
-            }
-        } catch (e: Exception) {
-            _message.value = strings(R.string.import_failed, e.message ?: e.toString())
-        } catch (e: Throwable) {
-            _message.value = strings(R.string.import_failed, strings(R.string.could_not_open_file))
-        } finally {
-            _mediaBusy.value = null
-        }
-        if (ask) askForSubtitles()
+    /** The name of a picked document. */
+    fun nameOf(uri: Uri): String = media.nameOf(uri)
+
+    /** The subtitle tracks inside a picked video/audio file; empty when it has none or cannot be read. */
+    suspend fun inspectMedia(file: Uri): List<EmbeddedTrack> = try {
+        media.embeddedTracks(file)
+    } catch (e: Throwable) {
+        emptyList()
     }
 
-    fun importMedia(file: Uri, subtitles: Uri) = viewModelScope.launch {
+    /**
+     * Adds a local video/audio file with its subtitles (a document, or a track inside the file), and optionally the translations'
+     * subtitles in another language, the same two ways.
+     */
+    fun addLocalMedia(file: Uri, subtitles: SubtitleSource, translation: Pair<Language, SubtitleSource>?) = viewModelScope.launch {
         _mediaBusy.value = strings(R.string.reading_subtitles)
         _message.value = try {
-            val item = media.importLocal(file, subtitles, settingsRepo.current().language)
-            strings(R.string.media_added, item.name, item.chunkCount)
+            val language = settingsRepo.current().language
+            val cues = media.cuesOf(file, subtitles, language)
+            val lyrics = subtitles is SubtitleSource.File && media.nameOf(subtitles.uri).endsWith(".lrc", ignoreCase = true)
+            val tr = translation?.let { (l, source) -> Translation(l, media.cuesOf(file, source, l)) }
+            val item = media.importLocal(file, cues, language, tr, lyrics)
+            val added = item.translation?.let { strings(R.string.media_added_translated, item.name, item.chunkCount, it.displayName()) }
+                ?: strings(R.string.media_added, item.name, item.chunkCount)
+            if (subtitles is SubtitleSource.Inside) added + " " + strings(R.string.embedded_used) else added
         } catch (e: Exception) {
             strings(R.string.import_failed, e.message ?: e.toString())
         } catch (e: Throwable) {
             // Never a reason to close the app: say what was probably picked.
+            strings(R.string.import_failed, strings(R.string.could_not_open_file))
+        } finally {
+            _mediaBusy.value = null
+        }
+    }
+
+    /** Adds translations to an item already in the library, from subtitles in [language] (a document, or a track inside its file). */
+    fun addTranslation(item: MediaEntry, source: SubtitleSource, language: Language) = viewModelScope.launch {
+        _mediaBusy.value = strings(R.string.reading_subtitles)
+        _message.value = try {
+            val cues = media.cuesOf(item.media, source, language)
+            val matched = media.addTranslation(item.id, Translation(language, cues))
+            strings(R.string.translation_added, language.displayName(), matched, item.chunkCount)
+        } catch (e: Exception) {
+            strings(R.string.import_failed, e.message ?: e.toString())
+        } catch (e: Throwable) {
             strings(R.string.import_failed, strings(R.string.could_not_open_file))
         } finally {
             _mediaBusy.value = null

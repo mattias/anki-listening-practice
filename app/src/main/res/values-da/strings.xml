@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Lader denne app læse, hvor meget du har øvet: lyttetid og sætninger pr. dag og sprog.</string>
     <string name="play_pattern">Mønster</string>
     <string name="add_step">Tilføj trin</string>
+    <string name="add_step_media">1. Video- eller lydfil</string>
+    <string name="add_step_subtitles">2. Undertekster på %1$s</string>
+    <string name="add_step_translation">3. Oversættelse (valgfrit)</string>
+    <string name="choose_file">Vælg fil</string>
+    <string name="change">Skift</string>
+    <string name="found_inside">Fundet i filen: %1$s</string>
+    <string name="add">Tilføj</string>
+    <string name="add_translation">Tilføj oversættelse</string>
+    <string name="add_translation_help">Undertekster på et andet sprog, vist som oversættelse af hver linje.</string>
+    <string name="translation_added">Tilføjede %1$s-oversættelser til %2$d af %3$d linjer.</string>
+    <string name="translation_no_match">Ingen af undertekstlinjerne passede til denne fils linjer. Tjek, at de hører til den samme video.</string>
 </resources>

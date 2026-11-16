@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Permette a questa app di leggere quanto ti sei esercitato: tempo di ascolto e frasi per giorno e lingua.</string>
     <string name="play_pattern">Schema</string>
     <string name="add_step">Aggiungi passo</string>
+    <string name="add_step_media">1. File video o audio</string>
+    <string name="add_step_subtitles">2. Sottotitoli in %1$s</string>
+    <string name="add_step_translation">3. Traduzione (facoltativa)</string>
+    <string name="choose_file">Scegli file</string>
+    <string name="change">Cambia</string>
+    <string name="found_inside">Trovato nel file: %1$s</string>
+    <string name="add">Aggiungi</string>
+    <string name="add_translation">Aggiungi traduzione</string>
+    <string name="add_translation_help">Sottotitoli in un’altra lingua, mostrati come traduzione di ogni riga.</string>
+    <string name="translation_added">Aggiunte traduzioni in %1$s a %2$d righe su %3$d.</string>
+    <string name="translation_no_match">Nessuna riga dei sottotitoli corrisponde alle righe di questo file. Controlla che siano dello stesso video.</string>
 </resources>

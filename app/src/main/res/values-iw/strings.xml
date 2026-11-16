@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">מאפשר ליישום הזה לקרוא כמה התאמנת: זמן האזנה ומשפטים לפי יום ושפה.</string>
     <string name="play_pattern">תבנית</string>
     <string name="add_step">הוספת שלב</string>
+    <string name="add_step_media">1. קובץ וידאו או אודיו</string>
+    <string name="add_step_subtitles">2. כתוביות ב%1$s</string>
+    <string name="add_step_translation">3. תרגום (אופציונלי)</string>
+    <string name="choose_file">בחירת קובץ</string>
+    <string name="change">שינוי</string>
+    <string name="found_inside">נמצא בתוך הקובץ: %1$s</string>
+    <string name="add">הוספה</string>
+    <string name="add_translation">הוספת תרגום</string>
+    <string name="add_translation_help">כתוביות בשפה אחרת, המוצגות כתרגום של כל שורה.</string>
+    <string name="translation_added">נוספו תרגומים (%1$s) ל-%2$d מתוך %3$d שורות.</string>
+    <string name="translation_no_match">אף שורת כתוביות לא התאימה לשורות הקובץ הזה. ודאו שהן שייכות לאותו סרטון.</string>
 </resources>

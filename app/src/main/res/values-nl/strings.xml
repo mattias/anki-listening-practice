@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Laat deze app lezen hoeveel je hebt geoefend: luistertijd en zinnen per dag en taal.</string>
     <string name="play_pattern">Patroon</string>
     <string name="add_step">Stap toevoegen</string>
+    <string name="add_step_media">1. Video- of audiobestand</string>
+    <string name="add_step_subtitles">2. Ondertitels in %1$s</string>
+    <string name="add_step_translation">3. Vertaling (optioneel)</string>
+    <string name="choose_file">Bestand kiezen</string>
+    <string name="change">Wijzigen</string>
+    <string name="found_inside">Gevonden in het bestand: %1$s</string>
+    <string name="add">Toevoegen</string>
+    <string name="add_translation">Vertaling toevoegen</string>
+    <string name="add_translation_help">Ondertitels in een andere taal, getoond als vertaling van elke regel.</string>
+    <string name="translation_added">%1$s-vertalingen toegevoegd aan %2$d van %3$d regels.</string>
+    <string name="translation_no_match">Geen enkele ondertitelregel kwam overeen met de regels van dit bestand. Controleer of ze bij dezelfde video horen.</string>
 </resources>

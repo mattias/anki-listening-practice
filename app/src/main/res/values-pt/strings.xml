@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Permite que este app leia quanto você praticou: tempo de escuta e frases por dia e idioma.</string>
     <string name="play_pattern">Padrão</string>
     <string name="add_step">Adicionar etapa</string>
+    <string name="add_step_media">1. Arquivo de vídeo ou áudio</string>
+    <string name="add_step_subtitles">2. Legendas em %1$s</string>
+    <string name="add_step_translation">3. Tradução (opcional)</string>
+    <string name="choose_file">Escolher arquivo</string>
+    <string name="change">Alterar</string>
+    <string name="found_inside">Encontrado no arquivo: %1$s</string>
+    <string name="add">Adicionar</string>
+    <string name="add_translation">Adicionar tradução</string>
+    <string name="add_translation_help">Legendas em outro idioma, mostradas como a tradução de cada linha.</string>
+    <string name="translation_added">Traduções em %1$s adicionadas a %2$d de %3$d linhas.</string>
+    <string name="translation_no_match">Nenhuma linha das legendas correspondeu às linhas deste arquivo. Verifique se são do mesmo vídeo.</string>
 </resources>

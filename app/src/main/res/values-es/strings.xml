@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Permite a esta app leer cuánto has practicado: tiempo de escucha y frases por día e idioma.</string>
     <string name="play_pattern">Patrón</string>
     <string name="add_step">Añadir paso</string>
+    <string name="add_step_media">1. Archivo de vídeo o audio</string>
+    <string name="add_step_subtitles">2. Subtítulos en %1$s</string>
+    <string name="add_step_translation">3. Traducción (opcional)</string>
+    <string name="choose_file">Elegir archivo</string>
+    <string name="change">Cambiar</string>
+    <string name="found_inside">Encontrado en el archivo: %1$s</string>
+    <string name="add">Añadir</string>
+    <string name="add_translation">Añadir traducción</string>
+    <string name="add_translation_help">Subtítulos en otro idioma, que se muestran como traducción de cada línea.</string>
+    <string name="translation_added">Se añadieron traducciones al %1$s a %2$d de %3$d líneas.</string>
+    <string name="translation_no_match">Ninguna línea de subtítulos coincidió con las de este archivo. Comprueba que sean del mismo vídeo.</string>
 </resources>

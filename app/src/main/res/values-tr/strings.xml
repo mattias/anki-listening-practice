@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Bu uygulamanın ne kadar alıştırma yaptığınızı okumasına izin verir: gün ve dile göre dinleme süresi ve cümleler.</string>
     <string name="play_pattern">Desen</string>
     <string name="add_step">Adım ekle</string>
+    <string name="add_step_media">1. Video veya ses dosyası</string>
+    <string name="add_step_subtitles">2. %1$s altyazı</string>
+    <string name="add_step_translation">3. Çeviri (isteğe bağlı)</string>
+    <string name="choose_file">Dosya seç</string>
+    <string name="change">Değiştir</string>
+    <string name="found_inside">Dosyanın içinde bulundu: %1$s</string>
+    <string name="add">Ekle</string>
+    <string name="add_translation">Çeviri ekle</string>
+    <string name="add_translation_help">Başka bir dildeki altyazı, her satırın çevirisi olarak gösterilir.</string>
+    <string name="translation_added">%1$s çevirileri %3$d satırın %2$d tanesine eklendi.</string>
+    <string name="translation_no_match">Hiçbir altyazı satırı bu dosyanın satırlarıyla eşleşmedi. Aynı videoya ait olduklarını kontrol edin.</string>
 </resources>

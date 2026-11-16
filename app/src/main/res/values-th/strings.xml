@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">อนุญาตให้แอปนี้อ่านว่าคุณฝึกไปมากแค่ไหน: เวลาฟังและจำนวนประโยคต่อวันและภาษา</string>
     <string name="play_pattern">รูปแบบ</string>
     <string name="add_step">เพิ่มขั้นตอน</string>
+    <string name="add_step_media">1. ไฟล์วิดีโอหรือเสียง</string>
+    <string name="add_step_subtitles">2. คำบรรยายภาษา%1$s</string>
+    <string name="add_step_translation">3. คำแปล (ไม่บังคับ)</string>
+    <string name="choose_file">เลือกไฟล์</string>
+    <string name="change">เปลี่ยน</string>
+    <string name="found_inside">พบในไฟล์: %1$s</string>
+    <string name="add">เพิ่ม</string>
+    <string name="add_translation">เพิ่มคำแปล</string>
+    <string name="add_translation_help">คำบรรยายภาษาอื่น ที่แสดงเป็นคำแปลของแต่ละบรรทัด</string>
+    <string name="translation_added">เพิ่มคำแปล%1$s ให้ %2$d จาก %3$d บรรทัดแล้ว</string>
+    <string name="translation_no_match">ไม่มีบรรทัดคำบรรยายใดตรงกับบรรทัดของไฟล์นี้ ตรวจสอบว่าเป็นของวิดีโอเดียวกัน</string>
 </resources>

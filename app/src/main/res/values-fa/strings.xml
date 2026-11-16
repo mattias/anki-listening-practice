@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">به این برنامه اجازه می‌دهد بخواند چقدر تمرین کرده‌اید: زمان گوش‌دادن و جمله‌ها در هر روز و هر زبان.</string>
     <string name="play_pattern">الگو</string>
     <string name="add_step">افزودن مرحله</string>
+    <string name="add_step_media">۱. فایل ویدیو یا صوت</string>
+    <string name="add_step_subtitles">۲. زیرنویس به %1$s</string>
+    <string name="add_step_translation">۳. ترجمه (اختیاری)</string>
+    <string name="choose_file">انتخاب فایل</string>
+    <string name="change">تغییر</string>
+    <string name="found_inside">داخل فایل پیدا شد: %1$s</string>
+    <string name="add">افزودن</string>
+    <string name="add_translation">افزودن ترجمه</string>
+    <string name="add_translation_help">زیرنویس به زبان دیگر که به‌عنوان ترجمهٔ هر خط نشان داده می‌شود.</string>
+    <string name="translation_added">ترجمه‌های %1$s به %2$d خط از %3$d خط اضافه شد.</string>
+    <string name="translation_no_match">هیچ‌یک از خطوط زیرنویس با خطوط این فایل مطابقت نداشت. بررسی کنید که برای همان ویدیو باشند.</string>
 </resources>

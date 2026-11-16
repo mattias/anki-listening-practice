@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">允许此应用读取你的练习量：按日和语言统计的收听时间和句子数。</string>
     <string name="play_pattern">模式</string>
     <string name="add_step">添加步骤</string>
+    <string name="add_step_media">1. 视频或音频文件</string>
+    <string name="add_step_subtitles">2. %1$s字幕</string>
+    <string name="add_step_translation">3. 翻译（可选）</string>
+    <string name="choose_file">选择文件</string>
+    <string name="change">更改</string>
+    <string name="found_inside">在文件中找到：%1$s</string>
+    <string name="add">添加</string>
+    <string name="add_translation">添加翻译</string>
+    <string name="add_translation_help">另一种语言的字幕，显示为每一行的翻译。</string>
+    <string name="translation_added">已为 %3$d 行中的 %2$d 行添加%1$s翻译。</string>
+    <string name="translation_no_match">没有字幕行与此文件的行匹配。请确认它们属于同一个视频。</string>
 </resources>

@@ -335,4 +335,15 @@
     <string name="subs_no_speech">No speech found</string>
     <string name="play_pattern">Pattern</string>
     <string name="add_step">Add step</string>
+    <string name="add_step_media">1. Video or audio file</string>
+    <string name="add_step_subtitles">2. Subtitles in %1$s</string>
+    <string name="add_step_translation">3. Translation (optional)</string>
+    <string name="choose_file">Choose file</string>
+    <string name="change">Change</string>
+    <string name="found_inside">Found inside the file: %1$s</string>
+    <string name="add">Add</string>
+    <string name="add_translation">Add translation</string>
+    <string name="add_translation_help">Subtitles in another language, shown as the translation of each line.</string>
+    <string name="translation_added">Added %1$s translations to %2$d of %3$d lines.</string>
+    <string name="translation_no_match">None of the subtitle lines matched this file\'s lines. Check that they are for the same video.</string>
 </resources>

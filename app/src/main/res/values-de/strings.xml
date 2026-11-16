@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Erlaubt der App zu lesen, wie viel du geübt hast: Hörzeit und Sätze pro Tag und Sprache.</string>
     <string name="play_pattern">Muster</string>
     <string name="add_step">Schritt hinzufügen</string>
+    <string name="add_step_media">1. Video- oder Audiodatei</string>
+    <string name="add_step_subtitles">2. Untertitel auf %1$s</string>
+    <string name="add_step_translation">3. Übersetzung (optional)</string>
+    <string name="choose_file">Datei wählen</string>
+    <string name="change">Ändern</string>
+    <string name="found_inside">In der Datei gefunden: %1$s</string>
+    <string name="add">Hinzufügen</string>
+    <string name="add_translation">Übersetzung hinzufügen</string>
+    <string name="add_translation_help">Untertitel in einer anderen Sprache, als Übersetzung jeder Zeile angezeigt.</string>
+    <string name="translation_added">%1$s-Übersetzungen zu %2$d von %3$d Zeilen hinzugefügt.</string>
+    <string name="translation_no_match">Keine Untertitelzeile passte zu den Zeilen dieser Datei. Prüfe, ob sie zum selben Video gehören.</string>
 </resources>

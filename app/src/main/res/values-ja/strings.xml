@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">このアプリが、練習量（日ごと・言語ごとの聞いた時間と文の数）を読み取れるようにします。</string>
     <string name="play_pattern">パターン</string>
     <string name="add_step">ステップを追加</string>
+    <string name="add_step_media">1. 動画または音声ファイル</string>
+    <string name="add_step_subtitles">2. %1$sの字幕</string>
+    <string name="add_step_translation">3. 翻訳（任意）</string>
+    <string name="choose_file">ファイルを選ぶ</string>
+    <string name="change">変更</string>
+    <string name="found_inside">ファイル内で見つかりました：%1$s</string>
+    <string name="add">追加</string>
+    <string name="add_translation">翻訳を追加</string>
+    <string name="add_translation_help">別の言語の字幕で、各行の翻訳として表示されます。</string>
+    <string name="translation_added">%1$sの翻訳を%3$d行中%2$d行に追加しました。</string>
+    <string name="translation_no_match">字幕の行がこのファイルの行と一致しませんでした。同じ動画の字幕か確認してください。</string>
 </resources>

@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Mengizinkan aplikasi ini membaca seberapa banyak Anda berlatih: waktu mendengarkan dan kalimat per hari dan bahasa.</string>
     <string name="play_pattern">Pola</string>
     <string name="add_step">Tambah langkah</string>
+    <string name="add_step_media">1. File video atau audio</string>
+    <string name="add_step_subtitles">2. Subtitel dalam %1$s</string>
+    <string name="add_step_translation">3. Terjemahan (opsional)</string>
+    <string name="choose_file">Pilih file</string>
+    <string name="change">Ubah</string>
+    <string name="found_inside">Ditemukan di dalam file: %1$s</string>
+    <string name="add">Tambah</string>
+    <string name="add_translation">Tambah terjemahan</string>
+    <string name="add_translation_help">Subtitel dalam bahasa lain, ditampilkan sebagai terjemahan tiap baris.</string>
+    <string name="translation_added">Menambahkan terjemahan %1$s ke %2$d dari %3$d baris.</string>
+    <string name="translation_no_match">Tidak ada baris subtitel yang cocok dengan baris file ini. Periksa apakah subtitel itu untuk video yang sama.</string>
 </resources>

@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Pozwala tej aplikacji odczytać, ile ćwiczysz: czas słuchania i zdania według dnia i języka.</string>
     <string name="play_pattern">Wzorzec</string>
     <string name="add_step">Dodaj krok</string>
+    <string name="add_step_media">1. Plik wideo lub audio</string>
+    <string name="add_step_subtitles">2. Napisy w języku: %1$s</string>
+    <string name="add_step_translation">3. Tłumaczenie (opcjonalnie)</string>
+    <string name="choose_file">Wybierz plik</string>
+    <string name="change">Zmień</string>
+    <string name="found_inside">Znaleziono w pliku: %1$s</string>
+    <string name="add">Dodaj</string>
+    <string name="add_translation">Dodaj tłumaczenie</string>
+    <string name="add_translation_help">Napisy w innym języku, pokazywane jako tłumaczenie każdej linii.</string>
+    <string name="translation_added">Dodano tłumaczenia (%1$s) do %2$d z %3$d linii.</string>
+    <string name="translation_no_match">Żadna linia napisów nie pasowała do linii tego pliku. Sprawdź, czy są do tego samego wideo.</string>
 </resources>

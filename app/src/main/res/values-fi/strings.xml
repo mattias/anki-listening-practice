@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Antaa tämän sovelluksen lukea, kuinka paljon olet harjoitellut: kuunteluaika ja lauseet päivää ja kieltä kohti.</string>
     <string name="play_pattern">Kuvio</string>
     <string name="add_step">Lisää vaihe</string>
+    <string name="add_step_media">1. Video- tai äänitiedosto</string>
+    <string name="add_step_subtitles">2. Tekstitys: %1$s</string>
+    <string name="add_step_translation">3. Käännös (valinnainen)</string>
+    <string name="choose_file">Valitse tiedosto</string>
+    <string name="change">Vaihda</string>
+    <string name="found_inside">Löytyi tiedostosta: %1$s</string>
+    <string name="add">Lisää</string>
+    <string name="add_translation">Lisää käännös</string>
+    <string name="add_translation_help">Toisen kielen tekstitys, joka näytetään jokaisen rivin käännöksenä.</string>
+    <string name="translation_added">Lisättiin käännökset (%1$s) %2$d riville %3$d:sta.</string>
+    <string name="translation_no_match">Mikään tekstitysrivi ei vastannut tämän tiedoston rivejä. Tarkista, että ne ovat samalle videolle.</string>
 </resources>

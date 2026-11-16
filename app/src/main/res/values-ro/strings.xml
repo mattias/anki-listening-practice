@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Permite acestei aplicații să citească cât ai exersat: timp de ascultare și propoziții pe zi și limbă.</string>
     <string name="play_pattern">Model</string>
     <string name="add_step">Adaugă un pas</string>
+    <string name="add_step_media">1. Fișier video sau audio</string>
+    <string name="add_step_subtitles">2. Subtitrări în %1$s</string>
+    <string name="add_step_translation">3. Traducere (opțional)</string>
+    <string name="choose_file">Alege fișierul</string>
+    <string name="change">Schimbă</string>
+    <string name="found_inside">Găsit în fișier: %1$s</string>
+    <string name="add">Adaugă</string>
+    <string name="add_translation">Adaugă traducere</string>
+    <string name="add_translation_help">Subtitrări în altă limbă, afișate ca traducere a fiecărei linii.</string>
+    <string name="translation_added">Au fost adăugate traduceri (%1$s) la %2$d din %3$d linii.</string>
+    <string name="translation_no_match">Nicio linie de subtitrare nu s-a potrivit cu liniile acestui fișier. Verifică dacă sunt pentru același videoclip.</string>
 </resources>

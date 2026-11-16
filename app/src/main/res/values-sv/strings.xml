@@ -324,4 +324,15 @@
     <string name="permission_statistics_description">Låter appen läsa hur mycket du har övat: lyssnartid och meningar per dag och språk.</string>
     <string name="play_pattern">Mönster</string>
     <string name="add_step">Lägg till steg</string>
+    <string name="add_step_media">1. Video- eller ljudfil</string>
+    <string name="add_step_subtitles">2. Undertexter på %1$s</string>
+    <string name="add_step_translation">3. Översättning (valfritt)</string>
+    <string name="choose_file">Välj fil</string>
+    <string name="change">Ändra</string>
+    <string name="found_inside">Hittades i filen: %1$s</string>
+    <string name="add">Lägg till</string>
+    <string name="add_translation">Lägg till översättning</string>
+    <string name="add_translation_help">Undertexter på ett annat språk, som visas som översättning av varje rad.</string>
+    <string name="translation_added">Lade till %1$s-översättningar för %2$d av %3$d rader.</string>
+    <string name="translation_no_match">Ingen av undertextraderna passade filens rader. Kontrollera att de hör till samma video.</string>
 </resources>

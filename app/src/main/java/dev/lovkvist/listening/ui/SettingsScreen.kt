@@ -285,21 +285,8 @@ fun SettingsScreen(vm: SettingsViewModel, updateVm: UpdateViewModel, onBack: () 
                 Page.PLAYBACK -> {
                     // The same controls as the sheet under the sentence; changes apply to the session at once.
                     val practice = vm.practice
-                    val speed by practice.speed.collectAsStateWithLifecycle()
-                    val delayMs by practice.delayMs.collectAsStateWithLifecycle()
-                    val autoClearAfter by practice.autoClearAfter.collectAsStateWithLifecycle()
-                    val autoAdvanceSkip by practice.autoAdvanceSkip.collectAsStateWithLifecycle()
                     val headsetClear by practice.headsetDoubleTapClear.collectAsStateWithLifecycle()
-                    PlaybackSettings(
-                        speed = speed,
-                        delayMs = delayMs,
-                        autoClearAfter = autoClearAfter,
-                        onSpeed = { practice.setSpeed(it) },
-                        onDelay = { practice.setDelay(it) },
-                        onAutoClear = { practice.setAutoClearAfter(it) },
-                        autoAdvanceSkip = autoAdvanceSkip,
-                        onAutoAdvanceSkip = practice::setAutoAdvanceSkip,
-                    )
+                    PlaybackSettings(practice)
                     HeadsetSettings(headsetClear, practice::setHeadsetDoubleTapClear)
                 }
 

@@ -2,6 +2,8 @@ package dev.lovkvist.listening.playback
 
 import android.content.Context
 import android.media.AudioManager
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -37,7 +39,13 @@ class LoopPlayer(private val context: Context) {
         context,
         androidx.media3.exoplayer.DefaultRenderersFactory(context).setEnableAudioTrackPlaybackParams(true),
     ).build()
-    private val silence = silenceFile(context)
+    /**
+     * The silence the pauses are made of, in the same audio format as the clip (sample rate and channels). With another format the
+     * audio output is stopped and built again at every switch between a clip and its pause, and over Bluetooth that stops and
+     * restarts the stream each time, which sometimes never comes back. With the same format the output just keeps playing.
+     */
+    private var silence = silenceFile(context, FALLBACK_RATE, 1)
+    private var probedUri: Uri? = null
 
     private val _isPlaying = MutableStateFlow(false)
     /** True while the user wants playback, including the silent gap between repeats. */
@@ -160,6 +168,7 @@ class LoopPlayer(private val context: Context) {
             )
         }
         val next = item.build()
+        silence = silenceFor(uri)
         this.clip = next
         pendingSpeed = null
         clipLengthMs = clip?.let { it.last - it.first } ?: 0L
@@ -313,6 +322,33 @@ class LoopPlayer(private val context: Context) {
         return silenceItem(GAP, (sing + delayMs * speed).toLong().coerceIn(MIN_GAP_MS, SILENCE_SECONDS * 1000L))
     }
 
+    /** The silence file in the format of the audio at [uri]; the last answer is kept, since a video's sentences share its file. */
+    private fun silenceFor(uri: Uri): File {
+        if (uri == probedUri) return silence
+        probedUri = uri
+        val (rate, channels) = audioFormatOf(uri) ?: return silenceFile(context, FALLBACK_RATE, 1)
+        return silenceFile(context, rate, channels)
+    }
+
+    /** Sample rate and number of channels of the first audio track at [uri], or null if it can't be read. */
+    private fun audioFormatOf(uri: Uri): Pair<Int, Int>? {
+        val extractor = MediaExtractor()
+        return try {
+            extractor.setDataSource(context, uri, null)
+            (0 until extractor.trackCount).asSequence().map { extractor.getTrackFormat(it) }
+                .firstOrNull { it.getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true }
+                ?.let { f ->
+                    val rate = f.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                    val channels = f.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+                    if (rate in 8000..192000 && channels in 1..2) rate to channels else null
+                }
+        } catch (e: Exception) {
+            null
+        } finally {
+            extractor.release()
+        }
+    }
+
     private fun silenceItem(id: String, durationMs: Long) = MediaItem.Builder()
         .setUri(Uri.fromFile(silence))
         .setMediaId(id)
@@ -343,6 +379,7 @@ class LoopPlayer(private val context: Context) {
 
     private companion object {
         const val TAG = "LoopPlayer"
+        const val FALLBACK_RATE = 8000
         const val STALL_TICKS = 3
         const val BUFFERING_TICKS = 10
         const val CLIP = "clip"
@@ -352,20 +389,22 @@ class LoopPlayer(private val context: Context) {
         const val HOLD_MS = 10_000L
         const val SILENCE_SECONDS = 60
 
-        /** A minute of 8 kHz mono silence as a WAV file, clipped to make gaps of any length. */
-        fun silenceFile(context: Context): File {
-            val file = File(context.cacheDir, "silence.wav")
-            val rate = 8000
-            val dataSize = rate * 2 * SILENCE_SECONDS
+        /** A minute of silence at [rate] Hz with [channels] channels as a WAV file, clipped to make gaps of any length. */
+        fun silenceFile(context: Context, rate: Int, channels: Int): File {
+            val file = File(context.cacheDir, if (rate == FALLBACK_RATE && channels == 1) "silence.wav" else "silence_${rate}_$channels.wav")
+            val frame = 2 * channels
+            val dataSize = rate * frame * SILENCE_SECONDS
             if (file.length() == 44L + dataSize) return file
             RandomAccessFile(file, "rw").use { f ->
                 fun int(v: Int) = f.write(byteArrayOf(v.toByte(), (v shr 8).toByte(), (v shr 16).toByte(), (v shr 24).toByte()))
                 fun short(v: Int) = f.write(byteArrayOf(v.toByte(), (v shr 8).toByte()))
                 f.setLength(0)
                 f.writeBytes("RIFF"); int(36 + dataSize); f.writeBytes("WAVE")
-                f.writeBytes("fmt "); int(16); short(1); short(1); int(rate); int(rate * 2); short(2); short(16)
+                f.writeBytes("fmt "); int(16); short(1); short(channels); int(rate); int(rate * frame); short(frame); short(16)
                 f.writeBytes("data"); int(dataSize)
-                f.write(ByteArray(dataSize))
+                val zeros = ByteArray(64 * 1024)
+                var left = dataSize
+                while (left > 0) { val n = minOf(left, zeros.size); f.write(zeros, 0, n); left -= n }
             }
             return file
         }

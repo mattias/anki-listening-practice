@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -119,7 +120,13 @@ class LoopPlayer(private val context: Context) {
         // Pauses for calls, alarms and other apps, and when headphones are unplugged.
         player.setAudioAttributes(attributes, /* handleAudioFocus = */ true)
         player.setHandleAudioBecomingNoisy(true)
+        // Keeps the processor awake while audio plays with the screen off (needs the WAKE_LOCK permission).
+        player.setWakeMode(C.WAKE_MODE_LOCAL)
         player.addListener(object : Player.Listener {
+            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                Log.w(TAG, "Player error: ${error.errorCodeName}", error)
+            }
+
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 _isPlaying.value = playWhenReady
             }
@@ -194,6 +201,51 @@ class LoopPlayer(private val context: Context) {
     }
 
     fun toggle() = if (player.playWhenReady) pause() else play()
+
+    private var watchKey = ""
+    private var watchTicks = 0
+
+    /**
+     * Called about once a second. Notices that playback is meant to be going but stands still (an audio output that stopped, the
+     * silence held for a next sentence that never came, a player error) and starts the sentence over. True when it did.
+     */
+    fun watchdog(): Boolean {
+        val waiting = player.playbackSuppressionReason != Player.PLAYBACK_SUPPRESSION_REASON_NONE
+        if (clip == null || !player.playWhenReady || pausedForCall || waiting) {
+            watchKey = ""
+            watchTicks = 0
+            return false
+        }
+        val state = player.playbackState
+        val key = "$state/${player.currentMediaItemIndex}/${player.currentPosition}/${_repeats.value}"
+        if (key != watchKey) {
+            watchKey = key
+            watchTicks = 0
+            return false
+        }
+        watchTicks++
+        // Loading the first bytes of a file may take a moment; nothing else should stand still for this long.
+        if (watchTicks < (if (state == Player.STATE_BUFFERING) BUFFERING_TICKS else STALL_TICKS)) return false
+        Log.w(TAG, "Playback stood still (state $state, ${player.currentPosition} ms): starting the sentence over")
+        watchKey = ""
+        watchTicks = 0
+        recover()
+        return true
+    }
+
+    /** Starts the current sentence over with a fresh audio output; the number of plays so far is kept. */
+    private fun recover() {
+        val current = clip ?: return
+        advancing = false
+        pendingSpeed = null
+        player.stop() // also releases the audio output, which is what a stalled one needs
+        player.clearMediaItems()
+        player.setMediaItems(listOf(current, gap()))
+        player.repeatMode = Player.REPEAT_MODE_ALL
+        player.playbackParameters = PlaybackParameters(speedValue)
+        player.prepare()
+        player.play()
+    }
 
     /** How far the current play has come, 0 to 1; 1 during the pause after it. */
     fun clipProgress(): Float {
@@ -290,6 +342,9 @@ class LoopPlayer(private val context: Context) {
     }
 
     private companion object {
+        const val TAG = "LoopPlayer"
+        const val STALL_TICKS = 3
+        const val BUFFERING_TICKS = 10
         const val CLIP = "clip"
         const val GAP = "gap"
         const val HOLD = "hold"

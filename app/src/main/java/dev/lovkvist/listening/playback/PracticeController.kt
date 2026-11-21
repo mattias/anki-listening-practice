@@ -267,6 +267,8 @@ class PracticeController @Inject constructor(
                 val now = SystemClock.elapsedRealtime()
                 val dt = (now - last).coerceIn(0, 2_000)
                 last = now
+                // Playback that stands still when it should go gets restarted (a stalled audio output, a lost hand-over).
+                player.watchdog()
                 val running = player.isRunning
                 if (running && _state.value is PracticeState.Ready) {
                     recorder.addTime(language.value.code, statsKind(), if (player.isInClip) dt else 0, dt)
